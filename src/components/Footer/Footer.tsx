@@ -1,9 +1,9 @@
-import "./Footer.css";
+import './Footer.css'
 
 const Footer = () => {
-  return (
-    <footer className={"footer"}> Impressum & Datenschutzerklärung</footer>
-  );
-};
+    return (
+        <footer className={'footer'}> Impressum & Datenschutzerklärung</footer>
+    )
+}
 
-export default Footer;
+export default Footer
