@@ -2,18 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Expenses from './routes/expenses';
-import Invoices from './routes/invoices';
+import Home from './views/Home';
+import InvoiceExtractor from './views/InvoiceExtractor';
+import StickerMaker from './views/StickerMaker';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="expenses" element={<Expenses />} />
-        <Route path="invoices" element={<Invoices />} />
+        <Route path="/" element={<Home />} />
+        <Route path="invoice_extractor" element={<InvoiceExtractor />} />
+        <Route path="sticker_maker" element={<StickerMaker />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

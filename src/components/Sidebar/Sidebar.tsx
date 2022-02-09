@@ -27,64 +27,62 @@ const Sidebar = ({ drawerIsOpen, toggleDrawer }: SidebarInterface) => {
     navigate(path);
   };
   return (
-    <div>
-      <Drawer
-        sx={{
+    <Drawer
+      sx={{
+        width: drawerWidth,
+        flexShrink: 0,
+        '& .MuiDrawer-paper': {
           width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box'
-          }
-        }}
-        variant="persistent"
-        anchor="left"
-        open={drawerIsOpen}
-        onClose={toggleDrawer(true)}
-        onKeyDown={toggleDrawer(false)}
-      >
-        <Divider />
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={toggleDrawer(false)}
-            edge="start"
-          >
-            <MenuIcon />
-          </IconButton>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={routeChange}
-            edge="start"
-          >
-            <img src={logo} className="App-logo" alt="logo" />
-          </IconButton>
-        </Toolbar>
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-    </div>
+          boxSizing: 'border-box'
+        }
+      }}
+      variant="persistent"
+      anchor="left"
+      open={drawerIsOpen}
+      onClose={toggleDrawer(true)}
+      onKeyDown={toggleDrawer(false)}
+    >
+      <Divider />
+      <Toolbar>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={toggleDrawer(false)}
+          edge="start"
+        >
+          <MenuIcon />
+        </IconButton>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={routeChange}
+          edge="start"
+        >
+          <img src={logo} className="App-logo" alt="logo" />
+        </IconButton>
+      </Toolbar>
+      <List>
+        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemIcon>
+              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+            </ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+          <ListItem button key={text}>
+            <ListItemIcon>
+              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+            </ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+    </Drawer>
   );
 };
 
