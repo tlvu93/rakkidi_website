@@ -67,15 +67,15 @@ const AppLayout = (props: {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <Container>
+        <div>
           <Header
             toggleDrawer={toggleDrawer}
             toggleColorMode={colorMode.toggleColorMode}
           />
-          <Container>
-            <Sidebar drawerIsOpen={drawerIsOpen} toggleDrawer={toggleDrawer} />
-            <Container
-              sx={{
+          <Sidebar drawerIsOpen={drawerIsOpen} toggleDrawer={toggleDrawer} />
+          <div>
+            <div
+              style={{
                 height: ``,
                 flexGrow: 1,
                 padding: theme.spacing(3),
@@ -84,21 +84,20 @@ const AppLayout = (props: {
                   duration: theme.transitions.duration.leavingScreen
                 }),
                 marginTop: `${headerHeight}px`,
-                marginLeft: `-${drawerWidth}px`,
                 ...(drawerIsOpen && {
                   transition: theme.transitions.create('margin', {
                     easing: theme.transitions.easing.easeOut,
                     duration: theme.transitions.duration.enteringScreen
                   }),
-                  marginLeft: 0
+                  marginLeft: `${drawerWidth}px`
                 })
               }}
             >
               {props.children}
-            </Container>
-          </Container>
+            </div>
+          </div>
           <Footer />
-        </Container>
+        </div>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
