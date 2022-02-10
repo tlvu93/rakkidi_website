@@ -1,13 +1,15 @@
 import { IconButton, useTheme } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import logo from '../../logo_rakkidi_vert.svg';
 
-const LogoHome = ({ routeChange }: { routeChange: () => void }) => {
+const LogoHome = () => {
+  const navigate = useNavigate();
   const theme = useTheme();
   return (
     <IconButton
       color="inherit"
       aria-label="open drawer"
-      onClick={routeChange}
+      onClick={() => navigate('/')}
       edge="start"
       sx={{
         height: 20,

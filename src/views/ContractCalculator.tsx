@@ -1,12 +1,12 @@
 import { Typography } from '@mui/material';
 import AppLayout from '../layouts/AppLayout';
 
-const Home = () => {
+const ContractCalculator = () => {
   return (
     <AppLayout>
-      <Typography>This is my Sticker Maker</Typography>
+      <Typography>This is my Contract Calculator</Typography>
     </AppLayout>
   );
 };
 
-export default Home;
+export default ContractCalculator;

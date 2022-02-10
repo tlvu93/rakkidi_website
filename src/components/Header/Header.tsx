@@ -1,18 +1,9 @@
-import {
-  AppBar,
-  Divider,
-  IconButton,
-  ThemeProvider,
-  Toolbar
-} from '@mui/material';
+import { AppBar, Divider, IconButton, Toolbar } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useNavigate } from 'react-router-dom';
-
-import logo from '../../logo_rakkidi_vert.svg';
 
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { createTheme, useTheme } from '@mui/system';
+import { useTheme } from '@mui/system';
 import LogoHome from '../LogoHome/LogoHome';
 
 const Header = ({
@@ -24,17 +15,13 @@ const Header = ({
 }) => {
   const theme = useTheme();
 
-  let navigate = useNavigate();
-
-  const routeChange = () => {
-    let path = `/`;
-    navigate(path);
-  };
   return (
     <AppBar
-      enableColorOnDark={false}
       position="fixed"
-      sx={{ backgroundImage: 'none' }}
+      sx={{
+        backgroundImage: 'none',
+        backgroundColor: theme.palette.mode === 'dark' ? '' : 'white'
+      }}
     >
       <Toolbar>
         <IconButton
@@ -46,7 +33,7 @@ const Header = ({
         >
           <MenuIcon />
         </IconButton>
-        <LogoHome routeChange={routeChange} />
+        <LogoHome />
         <Divider orientation="vertical" flexItem sx={{ flexGrow: 1 }} />
 
         <IconButton sx={{ ml: 1 }} onClick={toggleColorMode} color="inherit">

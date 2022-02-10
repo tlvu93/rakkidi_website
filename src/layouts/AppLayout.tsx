@@ -14,7 +14,7 @@ const AppLayout = (props: {
   children: ReactChild | ReactFragment | ReactPortal | null | undefined;
 }) => {
   const [drawerIsOpen, openDrawer] = useState(false);
-  const [mode, setMode] = React.useState<'light' | 'dark'>('light');
+  const [mode, setMode] = React.useState<'light' | 'dark'>('dark');
 
   const toggleDrawer: ToggleDrawer = (isOpen) => (event) => {
     if (
@@ -45,14 +45,14 @@ const AppLayout = (props: {
             light: '#DBC75A',
             main: '#2A3142',
             dark: '#2A3142',
-            contrastText: '#FF0000'
-          },
-          secondary: {
-            light: '#2A3142',
-            main: '#DBC75A',
-            dark: '#DBC75A',
-            contrastText: '#000'
+            contrastText: '#2A3142'
           }
+          // secondary: {
+          //   light: '#2A3142',
+          //   main: '#DBC75A',
+          //   dark: '#DBC75A',
+          //   contrastText: '#000'
+          // }
           // background: {
           //   paper: '#2A3142'
           // },

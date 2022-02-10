@@ -1,10 +1,11 @@
 import FileDropzone from '../components/Dropzone/Dropzone';
+import AppLayout from '../layouts/AppLayout';
 
 const InvoiceExtractor = () => {
   return (
-    <div>
+    <AppLayout>
       <FileDropzone />
-    </div>
+    </AppLayout>
   );
 };
 
