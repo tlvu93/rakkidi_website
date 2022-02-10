@@ -11,6 +11,8 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import logo from '../../logo_rakkidi_vert.svg';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material';
+import LogoHome from '../LogoHome/LogoHome';
 const drawerWidth = 240;
 
 interface SidebarInterface {
@@ -19,6 +21,8 @@ interface SidebarInterface {
 }
 
 const Sidebar = ({ drawerIsOpen, toggleDrawer }: SidebarInterface) => {
+  const theme = useTheme();
+
   let navigate = useNavigate();
 
   const routeChange = () => {
@@ -52,14 +56,7 @@ const Sidebar = ({ drawerIsOpen, toggleDrawer }: SidebarInterface) => {
         >
           <MenuIcon />
         </IconButton>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={routeChange}
-          edge="start"
-        >
-          <img src={logo} className="App-logo" alt="logo" />
-        </IconButton>
+        <LogoHome routeChange={routeChange} />
       </Toolbar>
       <List>
         {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (

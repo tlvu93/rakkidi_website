@@ -1,33 +1,11 @@
 import { Container, createTheme, ThemeProvider } from '@mui/material';
-import { ReactChild, ReactFragment, ReactPortal, useState } from 'react';
+import React, { ReactChild, ReactFragment, ReactPortal, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Footer from '../components/Footer/Footer';
 import Header from '../components/Header/Header';
 import Sidebar from '../components/Sidebar/Sidebar';
 
-const theme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      light: '#2A3142',
-      main: '#2A3142',
-      dark: '#2A3142',
-      contrastText: '#fff'
-    },
-    secondary: {
-      light: '#DBC75A',
-      main: '#DBC75A',
-      dark: '#DBC75A',
-      contrastText: '#000'
-    },
-    // background: {
-    //   paper: '#2A3142'
-    // },
-    text: {
-      primary: '#fff'
-    }
-  }
-});
+const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 
 const drawerWidth = 240;
 const headerHeight = 64;
@@ -36,6 +14,7 @@ const AppLayout = (props: {
   children: ReactChild | ReactFragment | ReactPortal | null | undefined;
 }) => {
   const [drawerIsOpen, openDrawer] = useState(false);
+  const [mode, setMode] = React.useState<'light' | 'dark'>('light');
 
   const toggleDrawer: ToggleDrawer = (isOpen) => (event) => {
     if (
@@ -48,38 +27,80 @@ const AppLayout = (props: {
 
     openDrawer(isOpen);
   };
+  const colorMode = React.useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+      }
+    }),
+    []
+  );
+
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+          primary: {
+            light: '#DBC75A',
+            main: '#2A3142',
+            dark: '#2A3142',
+            contrastText: '#FF0000'
+          },
+          secondary: {
+            light: '#2A3142',
+            main: '#DBC75A',
+            dark: '#DBC75A',
+            contrastText: '#000'
+          }
+          // background: {
+          //   paper: '#2A3142'
+          // },
+          // text: {
+          //   primary: '#fff'
+          // }
+        }
+      }),
+    [mode]
+  );
+
   return (
-    <ThemeProvider theme={theme}>
-      <div className="App">
-        <Header toggleDrawer={toggleDrawer} />
-        <div style={{ display: 'flex', height: '100%' }}>
-          <Sidebar drawerIsOpen={drawerIsOpen} toggleDrawer={toggleDrawer} />
-          <Container
-            sx={{
-              height: ``,
-              flexGrow: 1,
-              padding: theme.spacing(3),
-              transition: theme.transitions.create('margin', {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen
-              }),
-              marginTop: `${headerHeight}px`,
-              marginLeft: `-${drawerWidth}px`,
-              ...(drawerIsOpen && {
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <Container>
+          <Header
+            toggleDrawer={toggleDrawer}
+            toggleColorMode={colorMode.toggleColorMode}
+          />
+          <Container>
+            <Sidebar drawerIsOpen={drawerIsOpen} toggleDrawer={toggleDrawer} />
+            <Container
+              sx={{
+                height: ``,
+                flexGrow: 1,
+                padding: theme.spacing(3),
                 transition: theme.transitions.create('margin', {
-                  easing: theme.transitions.easing.easeOut,
-                  duration: theme.transitions.duration.enteringScreen
+                  easing: theme.transitions.easing.sharp,
+                  duration: theme.transitions.duration.leavingScreen
                 }),
-                marginLeft: 0
-              })
-            }}
-          >
-            {props.children}
+                marginTop: `${headerHeight}px`,
+                marginLeft: `-${drawerWidth}px`,
+                ...(drawerIsOpen && {
+                  transition: theme.transitions.create('margin', {
+                    easing: theme.transitions.easing.easeOut,
+                    duration: theme.transitions.duration.enteringScreen
+                  }),
+                  marginLeft: 0
+                })
+              }}
+            >
+              {props.children}
+            </Container>
           </Container>
-        </div>
-        <Footer />
-      </div>
-    </ThemeProvider>
+          <Footer />
+        </Container>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 };
 
