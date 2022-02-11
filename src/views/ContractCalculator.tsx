@@ -1,10 +1,16 @@
-import { Typography } from '@mui/material';
+import {
+  Dropzone,
+  OrderList,
+  PriceList
+} from '../components/contractCalculator';
 import AppLayout from '../layouts/AppLayout';
 
 const ContractCalculator = () => {
   return (
     <AppLayout>
-      <Typography>This is my Contract Calculator</Typography>
+      <OrderList />
+      <PriceList />
+      <Dropzone />
     </AppLayout>
   );
 };

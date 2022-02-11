@@ -13,7 +13,7 @@ const headerHeight = 64;
 const AppLayout = (props: {
   children: ReactChild | ReactFragment | ReactPortal | null | undefined;
 }) => {
-  const [drawerIsOpen, openDrawer] = useState(false);
+  const [drawerIsOpen, openDrawer] = useState(true);
   const [mode, setMode] = React.useState<'light' | 'dark'>('dark');
 
   const toggleDrawer: ToggleDrawer = (isOpen) => (event) => {
