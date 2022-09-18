@@ -79,7 +79,7 @@ const AppLayout = (props: { children: React.ReactNode }) => {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <div>
-          <Header drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
+          <Header toggleDrawer={toggleDrawer} />
           <Sidebar drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
           <MainApp>
             {props.children}

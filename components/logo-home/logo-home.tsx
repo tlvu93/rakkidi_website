@@ -1,6 +1,6 @@
 import { IconButton, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
-import logo from '../../assets/logo_rakkidi_vert.svg';
+import Logo from '../../assets/logo_rakkidi_vert.svg';
 import Image from 'next/image';
 
 const LogoHome = () => {
@@ -20,7 +20,7 @@ const LogoHome = () => {
             : ''
       }}
     >
-      <Image src={logo} style={{ height: '20px' }} alt="logo" />
+      <Logo width={120} />
     </IconButton>
   );
 };
