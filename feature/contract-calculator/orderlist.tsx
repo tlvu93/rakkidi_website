@@ -1,22 +1,25 @@
 import React from 'react';
 import { Grid } from '@mui/material';
-import { Order } from '../../contractCalculator';
-import { connect } from 'react-redux';
-import {
-  addOrder,
-  removeOrder,
-  clearOrders
-} from '../../../redux/modules/orders';
 
-const OrderList = (props) => {
+import Order from './order';
+import { FileWithDimension } from 'interfaces/ui';
+
+const OrderList = () => {
+  const orders: FileWithDimension[] = []; // TODO get orders from redux
+
   return (
     <div>
-      {props.orders ? (
+      {orders ? (
         <div>
           <Grid container spacing={2} style={{ padding: 24 }}>
-            {props.orders.map((currentOrder) => (
+            {orders.map((currentOrder) => (
               <Grid key={currentOrder.name} item xs={12} sm={6} lg={4} xl={3}>
-                <Order order={currentOrder} remove={props.remove} />
+                <Order
+                  order={currentOrder}
+                  remove={() => {
+                    console.log('redux remove function');
+                  }}
+                />
               </Grid>
             ))}
           </Grid>
@@ -28,16 +31,4 @@ const OrderList = (props) => {
   );
 };
 
-const mapStatetoProps = (state) => ({
-  orders: state.orderStore.orders
-});
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    add: (order) => dispatch(addOrder(order)),
-    remove: (order) => dispatch(removeOrder(order)),
-    clear: () => dispatch(clearOrders())
-  };
-};
-
-export default connect(mapStatetoProps, mapDispatchToProps)(OrderList);
+export default OrderList;

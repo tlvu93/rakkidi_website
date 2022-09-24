@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
 import { Grid, Typography, Paper, Button } from '@mui/material';
-import { connect } from 'react-redux';
-import { clearOrders } from '../../../redux/modules/orders';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { useTheme } from '@mui/system';
 
-const PriceList = (props) => {
+import DeleteIcon from '@mui/icons-material/Delete';
+
+import { FileWithDimension } from 'interfaces/ui';
+
+const PriceList = () => {
+  const orders: FileWithDimension[] = []; // TODO: Get from store
   const [price, setPrice] = useState(0);
-  const theme = useTheme();
 
   useEffect(() => {
-    getPrice(props.orders);
-  }, [props.orders]);
+    getPrice(orders);
+  }, [orders]);
 
-  function getPrice(orders) {
+  function getPrice(orders: FileWithDimension[]) {
     let computedPrice = 0;
     orders.forEach((order) => {
       computedPrice +=
@@ -35,8 +35,10 @@ const PriceList = (props) => {
                 variant="contained"
                 color="secondary"
                 startIcon={<DeleteIcon />}
-                onClick={() => props.clear()}
-                sx={{ margin: theme.spacing(1) }}
+                onClick={() => {
+                  console.log('Clear order with redux');
+                }}
+                sx={{ margin: 1 }}
               >
                 Clear All
               </Button>
@@ -48,12 +50,4 @@ const PriceList = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  orders: state.orderStore.orders
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  clear: () => dispatch(clearOrders())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(PriceList);
+export default PriceList;

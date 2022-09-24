@@ -8,11 +8,18 @@ interface SidebarProps {
 }
 
 interface HeaderProps {
-  toggleDrawer: ToggleDrawer
+  toggleDrawer: ToggleDrawer;
 }
 
 export interface SidebarLink {
-    name: string;
-    route: string;
-    icon: JSX.Element;
-  }
+  name: string;
+  route: string;
+  icon: JSX.Element;
+}
+
+export interface FileWithDimension {
+  name: string;
+  file: File;
+  height: number;
+  width: number;
+}
