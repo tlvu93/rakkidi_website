@@ -36,17 +36,17 @@ const sidebarLinks: SidebarLink[] = [
   },
   {
     name: 'Sticker Maker',
-    route: '/stickermaker',
+    route: '/sticker-maker',
     icon: iconMap.DirtyLensOutlinedIcon
   },
   {
     name: 'Contract Calculator',
-    route: '/contractcalculator',
+    route: '/contract-calculator',
     icon: iconMap.CalculateIcon
   },
   {
     name: 'Invoice Extractor',
-    route: '/invoiceextractor',
+    route: '/invoice-extractor',
     icon: iconMap.ReceiptIcon
   }
 ];
