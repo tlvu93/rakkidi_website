@@ -16,10 +16,3 @@ export interface SidebarLink {
   route: string;
   icon: JSX.Element;
 }
-
-export interface FileWithDimension {
-  name: string;
-  file: File;
-  height: number;
-  width: number;
-}

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Grid } from '@mui/material';
 
-import Order from './order';
-import { FileWithDimension } from 'interfaces/ui';
+import OrderItem from './order-Item';
+import { Order } from 'interfaces/contract-calculator';
 
 const OrderList = () => {
-  const orders: FileWithDimension[] = []; // TODO get orders from redux
+  const orders: Order[] = []; // TODO get orders from redux
 
   return (
     <div>
@@ -14,9 +14,9 @@ const OrderList = () => {
           <Grid container spacing={2} style={{ padding: 24 }}>
             {orders.map((currentOrder) => (
               <Grid key={currentOrder.name} item xs={12} sm={6} lg={4} xl={3}>
-                <Order
+                <OrderItem
                   order={currentOrder}
-                  remove={() => {
+                  remove={(order: Order) => {
                     console.log('redux remove function');
                   }}
                 />

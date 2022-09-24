@@ -3,7 +3,6 @@ import { useCallback } from 'react';
 import { FileWithPath, useDropzone } from 'react-dropzone';
 
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import { FileWithDimension } from 'interfaces/ui';
 import { getDimension } from './utility/getDimension';
 
 /**

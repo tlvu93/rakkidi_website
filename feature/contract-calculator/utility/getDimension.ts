@@ -1,4 +1,4 @@
-import { FileWithDimension } from 'interfaces/ui';
+import { Order } from 'interfaces/ui';
 import { FileWithPath } from 'react-dropzone';
 import { decode, decodeImage } from 'utif';
 
@@ -89,7 +89,7 @@ const getDimensionFromEPS = (file: FileWithPath, match: RegExpMatchArray) => {
     file: file,
     width: Math.round(width * 100) / 100,
     height: Math.round(height * 100) / 100
-  } as FileWithDimension;
+  } as Order;
 };
 
 async function getDimensionFromOtherFiles(file: FileWithPath) {
@@ -101,8 +101,10 @@ async function getDimensionFromOtherFiles(file: FileWithPath) {
 
       var matchEPS = result.match(/@rax %Note: Object((.*\r\n){2})/g);
       if (matchEPS) {
-        const fileWithDimension: FileWithDimension | undefined =
-          getDimensionFromEPS(file, matchEPS);
+        const fileWithDimension: Order | undefined = getDimensionFromEPS(
+          file,
+          matchEPS
+        );
 
         if (fileWithDimension) resolve(fileWithDimension);
         else reject();

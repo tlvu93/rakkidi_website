@@ -1,5 +1,7 @@
-const initialState = {
-    orders: []
-  };
+import React from 'react';
 
-export default orderSlice = createSlice()
+const OrderSlice = () => {
+  return <div>OrderSlice</div>;
+};
+
+export default OrderSlice;

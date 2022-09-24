@@ -1,12 +1,13 @@
 import Dropzone from 'feature/contract-calculator/dropzone';
-import Orderlist from 'feature/contract-calculator/orderlist';
+import OrderList from 'feature/contract-calculator/order-item-list';
+
 import PriceList from 'feature/contract-calculator/price-list';
 import React from 'react';
 
 const ContractCalculator = () => {
   return (
     <>
-      <Orderlist />
+      <OrderList />
       <PriceList />
       <Dropzone />
     </>

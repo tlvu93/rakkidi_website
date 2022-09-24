@@ -2,18 +2,17 @@ import { useState, useEffect } from 'react';
 import { Grid, Typography, Paper, Button } from '@mui/material';
 
 import DeleteIcon from '@mui/icons-material/Delete';
-
-import { FileWithDimension } from 'interfaces/ui';
+import { Order } from 'interfaces/contract-calculator';
 
 const PriceList = () => {
-  const orders: FileWithDimension[] = []; // TODO: Get from store
+  const [orders, setOrders] = useState<Order[]>([]); // TODO: Get from store
   const [price, setPrice] = useState(0);
 
   useEffect(() => {
     getPrice(orders);
   }, [orders]);
 
-  function getPrice(orders: FileWithDimension[]) {
+  function getPrice(orders: Order[]) {
     let computedPrice = 0;
     orders.forEach((order) => {
       computedPrice +=
