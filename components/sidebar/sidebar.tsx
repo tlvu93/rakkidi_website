@@ -15,6 +15,7 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import MapIcon from '@mui/icons-material/Map';
 import { SidebarLink, SidebarProps } from 'interfaces/ui';
+import Footer from '@components/footer/footer';
 
 const drawerWidth = 240;
 
@@ -97,6 +98,7 @@ const Sidebar = ({ drawerOpen, toggleDrawer }: SidebarProps) => {
 
       <Divider />
       <List></List>
+      <Footer />
     </Drawer>
   );
 };

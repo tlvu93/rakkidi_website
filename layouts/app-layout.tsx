@@ -81,10 +81,7 @@ const AppLayout = (props: { children: React.ReactNode }) => {
         <div>
           <Header toggleDrawer={toggleDrawer} />
           <Sidebar drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
-          <MainApp>
-            {props.children}
-            <Footer />
-          </MainApp>
+          <MainApp>{props.children}</MainApp>
         </div>
       </ThemeProvider>
     </ColorModeContext.Provider>

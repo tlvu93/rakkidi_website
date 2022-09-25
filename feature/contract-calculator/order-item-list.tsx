@@ -1,35 +1,40 @@
-import React from 'react';
-import { Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 
-import OrderItem from './order-Item';
-import { Order } from 'interfaces/contract-calculator';
 import { useAppSelector } from 'app/hooks';
+import FileDropzone from './file-dropzone';
+import OrderItem from './order-Item';
 import { selectOrders } from './order-slice';
 
 const OrderList = () => {
   const orders = useAppSelector(selectOrders);
 
   return (
-    <div>
+    <>
       {orders ? (
-        <div>
+        <>
           <Grid container spacing={2} style={{ padding: 24 }}>
             {orders.map((currentOrder) => (
-              <Grid key={currentOrder.name} item xs={12} sm={6} lg={4} xl={3}>
-                <OrderItem
-                  order={currentOrder}
-                  remove={(order: Order) => {
-                    console.log('redux remove function');
-                  }}
-                />
+              <Grid key={currentOrder.id} item xs={12} sm={6} lg={4} xl={3}>
+                <OrderItem order={currentOrder} />
               </Grid>
             ))}
+            <Grid item xs={12} sm={6} lg={4} xl={3}>
+              <Box
+                sx={{
+                  backgroundColor: 'black',
+                  height: '100%',
+                  minHeight: '212px' // as big as a OrderItem Card is
+                }}
+              >
+                <FileDropzone />
+              </Box>
+            </Grid>
           </Grid>
-        </div>
+        </>
       ) : (
         'No Orders'
       )}
-    </div>
+    </>
   );
 };
 
