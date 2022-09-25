@@ -4,6 +4,7 @@ import {
   Card,
   CardActions,
   CardContent,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { useAppDispatch } from 'app/hooks';
@@ -35,9 +36,11 @@ const OrderItem = ({ order }: OrderItemProps) => {
       {order ? (
         <Card>
           <CardContent>
-            <Typography gutterBottom variant="h5">
-              {order.name}
-            </Typography>
+            <Tooltip placement="top" title={order.name}>
+              <Typography noWrap gutterBottom variant="h5">
+                {order.name}
+              </Typography>
+            </Tooltip>
             <Typography component="p">
               Höhe: {Math.round(order.width * 100) / 100} mm
             </Typography>
