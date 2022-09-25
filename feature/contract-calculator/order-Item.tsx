@@ -7,6 +7,8 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Order } from 'interfaces/contract-calculator';
+import { useAppDispatch } from 'app/hooks';
+import { removeOrder } from './order-slice';
 
 interface OrderItemProps {
   order: Order;
@@ -14,6 +16,8 @@ interface OrderItemProps {
 }
 
 const OrderItem = ({ order, remove }: OrderItemProps) => {
+  const dispatch = useAppDispatch();
+
   return (
     <div>
       {order ? (
@@ -40,7 +44,7 @@ const OrderItem = ({ order, remove }: OrderItemProps) => {
               variant="contained"
               color="secondary"
               startIcon={<DeleteIcon />}
-              onClick={() => remove(order)}
+              onClick={() => dispatch(removeOrder(order.id))}
               sx={{ margin: 1 }}
             >
               Löschen

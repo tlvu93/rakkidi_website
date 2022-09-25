@@ -3,9 +3,13 @@ import { Grid, Typography, Paper, Button } from '@mui/material';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Order } from 'interfaces/contract-calculator';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import { clearOrder, selectOrders } from './order-slice';
 
 const PriceList = () => {
-  const [orders, setOrders] = useState<Order[]>([]); // TODO: Get from store
+  const orders = useAppSelector(selectOrders);
+  const dispatch = useAppDispatch();
+
   const [price, setPrice] = useState(0);
 
   useEffect(() => {
@@ -34,9 +38,7 @@ const PriceList = () => {
                 variant="contained"
                 color="secondary"
                 startIcon={<DeleteIcon />}
-                onClick={() => {
-                  console.log('Clear order with redux');
-                }}
+                onClick={() => dispatch(clearOrder())}
                 sx={{ margin: 1 }}
               >
                 Clear All

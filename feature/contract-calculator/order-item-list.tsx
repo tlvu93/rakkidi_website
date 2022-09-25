@@ -3,9 +3,11 @@ import { Grid } from '@mui/material';
 
 import OrderItem from './order-Item';
 import { Order } from 'interfaces/contract-calculator';
+import { useAppSelector } from 'app/hooks';
+import { selectOrders } from './order-slice';
 
 const OrderList = () => {
-  const orders: Order[] = []; // TODO get orders from redux
+  const orders = useAppSelector(selectOrders);
 
   return (
     <div>

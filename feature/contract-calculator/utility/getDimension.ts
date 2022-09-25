@@ -1,13 +1,14 @@
-import { Order } from 'interfaces/ui';
+import { Order } from 'interfaces/contract-calculator';
 import { FileWithPath } from 'react-dropzone';
 import { decode, decodeImage } from 'utif';
+import { v4 as uuidv4 } from 'uuid';
 
 const MM_PER_PIXEL = 0.0846526655896607;
 const MM_PER_POINT = 0.3527777777778; // 1pt = 25,4/72mm
 
 async function getDimensionFromImage(file: FileWithPath) {
   const getDimensionFromTif = async (file: FileWithPath) => {
-    return new Promise((resolve) => {
+    return new Promise<Order>((resolve) => {
       var reader = new FileReader();
       reader.onload = (event) => {
         try {
@@ -19,8 +20,8 @@ async function getDimensionFromImage(file: FileWithPath) {
           decodeImage(data, ifd);
 
           resolve({
+            id: uuidv4(),
             name: file.name,
-            file: file,
             width: ifd.width * MM_PER_PIXEL,
             height: ifd.height * MM_PER_PIXEL
           });
@@ -33,12 +34,12 @@ async function getDimensionFromImage(file: FileWithPath) {
   };
 
   const getDimensionFromOtherImages = async (file: FileWithPath) => {
-    return new Promise((resolve) => {
+    return new Promise<Order>((resolve) => {
       var img = new Image();
       img.onload = (e) => {
         resolve({
+          id: uuidv4(),
           name: file.name,
-          file: file,
           width: img.width,
           height: img.height
         });
@@ -85,15 +86,15 @@ const getDimensionFromEPS = (file: FileWithPath, match: RegExpMatchArray) => {
   let height = Math.abs(minY - maxY) * MM_PER_POINT;
 
   return {
+    id: uuidv4(),
     name: file.name,
-    file: file,
     width: Math.round(width * 100) / 100,
     height: Math.round(height * 100) / 100
   } as Order;
 };
 
 async function getDimensionFromOtherFiles(file: FileWithPath) {
-  return new Promise((resolve, reject) => {
+  return new Promise<Order>((resolve, reject) => {
     var reader = new FileReader();
     reader.onload = (e) => {
       if (!e.target) return;

@@ -4,24 +4,31 @@ import { FileWithPath, useDropzone } from 'react-dropzone';
 
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import { getDimension } from './utility/getDimension';
+import { addOrder, selectOrders } from './order-slice';
+import { Order } from 'interfaces/contract-calculator';
+
+import { useAppDispatch, useAppSelector } from 'app/hooks';
 
 /**
  * This Component renders a Field, in which files can be dropped
  */
 
 const Dropzone = () => {
+  const dispatch = useAppDispatch();
+
   const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
     let promises = acceptedFiles.map(async (file) => {
       return getDimension(file);
     });
+    // Filter out all errors
     let resolvedPromises = Promise.all(
       promises.map((p) => p.catch((e) => 'FAILED'))
     ).then((values) => values.filter((v) => v !== 'FAILED'));
 
     resolvedPromises.then((returnedValues) =>
-      returnedValues.forEach((value) =>
-        console.log('add to redux later', value)
-      )
+      returnedValues.forEach((value) => {
+        dispatch(addOrder(value as Order));
+      })
     );
   }, []);
 
