@@ -1,8 +1,13 @@
 import { Typography } from '@mui/material';
+import AppLayout from 'layouts/app-layout';
 import type { NextPage } from 'next';
 
 const Home: NextPage = () => {
-  return <Typography> This is my home</Typography>;
+  return (
+    <AppLayout>
+      <Typography> This is my home</Typography>
+    </AppLayout>
+  );
 };
 
 export default Home;

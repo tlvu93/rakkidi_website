@@ -1,7 +1,8 @@
+import AppLayout from 'layouts/app-layout';
 import React from 'react';
 
 const StickerMaker = () => {
-  return <div>StickerMaker</div>;
+  return <AppLayout>StickerMaker</AppLayout>;
 };
 
 export default StickerMaker;

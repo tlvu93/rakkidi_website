@@ -9,9 +9,7 @@ function MyApp({ Component, ...rest }: AppProps) {
 
   return (
     <Provider store={store}>
-      <AppLayout>
-        <Component {...props} />
-      </AppLayout>
+      <Component {...props} />
     </Provider>
   );
 }

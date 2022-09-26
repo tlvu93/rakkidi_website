@@ -5,6 +5,7 @@ import OrderList from 'feature/contract-calculator/order-item-list';
 import { selectOrders } from 'feature/contract-calculator/order-slice';
 
 import PriceList from 'feature/contract-calculator/price-list';
+import AppLayout from 'layouts/app-layout';
 import React from 'react';
 
 const ContractCalculator = () => {
@@ -13,7 +14,7 @@ const ContractCalculator = () => {
   const hidden = orders.length !== 0;
 
   return (
-    <div>
+    <AppLayout>
       <Box sx={{ display: hidden ? 'flex' : 'none' }}>
         <OrderList />
       </Box>
@@ -23,7 +24,7 @@ const ContractCalculator = () => {
       <Box sx={{ display: hidden ? 'none' : 'flex', height: '50vh' }}>
         <FileDropzone />
       </Box>
-    </div>
+    </AppLayout>
   );
 };
 
