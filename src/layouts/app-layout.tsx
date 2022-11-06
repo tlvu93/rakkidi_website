@@ -1,0 +1,82 @@
+import { ToggleDrawer } from '@shared/interfaces/ui';
+import React, { useState } from 'react';
+
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import Header from '@shared/components/header/header';
+import Sidebar from '@shared/components/sidebar/sidebar';
+import getTheme from '@shared/styles/theme/theme';
+
+const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
+
+const drawerWidth = 240;
+const headerHeight = 64;
+
+const AppLayout = (props: { children: React.ReactNode }) => {
+  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [mode, setMode] = React.useState<'light' | 'dark'>('dark');
+
+  const toggleDrawer: ToggleDrawer = () => (event) => {
+    if (
+      event.type === 'keydown' &&
+      ((event as React.KeyboardEvent).key === 'Tab' ||
+        (event as React.KeyboardEvent).key === 'Shift')
+    ) {
+      return;
+    }
+    setDrawerOpen(!drawerOpen);
+  };
+
+  const colorMode = React.useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+      }
+    }),
+    []
+  );
+
+  const theme = React.useMemo(() => createTheme(getTheme(mode)), [mode]);
+
+  const MainApp = (props: React.PropsWithChildren) => (
+    <div>
+      <div
+        style={{
+          flexGrow: 1,
+          padding: theme.spacing(3),
+          transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen
+          }),
+          marginTop: `${headerHeight}px`,
+          ...(drawerOpen && {
+            transition: theme.transitions.create('margin', {
+              easing: theme.transitions.easing.easeOut,
+              duration: theme.transitions.duration.enteringScreen
+            }),
+            marginLeft: `${drawerWidth}px`
+          })
+        }}
+      >
+        {props.children}
+      </div>
+    </div>
+  );
+
+  return (
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <div>
+          <Header
+            toggleDrawer={toggleDrawer}
+            toggleColorMode={colorMode.toggleColorMode}
+          />
+          <Sidebar drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
+          <MainApp>{props.children}</MainApp>
+        </div>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
+  );
+};
+
+export default AppLayout;
