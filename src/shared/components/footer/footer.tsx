@@ -22,7 +22,7 @@ const Footer = () => {
         py: 3,
         px: 2,
         mt: 'auto',
-        backgroundColor: 'primary.dark'
+        backgroundColor: 'primary.main'
       }}
     >
       <Container maxWidth="sm">

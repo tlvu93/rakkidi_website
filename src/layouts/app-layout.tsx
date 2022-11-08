@@ -1,19 +1,23 @@
 import { ToggleDrawer } from '@shared/interfaces/ui';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
-import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { useTheme } from '@mui/material';
 import Header from '@shared/components/header/header';
 import Sidebar from '@shared/components/sidebar/sidebar';
-import getTheme from '@shared/styles/theme/theme';
-
-const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
+import { ColorModeContext } from '@shared/styles/theme/theme';
 
 const drawerWidth = 240;
 const headerHeight = 64;
 
-const AppLayout = (props: { children: React.ReactNode }) => {
+interface AppLayoutProps {
+  children: React.ReactNode;
+}
+
+const AppLayout = (props: AppLayoutProps) => {
+  const colorMode = useContext(ColorModeContext);
+
+  const theme = useTheme();
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const [mode, setMode] = React.useState<'light' | 'dark'>('dark');
 
   const toggleDrawer: ToggleDrawer = () => (event) => {
     if (
@@ -25,17 +29,6 @@ const AppLayout = (props: { children: React.ReactNode }) => {
     }
     setDrawerOpen(!drawerOpen);
   };
-
-  const colorMode = React.useMemo(
-    () => ({
-      toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-      }
-    }),
-    []
-  );
-
-  const theme = React.useMemo(() => createTheme(getTheme(mode)), [mode]);
 
   const MainApp = (props: React.PropsWithChildren) => (
     <div>
@@ -63,19 +56,14 @@ const AppLayout = (props: { children: React.ReactNode }) => {
   );
 
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <div>
-          <Header
-            toggleDrawer={toggleDrawer}
-            toggleColorMode={colorMode.toggleColorMode}
-          />
-          <Sidebar drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
-          <MainApp>{props.children}</MainApp>
-        </div>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+    <div>
+      <Header
+        toggleDrawer={toggleDrawer}
+        toggleColorMode={colorMode.toggleColorMode}
+      />
+      <Sidebar drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
+      <MainApp>{props.children}</MainApp>
+    </div>
   );
 };
 

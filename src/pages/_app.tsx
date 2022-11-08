@@ -1,17 +1,18 @@
 import * as React from 'react';
 import type { AppProps } from 'next/app';
 import { Provider } from 'react-redux';
-import { CssBaseline } from '@mui/material';
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 
 import '@shared/styles/globals.css';
 import { wrapper } from 'store';
 import Head from 'next/head';
-import AppLayout from '@layouts/app-layout';
+import useCustomTheme, { ColorModeContext } from '@shared/styles/theme/theme';
 
 interface MyAppProps extends AppProps {}
 
 const MyApp: React.FC<MyAppProps> = (pageProps) => {
   const { Component, ...rest } = pageProps;
+  const { colorMode, theme } = useCustomTheme();
 
   const { store, props } = wrapper.useWrappedStore(rest);
 
@@ -24,11 +25,14 @@ const MyApp: React.FC<MyAppProps> = (pageProps) => {
         />
         <title>Rakkidi Website</title>
       </Head>
-      <Provider store={store}>
-        <AppLayout>
-          <Component {...props} />
-        </AppLayout>
-      </Provider>
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Provider store={store}>
+            <Component {...props} />
+          </Provider>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
     </>
   );
 };

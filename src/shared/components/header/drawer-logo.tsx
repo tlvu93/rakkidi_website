@@ -9,7 +9,14 @@ type Props = {
 
 const DrawerLogo = ({ toggleDrawer }: Props) => {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '1.2rem',
+        color: 'primary.contrastText'
+      }}
+    >
       <IconButton
         color="inherit"
         aria-label="open drawer"

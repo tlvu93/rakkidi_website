@@ -1,36 +1,69 @@
-import { ThemeOptions } from '@mui/material/styles';
+import { createTheme, ThemeOptions } from '@mui/material/styles';
+import React from 'react';
 
-const getTheme = (mode: 'light' | 'dark' = 'dark') =>
-  ({
-    components: {
-      MuiListItemIcon: {
-        styleOverrides: {
-          root: {
-            color: '#fff'
-          }
-        }
-      },
+export const ColorModeContext = React.createContext({
+  toggleColorMode: () => {}
+});
 
-      MuiDrawer: {
-        styleOverrides: {
-          paper: {
-            backgroundColor: '#2A3142',
-            color: '#fff'
-          }
-        }
+const useCustomTheme = () => {
+  const [mode, setMode] = React.useState<'light' | 'dark'>('dark');
+
+  const colorMode = React.useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
       }
+    }),
+    []
+  );
+
+  const theme = React.useMemo(
+    () => createTheme(mode === 'light' ? themeLight : themeDark),
+    [mode]
+  );
+
+  return { colorMode, theme };
+};
+
+const themeLight: ThemeOptions = {
+  palette: {
+    mode: 'light',
+    primary: {
+      contrastText: '#2A3142',
+      light: '#ffffff',
+      main: '#F7F6F5',
+      dark: '#c2c4c7'
     },
-    palette: {
-      mode,
-      primary: {
-        light: '#4593ac',
-        main: '#177898',
-        dark: '#2A3142'
-      },
-      secondary: {
-        main: '#e53935'
-      }
+    secondary: {
+      main: '#DBC75A'
+    },
+    background: {
+      default: '#FEFEFE'
     }
-  } as ThemeOptions);
+  }
+};
 
-export default getTheme;
+const themeDark: ThemeOptions = {
+  palette: {
+    mode: 'dark',
+
+    primary: {
+      contrastText: '#F7F6F5',
+      light: '#535a6d',
+      main: '#2A3142',
+      dark: '#00081c'
+    },
+
+    secondary: {
+      main: '#DBC75A'
+    },
+    background: {
+      default: '#F7F6F5'
+    },
+    text: {
+      primary: '#2A3142'
+    }
+  }
+};
+
+export default useCustomTheme;

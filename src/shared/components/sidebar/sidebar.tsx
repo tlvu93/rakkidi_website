@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import DirtyLensOutlinedIcon from '@mui/icons-material/DirtyLensOutlined';
 import HomeIcon from '@mui/icons-material/Home';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import MapIcon from '@mui/icons-material/Map';
 import MenuIcon from '@mui/icons-material/Menu';
 import ReceiptIcon from '@mui/icons-material/Receipt';
@@ -16,11 +17,13 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Footer from '@shared/components/footer/footer';
 import DrawerLogo from '../header/drawer-logo';
+import { StayPrimaryLandscape } from '@mui/icons-material';
 
-const drawerWidth = 240;
+const drawerWidth = 225;
 
 const iconMap = {
   HomeIcon: <HomeIcon />,
+  DashboardIcon: <DashboardIcon />,
   MenuIcon: <MenuIcon />,
   DirtyLensOutlinedIcon: <DirtyLensOutlinedIcon />,
   CalculateIcon: <CalculateIcon />,
@@ -29,7 +32,7 @@ const iconMap = {
 };
 
 const sidebarLinks: SidebarLink[] = [
-  { name: 'Home', route: '/', icon: iconMap.HomeIcon },
+  { name: 'Dashboard', route: '/dashboard', icon: iconMap.DashboardIcon },
   {
     name: 'Site Plan',
     route: '/siteplan',
@@ -67,8 +70,11 @@ const Sidebar = ({ drawerOpen, toggleDrawer }: SidebarProps) => {
         flexShrink: 0,
         '& .MuiDrawer-paper': {
           width: drawerWidth,
-          boxSizing: 'border-box'
-        }
+          boxSizing: 'border-box',
+          border: 'none',
+          bgcolor: 'primary.main'
+        },
+        color: 'background.default'
       }}
       variant="persistent"
       anchor="left"
@@ -77,7 +83,11 @@ const Sidebar = ({ drawerOpen, toggleDrawer }: SidebarProps) => {
       onKeyDown={toggleDrawer(false)}
     >
       <Divider />
-      <Toolbar>
+      <Toolbar
+        sx={{
+          bgcolor: 'primary.main'
+        }}
+      >
         <DrawerLogo toggleDrawer={toggleDrawer} />
       </Toolbar>
       {sidebarLinks.map((sidebarlink) => (
@@ -86,6 +96,9 @@ const Sidebar = ({ drawerOpen, toggleDrawer }: SidebarProps) => {
             button
             key={sidebarlink.name}
             onClick={() => router.push(sidebarlink.route)}
+            sx={{
+              color: 'primary.contrastText'
+            }}
           >
             <ListItemIcon>{sidebarlink.icon}</ListItemIcon>
             <ListItemText primary={sidebarlink.name} />

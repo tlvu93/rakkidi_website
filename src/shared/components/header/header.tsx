@@ -11,24 +11,22 @@ interface HeaderProps {
 
 const Header = ({ toggleDrawer, toggleColorMode }: HeaderProps) => {
   return (
-    <AppBar position="fixed">
-      <Toolbar
-        sx={{
-          bgcolor: 'primary.dark'
-        }}
-      >
-        <DrawerLogo toggleDrawer={toggleDrawer} />
-        <Divider orientation="vertical" flexItem sx={{ flexGrow: 1 }} />
+    <Toolbar
+      sx={{
+        bgcolor: 'primary.main'
+      }}
+    >
+      <DrawerLogo toggleDrawer={toggleDrawer} />
+      <Divider orientation="vertical" flexItem sx={{ flexGrow: 1 }} />
 
-        <IconButton
-          sx={{ ml: 1 }}
-          color="inherit"
-          onClick={() => toggleColorMode()}
-        >
-          <Brightness4Icon />
-        </IconButton>
-      </Toolbar>
-    </AppBar>
+      <IconButton
+        sx={{ ml: 1, color: 'primary.contrastText' }}
+        color="inherit"
+        onClick={() => toggleColorMode()}
+      >
+        <Brightness4Icon />
+      </IconButton>
+    </Toolbar>
   );
 };
 

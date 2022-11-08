@@ -2,13 +2,12 @@ import { Typography } from '@mui/material';
 import AppLayout from 'layouts/app-layout';
 import type { NextPage } from 'next';
 
-const Home: NextPage = () => {
+const Dashboard: NextPage = () => {
   return (
     <AppLayout>
-      {' '}
-      <Typography> This is my home</Typography>
+      <Typography> This is my Dashboard</Typography>
     </AppLayout>
   );
 };
 
-export default Home;
+export default Dashboard;
