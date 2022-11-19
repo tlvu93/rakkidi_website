@@ -42,7 +42,11 @@ const ProjectCard = ({ data }: Props) => {
             <Typography variant="h6">{data.title}</Typography>
             <Box>
               {data.tags.map((tag) => (
-                <Typography key={tag} variant="caption">
+                <Typography
+                  key={tag}
+                  variant="caption"
+                  sx={{ whiteSpace: 'nowrap' }}
+                >
                   {`${tag}, `}
                 </Typography>
               ))}
