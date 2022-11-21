@@ -1,6 +1,7 @@
-import { Box, Card, Paper, Typography } from '@mui/material';
+import { Box, Card, IconButton, Paper, Typography } from '@mui/material';
 import Image from 'next/image';
 import React, { useState } from 'react';
+import RedoIcon from '@mui/icons-material/Redo';
 
 export interface ProjectCardData {
   category: string;
@@ -10,6 +11,34 @@ export interface ProjectCardData {
   weblinks?: { url: string; type: string }[];
   tags: string[];
 }
+
+const FlipButton = ({ flip }: { flip: () => void }) => {
+  return (
+    <Box sx={{ marginLeft: '1rem' }}>
+      <IconButton
+        sx={{ bgcolor: 'primary.dark', ':hover': { bgcolor: 'primary.light' } }}
+        onClick={() => flip()}
+      >
+        <RedoIcon />
+      </IconButton>
+    </Box>
+  );
+};
+
+const CardFooter = ({ title, tags }: { title: string; tags: string[] }) => {
+  return (
+    <div>
+      <Typography variant="h6">{title}</Typography>
+      <Box>
+        {tags.map((tag) => (
+          <Typography key={tag} variant="caption" sx={{ whiteSpace: 'nowrap' }}>
+            {`${tag}, `}
+          </Typography>
+        ))}
+      </Box>
+    </div>
+  );
+};
 
 type Props = {
   data: ProjectCardData;
@@ -33,7 +62,6 @@ const ProjectCard = ({ data }: Props) => {
         transformStyle: 'preserve-3d',
         transform: flipped ? 'rotateY(180deg)' : ''
       }}
-      onClick={() => flipCard()}
     >
       <Card
         className={'card-front'}
@@ -62,21 +90,9 @@ const ProjectCard = ({ data }: Props) => {
             alignItems: 'flex-end'
           }}
         >
-          <div>
-            <Typography variant="h6">{data.title}</Typography>
-            <Box>
-              {data.tags.map((tag) => (
-                <Typography
-                  key={tag}
-                  variant="caption"
-                  sx={{ whiteSpace: 'nowrap' }}
-                >
-                  {`${tag}, `}
-                </Typography>
-              ))}
-            </Box>
-          </div>
-          <div>Arrow</div>
+          <CardFooter title={data.title} tags={data.tags} />
+
+          <FlipButton flip={flipCard} />
         </Box>
       </Card>
 
@@ -84,8 +100,7 @@ const ProjectCard = ({ data }: Props) => {
         className={'card-back'}
         sx={{
           width: '100%',
-          backgroundColor: 'dodgerblue',
-          color: 'white',
+
           transform: 'rotateY(180deg)',
           position: 'absolute',
           backfaceVisibility: 'hidden'
@@ -122,7 +137,7 @@ const ProjectCard = ({ data }: Props) => {
               ))}
             </Box>
           </div>
-          <div>Arrow</div>
+          <FlipButton flip={flipCard} />
         </Box>
       </Card>
     </Box>
