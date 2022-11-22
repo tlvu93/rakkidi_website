@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material';
 import ProjectCard from 'feature/dashboard/project-card';
-import AppLayout from 'layouts/app-layout';
+import AppLayout from '@shared/layouts/app-layout';
 import type { NextPage } from 'next';
 import { MOCK_CARDS } from './mock-data';
 

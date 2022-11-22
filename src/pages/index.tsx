@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import AppLayout from 'layouts/app-layout';
+import AppLayout from '@shared/layouts/app-layout';
 import type { NextPage } from 'next';
 
 const Home: NextPage = () => {
