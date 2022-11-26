@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import RedoIcon from '@mui/icons-material/Redo';
 
 export interface ProjectCardData {
+  id: string;
   category: string;
   image: string;
   title: string;
