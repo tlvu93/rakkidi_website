@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import AppLayout from '@shared/layouts/app-layout';
 import type { NextPage } from 'next';
-import { MOCK_CARDS } from './mock-data';
+import { MOCK_CARDS } from '../../mock-data';
 import ProjectGroup, { ProjectCategory } from './project-group';
 
 const categoryArray = (cards = MOCK_CARDS) => {
