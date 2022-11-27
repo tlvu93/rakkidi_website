@@ -1,5 +1,5 @@
 import FileDropzone from 'feature/invoice-extractor/dropzone/dropzone';
-import AppLayout from 'layouts/app-layout';
+import AppLayout from '@shared/layouts/app-layout';
 
 const InvoiceExtractor = () => {
   return (

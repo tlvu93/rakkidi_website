@@ -58,7 +58,8 @@ const themeDark: ThemeOptions = {
       main: '#DBC75A'
     },
     background: {
-      default: '#F7F6F5'
+      default: '#F7F6F5',
+      paper: '#ECECEC'
     },
     text: {
       primary: '#2A3142'

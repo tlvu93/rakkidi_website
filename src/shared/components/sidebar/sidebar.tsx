@@ -18,8 +18,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Footer from '@shared/components/footer/footer';
 import DrawerLogo from '../header/drawer-logo';
 import { StayPrimaryLandscape } from '@mui/icons-material';
-
-const drawerWidth = 225;
+import { layoutDimension } from 'config/ui-config';
 
 const iconMap = {
   HomeIcon: <HomeIcon />,
@@ -66,10 +65,10 @@ const Sidebar = ({ drawerOpen, toggleDrawer }: SidebarProps) => {
   return (
     <Drawer
       sx={{
-        width: drawerWidth,
+        width: layoutDimension.drawerWidth,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
-          width: drawerWidth,
+          width: layoutDimension.drawerWidth,
           boxSizing: 'border-box',
           border: 'none',
           bgcolor: 'primary.main'
@@ -85,7 +84,8 @@ const Sidebar = ({ drawerOpen, toggleDrawer }: SidebarProps) => {
       <Divider />
       <Toolbar
         sx={{
-          bgcolor: 'primary.main'
+          bgcolor: 'primary.main',
+          height: layoutDimension.headerHeight
         }}
       >
         <DrawerLogo toggleDrawer={toggleDrawer} />
