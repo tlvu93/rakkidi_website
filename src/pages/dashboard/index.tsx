@@ -1,25 +1,26 @@
-import { Grid } from '@mui/material';
 import AppLayout from '@shared/layouts/app-layout';
 import type { NextPage } from 'next';
 import { MOCK_CARDS } from '../../mock-data';
 import ProjectGroup, { ProjectCategory } from './project-group';
-
-const categoryArray = (cards = MOCK_CARDS) => {
-  const cardSortedByCategory: ProjectCategory = {};
-  cards.forEach((card) => {
-    if (!Object.keys(cardSortedByCategory).includes(card.category)) {
-      cardSortedByCategory[card.category] = [];
-    }
-    cardSortedByCategory[card.category].push(card);
-  });
-
-  return cardSortedByCategory;
-};
+import { useMemo } from 'react';
 
 const Dashboard: NextPage = () => {
+  const cards = MOCK_CARDS;
+
+  const cardsSortedByCategory = useMemo(() => {
+    return cards.reduce((acc, card) => {
+      const category = card.category;
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(card);
+      return acc;
+    }, {} as ProjectCategory);
+  }, [cards]);
+
   return (
     <AppLayout>
-      <ProjectGroup cardSortedByCategory={categoryArray()} />
+      <ProjectGroup cardSortedByCategory={cardsSortedByCategory} />
     </AppLayout>
   );
 };
