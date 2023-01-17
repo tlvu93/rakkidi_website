@@ -9,43 +9,37 @@ interface CardGroupProps {
   projects: ProjectCardData[];
 }
 
-const CardRow = ({ projects }: CardGroupProps) => {
-  return (
-    <>
-      {projects &&
-        projects.map((project) => (
-          <Grid
-            key={project.title}
-            item
-            xs={12}
-            md={12}
-            lg={6}
-            xl={4}
-            sx={{ display: 'flex', justifyContent: 'center' }}
-          >
-            <ProjectCard data={project} />
-          </Grid>
-        ))}
-    </>
-  );
+const ProjectCardRow = ({ projects }: CardGroupProps) => (
+  <Grid container spacing={4}>
+    {projects.map((project) => (
+      <Grid
+        key={project.title}
+        item
+        xs={12}
+        md={12}
+        lg={6}
+        xl={4}
+        sx={{ display: 'flex', justifyContent: 'center' }}
+      >
+        <ProjectCard data={project} />
+      </Grid>
+    ))}
+  </Grid>
+);
+
+type ProjectGroupProps = {
+  projects: ProjectCategory;
 };
 
-const ProjectGroup = ({
-  cardSortedByCategory
-}: {
-  cardSortedByCategory: ProjectCategory;
-}) => {
+const ProjectGroup = ({ projects }: ProjectGroupProps) => {
   return (
     <>
-      {cardSortedByCategory &&
-        Object.entries(cardSortedByCategory).map((category) => (
-          <>
-            <h1>{category[0]}</h1>
-            <Grid container spacing={4}>
-              <CardRow key={category[0]} projects={category[1]} />
-            </Grid>
-          </>
-        ))}
+      {Object.entries(projects).map(([category, projects]) => (
+        <>
+          <h1 key={category}>{category}</h1>
+          <ProjectCardRow projects={projects} />
+        </>
+      ))}
     </>
   );
 };

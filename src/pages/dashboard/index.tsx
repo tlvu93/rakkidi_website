@@ -5,22 +5,22 @@ import ProjectGroup, { ProjectCategory } from './project-group';
 import { useMemo } from 'react';
 
 const Dashboard: NextPage = () => {
-  const cards = MOCK_CARDS;
+  const projects = MOCK_CARDS;
 
-  const cardsSortedByCategory = useMemo(() => {
-    return cards.reduce((acc, card) => {
-      const category = card.category;
+  const projectsSortedByCategory = useMemo(() => {
+    return projects.reduce((acc, project) => {
+      const category = project.category;
       if (!acc[category]) {
         acc[category] = [];
       }
-      acc[category].push(card);
+      acc[category].push(project);
       return acc;
     }, {} as ProjectCategory);
-  }, [cards]);
+  }, [projects]);
 
   return (
     <AppLayout>
-      <ProjectGroup cardSortedByCategory={cardsSortedByCategory} />
+      <ProjectGroup projects={projectsSortedByCategory} />
     </AppLayout>
   );
 };
