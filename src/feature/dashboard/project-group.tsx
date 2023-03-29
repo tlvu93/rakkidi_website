@@ -9,7 +9,7 @@ const ProjectCardRow = ({ projects }: CardGroupProps) => (
   <Grid container spacing={4}>
     {projects.map((project) => (
       <Grid
-        key={project.title}
+        key={project.id}
         item
         xs={12}
         md={12}
@@ -24,7 +24,6 @@ const ProjectCardRow = ({ projects }: CardGroupProps) => (
 );
 
 const ProjectGroup = ({ projects }: ProjectGroupProps) => {
-  console.log(projects);
   return (
     <>
       {Object.entries(projects).map(([category, projects]) => (
