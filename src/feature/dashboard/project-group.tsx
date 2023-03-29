@@ -1,13 +1,9 @@
 import { Grid } from '@mui/material';
-import ProjectCard, { ProjectCardData } from 'feature/dashboard/project-card';
-
-export interface ProjectCategory {
-  [x: string]: ProjectCardData[];
-}
-
-interface CardGroupProps {
-  projects: ProjectCardData[];
-}
+import {
+  CardGroupProps,
+  ProjectGroupProps
+} from 'feature/dashboard/interfaces';
+import ProjectCard from 'feature/dashboard/project-card';
 
 const ProjectCardRow = ({ projects }: CardGroupProps) => (
   <Grid container spacing={4}>
@@ -27,18 +23,15 @@ const ProjectCardRow = ({ projects }: CardGroupProps) => (
   </Grid>
 );
 
-type ProjectGroupProps = {
-  projects: ProjectCategory;
-};
-
 const ProjectGroup = ({ projects }: ProjectGroupProps) => {
+  console.log(projects);
   return (
     <>
       {Object.entries(projects).map(([category, projects]) => (
-        <>
-          <h1 key={category}>{category}</h1>
+        <div key={category}>
+          <h1>{category}</h1>
           <ProjectCardRow projects={projects} />
-        </>
+        </div>
       ))}
     </>
   );

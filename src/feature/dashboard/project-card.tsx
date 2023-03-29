@@ -2,16 +2,7 @@ import { Box, Card, IconButton, Paper, Typography } from '@mui/material';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import RedoIcon from '@mui/icons-material/Redo';
-
-export interface ProjectCardData {
-  id: string;
-  category: string;
-  image: string;
-  title: string;
-  description: string;
-  weblinks?: { url: string; type: string }[];
-  tags: string[];
-}
+import { ProjectCardData } from './interfaces';
 
 const FlipButton = ({ flip }: { flip: () => void }) => {
   return (
