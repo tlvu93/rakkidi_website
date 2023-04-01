@@ -2,7 +2,7 @@ import AppLayout from '@shared/layouts/app-layout';
 import type { NextPage } from 'next';
 import { MOCK_CARDS } from '../../mock-data';
 import ProjectGroup from '../../feature/dashboard/project-group';
-import { ProjectCardData, ProjectCategory } from 'feature/dashboard/interfaces';
+import { ProjectCategory } from 'feature/dashboard/interfaces';
 import { useEffect, useState } from 'react';
 
 const Dashboard: NextPage = () => {
