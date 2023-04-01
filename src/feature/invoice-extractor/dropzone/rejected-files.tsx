@@ -10,8 +10,8 @@ const RejectedFiles = ({ fileRejections }: RejectedFilesProps) => {
       <h4>Rejected files</h4>
       <ul>
         {fileRejections.map(({ file, errors }) => (
-          <li key={file.path}>
-            {file.path} - {file.size} bytes
+          <li key={file.name}>
+            {file.name} - {file.size} bytes
             <ul>
               {errors.map((e) => (
                 <li key={e.code}>{e.message}</li>

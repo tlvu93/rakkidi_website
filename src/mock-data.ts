@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { ProjectCardData } from 'feature/dashboard/project-card';
+import { ProjectCardData } from 'feature/dashboard/interfaces';
 
 export const MOCK_CARDS: ProjectCardData[] = [
   {
