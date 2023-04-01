@@ -6,6 +6,8 @@ import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import PDFExtract from './pdf-extract';
 import tokenizedTextToCSV from './wmd-template';
 import { CSVLink } from 'react-csv';
+import AcceptedFiles from './accepted-files';
+import RejectedFiles from './rejected-files';
 
 const baseStyle = {
   flex: 1,
@@ -44,24 +46,29 @@ const headers = [
   { label: 'Rechnungsbetrag_Brutto', key: 'Rechnungsbetrag_Brutto' }
 ];
 
-const FileDropzone = () => {
-  const [csvData, setCsvData] = useState([]);
+interface CSVData {
+  Bestellnr: any;
+  buffer1: string;
+  buffer2: string;
+  Rechnungs_Datum: any;
+  Rechnungsbetrag_Brutto: any;
+}
 
-  const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
-    acceptedFiles.forEach((file: FileWithPath) => {
+const FileDropzone = () => {
+  const [csvData, setCsvData] = useState<CSVData[]>([]);
+
+  const onDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
+    const csvPromises = acceptedFiles.map(async (file: FileWithPath) => {
       console.log(file.path);
       console.log(file);
-
-      PDFExtract({ url: file.path }).then((tokenizedText: Text) => {
-        console.log(tokenizedText);
-        // @ts-ignore
-        setCsvData((oldarray) => [
-          ...oldarray,
-          tokenizedTextToCSV(tokenizedText)
-        ]);
-      });
+      const tokenizedText = await PDFExtract({ url: file.path });
+      console.log(tokenizedText);
+      return tokenizedTextToCSV(tokenizedText);
     });
+    const csvData = await Promise.all(csvPromises);
+    setCsvData((oldArray) => [...oldArray, ...csvData]);
   }, []);
+
   const {
     acceptedFiles,
     fileRejections,
@@ -86,40 +93,19 @@ const FileDropzone = () => {
     [isDragActive, isDragReject, isDragAccept]
   );
 
-  const acceptedFileItems = acceptedFiles.map((file: FileWithPath) => (
-    <li key={file.path}>
-      {file.path} - {file.size} bytes
-    </li>
-  ));
-
-  const fileRejectionItems = fileRejections.map(
-    ({ file, errors }: { file: FileWithPath; errors: FileError[] }) => (
-      <li key={file.path}>
-        {file.path} - {file.size} bytes
-        <ul>
-          {errors.map((e) => (
-            <li key={e.code}>{e.message}</li>
-          ))}
-        </ul>
-      </li>
-    )
-  );
-
   return (
     <Container maxWidth="sm">
       <div className="container">
         {/* @ts-ignore */}
         <div {...getRootProps({ style })}>
           <input {...getInputProps()} />
-          <p>Drag `&apos;`n`&apos;` drop pdf file in here</p>
+          <p>Drag &apos;n&apos; drop pdf file in here</p>
           <SaveAltIcon style={{ fontSize: '2.5em' }} />
         </div>
       </div>
       <aside>
-        <h4>Accepted files</h4>
-        <ul>{acceptedFileItems}</ul>
-        <h4>Rejected files</h4>
-        <ul>{fileRejectionItems}</ul>
+        <AcceptedFiles acceptedFiles={acceptedFiles} />
+        <RejectedFiles fileRejections={fileRejections} />
       </aside>
       {csvData.length !== 0 && (
         <CSVLink data={csvData} headers={headers}>

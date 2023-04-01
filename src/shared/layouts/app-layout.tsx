@@ -5,9 +5,7 @@ import { useTheme } from '@mui/material';
 import Header from '@shared/components/header/header';
 import Sidebar from '@shared/components/sidebar/sidebar';
 import { ColorModeContext } from '@shared/styles/theme/theme';
-
-const drawerWidth = 240;
-const headerHeight = 64;
+import { layoutDimension } from 'config/ui-config';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -40,13 +38,13 @@ const AppLayout = (props: AppLayoutProps) => {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen
           }),
-          marginTop: `${headerHeight}px`,
+          // marginTop: `${layoutDimension.headerHeight}px`,
           ...(drawerOpen && {
             transition: theme.transitions.create('margin', {
               easing: theme.transitions.easing.easeOut,
               duration: theme.transitions.duration.enteringScreen
             }),
-            marginLeft: `${drawerWidth}px`
+            marginLeft: `${layoutDimension.drawerWidth}px`
           })
         }}
       >

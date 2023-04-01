@@ -5,7 +5,7 @@ import OrderList from 'feature/contract-calculator/order-item-list';
 import { selectOrders } from 'feature/contract-calculator/order-slice';
 
 import PriceList from 'feature/contract-calculator/price-list';
-import AppLayout from 'layouts/app-layout';
+import AppLayout from '@shared/layouts/app-layout';
 import React from 'react';
 
 const ContractCalculator = () => {
