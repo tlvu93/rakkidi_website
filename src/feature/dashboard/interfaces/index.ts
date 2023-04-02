@@ -5,7 +5,7 @@ export interface WeblinkData {
 
 export interface ProjectCardData {
   id: string;
-  category: string;
+  projectCategory: { name: string };
   image: string;
   title: string;
   description: string;
@@ -19,4 +19,8 @@ export interface ProjectCategory {
 
 export interface ProjectGroupProps {
   projects: ProjectCategory;
+}
+
+export interface AllProjectResponse {
+  allProject: ProjectCardData[];
 }

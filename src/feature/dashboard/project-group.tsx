@@ -23,6 +23,7 @@ const ProjectCardRow = ({ projects }: CardGroupProps) => (
 );
 
 const ProjectGroup = ({ projects }: ProjectGroupProps) => {
+  console.log(projects);
   return (
     <>
       {Object.entries(projects).map(([category, projects]) => (
