@@ -1,4 +1,5 @@
 import { TextContent, TextItem } from 'pdfjs-dist/types/src/display/api';
+import { CSVData } from './dropzone';
 
 type Transform = [number, number, number, number, number, number];
 
@@ -66,9 +67,11 @@ export const filterArea = (text: TextContent) => {
   if (index) {
     const items = text.items as TextItem[];
     RechnungsbetragBrutto = items[index + 4].str;
+  } else {
+    RechnungsbetragBrutto = '';
   }
 
-  return { Rechnungsnummer, Rechnungsdatum, RechnungsbetragBrutto };
+  return { Rechnungsnummer, Rechnungsdatum, RechnungsbetragBrutto } as CSVData;
 };
 
 const tokenizedTextToCSV = (text: TextContent) => {

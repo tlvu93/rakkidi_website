@@ -4,11 +4,11 @@ import { Container } from '@mui/material';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 
 import getTextContentFromPDF from './pdf-extract';
-import TextContent from 'react-pdf';
+import { TextContent } from 'pdfjs-dist/types/src/display/api';
 import { CSVLink } from 'react-csv';
 import AcceptedFiles from './accepted-files';
 import RejectedFiles from './rejected-files';
-import tokenizedTextToCSV, { filterArea } from './wmd-template';
+import { filterArea } from './wmd-template';
 
 const baseStyle = {
   flex: 1,
@@ -39,20 +39,15 @@ const rejectStyle = {
 };
 
 const headers = [
-  { label: 'Bestellnr', key: 'Bestellnr' },
-  { label: 'Rechnungs_Datum', key: 'Rechnungs_Datum' },
-  { label: 'buffer1', key: 'buffer1' },
-  { label: 'buffer2', key: 'buffer1' },
-  { label: 'buffer3', key: 'buffer1' },
-  { label: 'Rechnungsbetrag_Brutto', key: 'Rechnungsbetrag_Brutto' }
+  { label: 'Rechnungsnummer', key: 'Rechnungsnummer' },
+  { label: 'Rechnungsdatum', key: 'Rechnungsdatum' },
+  { label: 'RechnungsbetragBrutto', key: 'RechnungsbetragBrutto' }
 ];
 
-interface CSVData {
-  Bestellnr: any;
-  buffer1: string;
-  buffer2: string;
-  Rechnungs_Datum: any;
-  Rechnungsbetrag_Brutto: any;
+export interface CSVData {
+  Rechnungsnummer: string;
+  Rechnungsdatum: string;
+  RechnungsbetragBrutto: string;
 }
 
 const getTextTokenFromPdfFile = async (file: FileWithPath) =>
@@ -79,9 +74,10 @@ const FileDropzone = () => {
 
       return filterArea(tokenizedText);
     });
+
     const csvData = await Promise.all(csvPromises);
-    console.log(csvData);
-    // setCsvData((oldArray) => [...oldArray, ...csvData]);
+
+    setCsvData(csvData);
   }, []);
 
   const {
