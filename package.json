@@ -37,6 +37,7 @@
     "@types/react": "18.0.31",
     "@types/react-csv": "^1.1.3",
     "@types/react-dom": "18.0.11",
+    "@types/react-pdf": "^6.2.0",
     "@types/utif": "^3.0.1",
     "@types/uuid": "^9.0.1",
     "eslint": "8.37.0",

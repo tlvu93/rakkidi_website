@@ -3,11 +3,12 @@ import { useDropzone, FileWithPath, FileError, Accept } from 'react-dropzone';
 import { Container } from '@mui/material';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 
-import PDFExtract from './pdf-extract';
-import tokenizedTextToCSV from './wmd-template';
+import getTextContentFromPDF from './pdf-extract';
+import { TextContent } from 'pdfjs-dist/types/src/display/api';
 import { CSVLink } from 'react-csv';
 import AcceptedFiles from './accepted-files';
 import RejectedFiles from './rejected-files';
+import { filterArea } from './wmd-template';
 
 const baseStyle = {
   flex: 1,
@@ -38,35 +39,45 @@ const rejectStyle = {
 };
 
 const headers = [
-  { label: 'Bestellnr', key: 'Bestellnr' },
-  { label: 'Rechnungs_Datum', key: 'Rechnungs_Datum' },
-  { label: 'buffer1', key: 'buffer1' },
-  { label: 'buffer2', key: 'buffer1' },
-  { label: 'buffer3', key: 'buffer1' },
-  { label: 'Rechnungsbetrag_Brutto', key: 'Rechnungsbetrag_Brutto' }
+  { label: 'Rechnungsnummer', key: 'Rechnungsnummer' },
+  { label: 'Rechnungsdatum', key: 'Rechnungsdatum' },
+  { label: 'RechnungsbetragBrutto', key: 'RechnungsbetragBrutto' }
 ];
 
-interface CSVData {
-  Bestellnr: any;
-  buffer1: string;
-  buffer2: string;
-  Rechnungs_Datum: any;
-  Rechnungsbetrag_Brutto: any;
+export interface CSVData {
+  Rechnungsnummer: string;
+  Rechnungsdatum: string;
+  RechnungsbetragBrutto: string;
 }
+
+const getTextTokenFromPdfFile = async (file: FileWithPath) =>
+  new Promise<TextContent>((resolve, reject) => {
+    try {
+      const fileReader = new FileReader();
+      fileReader.onload = async () => {
+        const arrayBuffer = fileReader.result;
+
+        resolve(await getTextContentFromPDF(arrayBuffer));
+      };
+      fileReader.readAsArrayBuffer(file);
+    } catch (e) {
+      reject(e);
+    }
+  });
 
 const FileDropzone = () => {
   const [csvData, setCsvData] = useState<CSVData[]>([]);
 
   const onDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
     const csvPromises = acceptedFiles.map(async (file: FileWithPath) => {
-      console.log(file.path);
-      console.log(file);
-      const tokenizedText = await PDFExtract({ url: file.path });
-      console.log(tokenizedText);
-      return tokenizedTextToCSV(tokenizedText);
+      const tokenizedText = await getTextTokenFromPdfFile(file);
+
+      return filterArea(tokenizedText);
     });
+
     const csvData = await Promise.all(csvPromises);
-    setCsvData((oldArray) => [...oldArray, ...csvData]);
+
+    setCsvData(csvData);
   }, []);
 
   const {
