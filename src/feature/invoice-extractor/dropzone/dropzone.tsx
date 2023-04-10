@@ -3,11 +3,12 @@ import { useDropzone, FileWithPath, FileError, Accept } from 'react-dropzone';
 import { Container } from '@mui/material';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 
-import PDFExtract from './pdf-extract';
-import tokenizedTextToCSV from './wmd-template';
+import getTextContentFromPDF from './pdf-extract';
+import TextContent from 'react-pdf';
 import { CSVLink } from 'react-csv';
 import AcceptedFiles from './accepted-files';
 import RejectedFiles from './rejected-files';
+import tokenizedTextToCSV, { filterArea } from './wmd-template';
 
 const baseStyle = {
   flex: 1,
@@ -54,19 +55,33 @@ interface CSVData {
   Rechnungsbetrag_Brutto: any;
 }
 
+const getTextTokenFromPdfFile = async (file: FileWithPath) =>
+  new Promise<TextContent>((resolve, reject) => {
+    try {
+      const fileReader = new FileReader();
+      fileReader.onload = async () => {
+        const arrayBuffer = fileReader.result;
+
+        resolve(await getTextContentFromPDF(arrayBuffer));
+      };
+      fileReader.readAsArrayBuffer(file);
+    } catch (e) {
+      reject(e);
+    }
+  });
+
 const FileDropzone = () => {
   const [csvData, setCsvData] = useState<CSVData[]>([]);
 
   const onDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
     const csvPromises = acceptedFiles.map(async (file: FileWithPath) => {
-      console.log(file.path);
-      console.log(file);
-      const tokenizedText = await PDFExtract({ url: file.path });
-      console.log(tokenizedText);
-      return tokenizedTextToCSV(tokenizedText);
+      const tokenizedText = await getTextTokenFromPdfFile(file);
+
+      return filterArea(tokenizedText);
     });
     const csvData = await Promise.all(csvPromises);
-    setCsvData((oldArray) => [...oldArray, ...csvData]);
+    console.log(csvData);
+    // setCsvData((oldArray) => [...oldArray, ...csvData]);
   }, []);
 
   const {
