@@ -29,27 +29,25 @@ const AppLayout = (props: AppLayoutProps) => {
   };
 
   const MainApp = (props: React.PropsWithChildren) => (
-    <div>
-      <div
-        style={{
-          flexGrow: 1,
-          padding: theme.spacing(3),
+    <div
+      style={{
+        flexGrow: 1,
+        padding: `${theme.spacing(4)} ${theme.spacing(8)}`,
+        transition: theme.transitions.create('margin', {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.leavingScreen
+        }),
+        // marginTop: `${layoutDimension.headerHeight}px`,
+        ...(drawerOpen && {
           transition: theme.transitions.create('margin', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen
           }),
-          // marginTop: `${layoutDimension.headerHeight}px`,
-          ...(drawerOpen && {
-            transition: theme.transitions.create('margin', {
-              easing: theme.transitions.easing.easeOut,
-              duration: theme.transitions.duration.enteringScreen
-            }),
-            marginLeft: `${layoutDimension.drawerWidth}px`
-          })
-        }}
-      >
-        {props.children}
-      </div>
+          marginLeft: `${layoutDimension.drawerWidth}px`
+        })
+      }}
+    >
+      {props.children}
     </div>
   );
 

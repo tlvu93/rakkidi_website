@@ -1,5 +1,5 @@
 import { Box, Card, IconButton, Paper, Typography } from '@mui/material';
-import Image from "next/legacy/image";
+import Image from 'next/legacy/image';
 import React, { useState } from 'react';
 import RedoIcon from '@mui/icons-material/Redo';
 import { ProjectCardData } from './interfaces';
@@ -44,7 +44,7 @@ const ProjectCard = ({ data }: Props) => {
   };
 
   return (
-    <Box
+    <Paper
       sx={{
         minWidth: '10rem',
         maxWidth: '50rem',
@@ -52,7 +52,9 @@ const ProjectCard = ({ data }: Props) => {
         width: '100%',
         transition: 'transform 0.8s',
         transformStyle: 'preserve-3d',
-        transform: flipped ? 'rotateY(180deg)' : ''
+        transform: flipped ? 'rotateY(180deg)' : '',
+        borderRadius: '0.8rem',
+        overflow: 'hidden'
       }}
     >
       <Card
@@ -132,7 +134,7 @@ const ProjectCard = ({ data }: Props) => {
           <FlipButton flip={flipCard} />
         </Box>
       </Card>
-    </Box>
+    </Paper>
   );
 };
 
