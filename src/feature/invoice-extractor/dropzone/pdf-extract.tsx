@@ -1,7 +1,4 @@
-import {
-  DocumentInitParameters,
-  GetDocumentParameters
-} from 'pdfjs-dist/types/src/display/api';
+import { DocumentInitParameters } from 'pdfjs-dist/types/src/display/api';
 import { pdfjs } from 'react-pdf';
 
 const getTextContentFromPDF = async (
@@ -15,7 +12,7 @@ const getTextContentFromPDF = async (
 ) => {
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
-  const loadingTask = pdfjs.getDocument(file as GetDocumentParameters);
+  const loadingTask = pdfjs.getDocument(file as DocumentInitParameters);
 
   const loadedPDF = await loadingTask.promise;
   const firstPage = await loadedPDF.getPage(1);
