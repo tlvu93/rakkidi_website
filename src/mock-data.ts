@@ -5,7 +5,7 @@ export const MOCK_CARDS: ProjectCardData[] = [
   {
     id: faker.string.uuid(),
     category: 'Portfolio',
-    image: faker.image.url(),
+    coverImage: faker.image.url(),
     title: 'Portfolio',
     description: 'This is my Portfolio Website',
     weblinks: [
@@ -25,7 +25,7 @@ export const MOCK_CARDS: ProjectCardData[] = [
   {
     id: faker.string.uuid(),
     category: 'App',
-    image: faker.image.url(),
+    coverImage: faker.image.url(),
     title: 'Siteplan',
     description: 'This is my Siteplan Website',
     weblinks: [
@@ -45,7 +45,7 @@ export const MOCK_CARDS: ProjectCardData[] = [
   {
     id: faker.string.uuid(),
     category: 'App Maker',
-    image: faker.image.url(),
+    coverImage: faker.image.url(),
     title: 'Sticker Maker',
     description: 'This is my Sticker Maker Website',
     weblinks: [
@@ -65,7 +65,7 @@ export const MOCK_CARDS: ProjectCardData[] = [
   {
     id: faker.string.uuid(),
     category: 'App',
-    image: faker.image.url(),
+    coverImage: faker.image.url(),
     title: 'Portfolio',
     description: 'This is my Portfolio Website',
     weblinks: [
@@ -85,7 +85,7 @@ export const MOCK_CARDS: ProjectCardData[] = [
   {
     id: faker.string.uuid(),
     category: 'App',
-    image: faker.image.url(),
+    coverImage: faker.image.url(),
     title: 'Siteplan',
     description: 'This is my Siteplan Website',
     weblinks: [
@@ -105,7 +105,7 @@ export const MOCK_CARDS: ProjectCardData[] = [
   {
     id: faker.string.uuid(),
     category: 'Design',
-    image: faker.image.url(),
+    coverImage: faker.image.url(),
     title: 'Sticker Maker',
     description: 'This is my Sticker Maker Website',
     weblinks: [
@@ -125,7 +125,7 @@ export const MOCK_CARDS: ProjectCardData[] = [
   {
     id: faker.string.uuid(),
     category: 'Design',
-    image: faker.image.url(),
+    coverImage: faker.image.url(),
     title: 'Portfolio',
     description: 'This is my Portfolio Website',
     weblinks: [
@@ -145,7 +145,7 @@ export const MOCK_CARDS: ProjectCardData[] = [
   {
     id: faker.string.uuid(),
     category: 'Design',
-    image: faker.image.url(),
+    coverImage: faker.image.url(),
     title: 'Siteplan',
     description: 'This is my Siteplan Website',
     weblinks: [
@@ -165,7 +165,7 @@ export const MOCK_CARDS: ProjectCardData[] = [
   {
     id: faker.string.uuid(),
     category: 'Design',
-    image: faker.image.url(),
+    coverImage: faker.image.url(),
     title: 'Sticker Maker',
     description: 'This is my Sticker Maker Website',
     weblinks: [
@@ -185,7 +185,7 @@ export const MOCK_CARDS: ProjectCardData[] = [
   {
     id: faker.string.uuid(),
     category: 'ETC',
-    image: faker.image.url(),
+    coverImage: faker.image.url(),
     title: 'Portfolio',
     description: 'This is my Portfolio Website',
     weblinks: [
@@ -205,7 +205,7 @@ export const MOCK_CARDS: ProjectCardData[] = [
   {
     id: faker.string.uuid(),
     category: 'ETC',
-    image: faker.image.url(),
+    coverImage: faker.image.url(),
     title: 'Siteplan',
     description: 'This is my Siteplan Website',
     weblinks: [

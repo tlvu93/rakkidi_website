@@ -43,18 +43,16 @@ const useGroupedProjects = () => {
 
     const { allProject } = data;
 
-    console.log(allProject);
-
     const grouped = allProject.reduce((acc, project) => {
       const { projectCategory } = project;
       const { name } = projectCategory;
-      console.log(name);
+
       if (!acc[name]) {
         acc[name] = [];
       }
       acc[name].push(project);
       return acc;
-    }, {} as ProjectCategory);
+    }, {});
 
     setGroupedProjects(grouped);
   };

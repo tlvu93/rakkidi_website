@@ -44,7 +44,7 @@ const CardBack = ({ data }: ProjectCardProps) => {
             {data.tags.map((tag, index) => (
               <Chip
                 key={`${tag}_${index}`}
-                label={tag}
+                label={tag.title}
                 variant="outlined"
                 size="small"
               />

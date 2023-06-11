@@ -19,7 +19,7 @@ export const GET_PROJECTS = gql`
       description
       publishedAt
       tags {
-        Title
+        title
       }
       weblinks {
         _key

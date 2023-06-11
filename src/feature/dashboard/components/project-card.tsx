@@ -71,7 +71,7 @@ const ProjectCard = ({ data }: Props) => {
             position: 'relative'
           }}
         >
-          <Image src={data.image} alt="Project Image" layout="fill" />
+          <Image src={data.coverImage} alt="Project Image" layout="fill" />
         </Box>
         <Box
           sx={{

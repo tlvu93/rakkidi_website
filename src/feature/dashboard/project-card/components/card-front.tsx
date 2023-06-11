@@ -2,20 +2,21 @@ import { Box, Card, Typography } from '@mui/material';
 import Image from 'next/image';
 import { ProjectCardProps } from '../interfaces';
 import { cardStyle } from '../style/style';
+import { Tags } from 'feature/dashboard/interfaces';
 
 const CardFront = ({ data }: ProjectCardProps) => {
-  const CardFooter = ({ title, tags }: { title: string; tags: string[] }) => {
+  const CardFooter = ({ title, tags }: { title: string; tags: Tags[] }) => {
     return (
       <div>
         <Typography variant="h6">{title}</Typography>
         <Box>
           {tags.map((tag) => (
             <Typography
-              key={tag}
+              key={tag.title}
               variant="caption"
               sx={{ whiteSpace: 'nowrap' }}
             >
-              {`${tag}, `}
+              {`${tag.title}, `}
             </Typography>
           ))}
         </Box>
@@ -34,7 +35,11 @@ const CardFront = ({ data }: ProjectCardProps) => {
         }}
       >
         <Image
-          src={data.image}
+          src={
+            data.coverImage
+              ? data.coverImage
+              : '/images/pexels-pixabay-356079.jpg'
+          }
           alt="Project Image"
           fill
           sizes="(max-width: 768px) 75vw, (max-width: 1200px) 54vw, 33vw"
