@@ -1,9 +1,8 @@
 import { Grid } from '@mui/material';
-import {
-  CardGroupProps,
-  ProjectGroupProps
-} from 'feature/dashboard/interfaces';
-import ProjectCard from 'feature/dashboard/project-card';
+
+import ProjectCard from 'feature/dashboard/project-card/project-card';
+import { CardGroupProps } from './project-card/interfaces';
+import { ProjectGroupProps } from './interfaces';
 
 const ProjectCardRow = ({ projects }: CardGroupProps) => (
   <Grid container spacing={4}>

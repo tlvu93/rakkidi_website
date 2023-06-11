@@ -2,8 +2,9 @@ import AppLayout from '@shared/layouts/app-layout';
 import type { NextPage } from 'next';
 import { MOCK_CARDS } from '../../mock-data';
 import ProjectGroup from '../../feature/dashboard/project-group';
-import { ProjectCategory } from 'feature/dashboard/interfaces';
+
 import { useEffect, useState } from 'react';
+import { ProjectCategory } from 'feature/dashboard/interfaces';
 
 const Dashboard: NextPage = () => {
   const [groupedProjects, setGroupedProjects] = useState<ProjectCategory>({});
