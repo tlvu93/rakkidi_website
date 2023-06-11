@@ -1,10 +1,19 @@
+export type ProjectCardProps = {
+  data: ProjectCardData;
+};
+
+export interface WeblinkData {
+  url: string;
+  type: string;
+}
+
 export interface ProjectCardData {
   id: string;
   category: string;
   image: string;
   title: string;
   description: string;
-  weblinks?: { url: string; type: string }[];
+  weblinks?: WeblinkData[];
   tags: string[];
 }
 
