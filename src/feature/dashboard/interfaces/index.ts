@@ -1,22 +1,35 @@
 export interface WeblinkData {
   url: string;
-  type: string;
+  type: {
+    title: string;
+  };
 }
 
-export interface ProjectCardData {
-  id: string;
-  category: string;
-  image: string;
+export interface Tags {
   title: string;
-  description: string;
-  weblinks?: WeblinkData[];
-  tags: string[];
 }
 
 export interface ProjectCategory {
-  [x: string]: ProjectCardData[];
+  name: string;
+}
+export interface ProjectCardData {
+  _id: string;
+  projectCategory: ProjectCategory;
+  coverImage?: string;
+  title: string;
+  description: string;
+  weblinks?: WeblinkData[];
+  tags: Tags[];
+}
+
+export interface ProjectGroup {
+  [key: string]: ProjectCardData[];
 }
 
 export interface ProjectGroupProps {
-  projects: ProjectCategory;
+  projects: ProjectGroup;
+}
+
+export interface AllProjectResponse {
+  allProject: ProjectCardData[];
 }

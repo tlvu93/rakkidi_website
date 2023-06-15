@@ -39,8 +39,8 @@ export const Weblink = ({ link }: WebLinkProps) => {
     window.open(url.startsWith('http') ? url : `http://${url}`, '_blank');
   };
 
-  switch (link.type) {
-    case 'website':
+  switch (link.type.title) {
+    case 'Website':
       return (
         <Box sx={{ width: '100%', height: '100%' }}>
           <PublicIcon
@@ -52,7 +52,7 @@ export const Weblink = ({ link }: WebLinkProps) => {
         </Box>
       );
 
-    case 'figma':
+    case 'Figma':
       return (
         <Box
           sx={{
@@ -73,7 +73,7 @@ export const Weblink = ({ link }: WebLinkProps) => {
           />
         </Box>
       );
-    case 'github':
+    case 'Github':
       return (
         <Box
           sx={{
