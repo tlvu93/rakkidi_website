@@ -5,6 +5,13 @@ export interface WeblinkData {
   };
 }
 
+export interface Tags {
+  title: string;
+}
+
+export interface ProjectCategory {
+  name: string;
+}
 export interface ProjectCardData {
   _id: string;
   projectCategory: ProjectCategory;
@@ -15,16 +22,12 @@ export interface ProjectCardData {
   tags: Tags[];
 }
 
-export interface Tags {
-  title: string;
-}
-
-export interface ProjectCategory {
-  name: string;
+export interface ProjectGroup {
+  [key: string]: ProjectCardData[];
 }
 
 export interface ProjectGroupProps {
-  projects: ProjectCategory;
+  projects: ProjectGroup;
 }
 
 export interface AllProjectResponse {

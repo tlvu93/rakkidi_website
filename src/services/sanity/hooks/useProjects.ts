@@ -3,6 +3,7 @@ import { GET_PROJECTS } from '../queries/queries';
 import client from '../apollo-client';
 import {
   AllProjectResponse,
+  ProjectGroup,
   ProjectCardData,
   ProjectCategory
 } from 'feature/dashboard/interfaces';
@@ -30,7 +31,9 @@ const useProjects = () => {
 };
 
 const useGroupedProjects = () => {
-  const [groupedProjects, setGroupedProjects] = useState<ProjectCategory>({});
+  const [groupedProjects, setGroupedProjects] = useState<ProjectGroup>(
+    {} as ProjectGroup
+  );
 
   useEffect(() => {
     getGroupedProjects();
@@ -52,7 +55,7 @@ const useGroupedProjects = () => {
       }
       acc[name].push(project);
       return acc;
-    }, {});
+    }, {} as ProjectGroup);
 
     setGroupedProjects(grouped);
   };
