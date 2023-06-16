@@ -2,16 +2,26 @@ import * as React from 'react';
 import type { AppProps } from 'next/app';
 import { Provider } from 'react-redux';
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import createEmotionCache from '../createEmotionCache';
 
 import '@shared/styles/globals.css';
 import { wrapper } from 'store';
 import Head from 'next/head';
 import useCustomTheme, { ColorModeContext } from '@shared/styles/theme/theme';
+import { CacheProvider, EmotionCache } from '@emotion/react';
 
-interface MyAppProps extends AppProps {}
+const clientSideEmotionCache = createEmotionCache();
+
+export interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache;
+}
 
 const MyApp: React.FC<MyAppProps> = (pageProps) => {
-  const { Component, ...rest } = pageProps;
+  const {
+    Component,
+    emotionCache = clientSideEmotionCache,
+    ...rest
+  } = pageProps;
   const { colorMode, theme } = useCustomTheme();
 
   const { store, props } = wrapper.useWrappedStore(rest);
@@ -26,12 +36,14 @@ const MyApp: React.FC<MyAppProps> = (pageProps) => {
         <title>Rakkidi Website</title>
       </Head>
       <ColorModeContext.Provider value={colorMode}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Provider store={store}>
-            <Component {...props} />
-          </Provider>
-        </ThemeProvider>
+        <CacheProvider value={emotionCache}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Provider store={store}>
+              <Component {...props} />
+            </Provider>
+          </ThemeProvider>
+        </CacheProvider>
       </ColorModeContext.Provider>
     </>
   );

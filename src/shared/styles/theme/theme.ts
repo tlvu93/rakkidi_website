@@ -1,29 +1,17 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
 import React from 'react';
+import { Roboto } from 'next/font/google';
+
+export const roboto = Roboto({
+  weight: ['300', '400', '500', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  fallback: ['Helvetica', 'Arial', 'sans-serif']
+});
 
 export const ColorModeContext = React.createContext({
   toggleColorMode: () => {}
 });
-
-const useCustomTheme = () => {
-  const [mode, setMode] = React.useState<'light' | 'dark'>('dark');
-
-  const colorMode = React.useMemo(
-    () => ({
-      toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-      }
-    }),
-    []
-  );
-
-  const theme = React.useMemo(
-    () => createTheme(mode === 'light' ? themeLight : themeDark),
-    [mode]
-  );
-
-  return { colorMode, theme };
-};
 
 const themeLight: ThemeOptions = {
   palette: {
@@ -65,6 +53,26 @@ const themeDark: ThemeOptions = {
       primary: '#2A3142'
     }
   }
+};
+
+const useCustomTheme = () => {
+  const [mode, setMode] = React.useState<'light' | 'dark'>('dark');
+
+  const colorMode = React.useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+      }
+    }),
+    []
+  );
+
+  const theme = React.useMemo(
+    () => createTheme(mode === 'light' ? themeLight : themeDark),
+    [mode]
+  );
+
+  return { colorMode, theme };
 };
 
 export default useCustomTheme;
