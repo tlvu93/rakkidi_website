@@ -7,7 +7,7 @@ import { Tags } from 'feature/dashboard/interfaces';
 const CardFront = ({ data }: ProjectCardProps) => {
   const CardFooter = ({ title, tags }: { title: string; tags: Tags[] }) => {
     return (
-      <div>
+      <div style={{ height: '100%', width: '100%' }}>
         <Typography variant="h6">{title}</Typography>
         <Box>
           {tags.map((tag) => (
