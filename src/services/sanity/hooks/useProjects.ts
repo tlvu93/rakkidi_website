@@ -13,7 +13,30 @@ const getProjects = async () => {
     query: GET_PROJECTS
   });
 
+  console.log(data);
+
   return data;
+};
+
+export const getGroupedProjects = async () => {
+  const { data }: { data: AllProjectResponse } = await client.query({
+    query: GET_PROJECTS
+  });
+
+  const { allProject } = data;
+
+  const grouped = allProject.reduce((acc, project) => {
+    const { projectCategory } = project;
+    const { name } = projectCategory;
+
+    if (!acc[name]) {
+      acc[name] = [];
+    }
+    acc[name].push(project);
+    return acc;
+  }, {} as ProjectGroup);
+
+  return grouped;
 };
 
 const useProjects = () => {
@@ -36,29 +59,11 @@ const useGroupedProjects = () => {
   );
 
   useEffect(() => {
-    getGroupedProjects();
+    const fetchGroupedProjects = async () => {
+      setGroupedProjects(await getGroupedProjects());
+    };
+    fetchGroupedProjects();
   }, []);
-
-  const getGroupedProjects = async () => {
-    const { data }: { data: AllProjectResponse } = await client.query({
-      query: GET_PROJECTS
-    });
-
-    const { allProject } = data;
-
-    const grouped = allProject.reduce((acc, project) => {
-      const { projectCategory } = project;
-      const { name } = projectCategory;
-
-      if (!acc[name]) {
-        acc[name] = [];
-      }
-      acc[name].push(project);
-      return acc;
-    }, {} as ProjectGroup);
-
-    setGroupedProjects(grouped);
-  };
 
   return { groupedProjects };
 };
