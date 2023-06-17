@@ -7,7 +7,15 @@ import { Tags } from 'feature/dashboard/interfaces';
 const CardFront = ({ data }: ProjectCardProps) => {
   const CardFooter = ({ title, tags }: { title: string; tags: Tags[] }) => {
     return (
-      <div style={{ height: '100%', width: '100%' }}>
+      <div
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center'
+        }}
+      >
         <Typography variant="h6">{title}</Typography>
         <Box>
           {tags.map((tag) => (
@@ -48,10 +56,8 @@ const CardFront = ({ data }: ProjectCardProps) => {
       </Box>
       <Box
         sx={{
-          padding: '1rem 2.5rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-end'
+          flex: 1,
+          padding: '1rem 2.5rem'
         }}
       >
         <CardFooter title={data.title} tags={data.tags} />
