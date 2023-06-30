@@ -1,8 +1,8 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Card, Container, Typography } from '@mui/material';
 import { useCallback } from 'react';
 import { FileWithPath, useDropzone } from 'react-dropzone';
 
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import { Order } from '@shared/interfaces/contract-calculator';
 import { addOrder } from './order-slice';
 import { getDimension } from './utility/getDimension';
@@ -38,23 +38,32 @@ const FileDropzone = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
-    <Container
+    <Card
+      variant="outlined"
       sx={{
-        height: '100%',
-        width: '100%',
-        backgroundColor: '#cfe8fc'
+        width: '422px',
+        height: '334px',
+        padding: '10px',
+        backgroundColor: '#F5F7FA',
+
+        border: isDragActive
+          ? '2px dashed var(--primary-normal, #00081C)'
+          : '1px dashed var(--primary-normal, #2A3142)'
       }}
-      maxWidth="sm"
     >
       <div
         {...getRootProps()}
         style={{
-          display: 'grid',
+          display: 'flex',
           alignItems: 'center',
           height: '100%',
-          width: '100%'
+          width: '100%',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          gap: '25px'
         }}
       >
+        <FileUploadOutlinedIcon style={{ fontSize: '5.0em' }} />
         <input
           {...getInputProps({
             //Its important to filter, because somehow .cdrt files makes the HTML5 Filepicker to crash
@@ -62,28 +71,40 @@ const FileDropzone = () => {
             accept: 'image/*, .eps'
           })}
         />
-        {isDragActive ? (
-          <Box>
-            <Typography variant="h1">Datei hier reinziehen ...</Typography>
-          </Box>
-        ) : (
-          <Box>
-            <Typography
-              display="flex"
-              flexDirection={'column'}
-              alignItems={'center'}
-              justifyContent={'center'}
-              textAlign={'center'}
-              variant="h5"
-            >
-              Datei hier reinziehen,
-              <br /> oder für die Dateiauswahl klicken
-              <SaveAltIcon style={{ fontSize: '2.5em' }} />
-            </Typography>
-          </Box>
-        )}
+        <Box
+          sx={{
+            display: 'flex',
+            padding: '15px 20px',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '30px',
+
+            borderRadius: '15px',
+            background: 'var(--primary-normal, #2A3142)'
+          }}
+        >
+          <Typography color={'#F5F7FA'}>BILD HOCHLADEN</Typography>
+        </Box>
+        <Box>
+          <Typography
+            display="flex"
+            flexDirection={'column'}
+            alignItems={'center'}
+            justifyContent={'center'}
+            textAlign={'center'}
+            variant="body1"
+          >
+            Bitte laden Sie ihre Dateien im
+            <br />
+            Dateiformat
+            <br />
+            .jpeg, .png, .pdf oder .eps
+            <br />
+            hoch
+          </Typography>
+        </Box>
       </div>
-    </Container>
+    </Card>
   );
 };
 
