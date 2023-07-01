@@ -7,6 +7,7 @@ import { selectOrders } from 'feature/contract-calculator/order-slice';
 import PriceList from 'feature/contract-calculator/price-list';
 import AppLayout from '@shared/layouts/app-layout';
 import React from 'react';
+import CustomOrder from 'feature/contract-calculator/custom-order';
 
 const ContractCalculator = () => {
   const orders = useAppSelector(selectOrders);
@@ -19,11 +20,11 @@ const ContractCalculator = () => {
         <OrderList />
       </Box>
 
-      <PriceList />
-
-      <Box sx={{ display: hidden ? 'none' : 'flex', height: '50vh' }}>
+      <Box sx={{ display: 'flex' }}>
         <FileDropzone />
+        <CustomOrder />
       </Box>
+      <PriceList />
     </AppLayout>
   );
 };

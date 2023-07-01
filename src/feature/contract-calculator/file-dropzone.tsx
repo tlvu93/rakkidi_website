@@ -41,9 +41,9 @@ const FileDropzone = () => {
     <Card
       variant="outlined"
       sx={{
-        width: '422px',
-        height: '334px',
-        padding: '10px',
+        width: '26rem',
+        height: '20rem',
+        padding: '0.625rem',
         backgroundColor: '#F5F7FA',
 
         border: isDragActive

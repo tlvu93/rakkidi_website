@@ -1,7 +1,6 @@
-import { Box, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 
 import { useAppSelector } from 'hooks';
-import FileDropzone from './file-dropzone';
 import OrderItem from './order-Item';
 import { selectOrders } from './order-slice';
 
@@ -18,17 +17,7 @@ const OrderList = () => {
                 <OrderItem order={currentOrder} />
               </Grid>
             ))}
-            <Grid item xs={12} sm={6} lg={4} xl={3}>
-              <Box
-                sx={{
-                  backgroundColor: 'black',
-                  height: '100%',
-                  minHeight: '212px' // as big as a OrderItem Card is
-                }}
-              >
-                <FileDropzone />
-              </Box>
-            </Grid>
+            <Grid item xs={12} sm={6} lg={4} xl={3}></Grid>
           </Grid>
         </>
       ) : (
