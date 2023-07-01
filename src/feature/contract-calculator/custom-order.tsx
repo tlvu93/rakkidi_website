@@ -1,7 +1,6 @@
-import { Box, Card, Typography } from '@mui/material';
+import { Box, Card, TextField, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import React from 'react';
-import CustomTextField from './components/CustomTextField';
 import ColorButton from './components/ColorButton';
 
 type Props = {};
@@ -20,11 +19,11 @@ const CustomOrder = (props: Props) => {
         gap: '15px'
       }}
     >
-      <Typography>Manuelle Eingabe</Typography>
-      <CustomTextField label="Name" />
+      <Typography variant="h5">Manuelle Eingabe</Typography>
+      <TextField fullWidth label="Name" />
       <Box sx={{ display: 'flex', gap: '0.5rem' }}>
-        <CustomTextField label="Height" />
-        <CustomTextField label="Width" />
+        <TextField label="Height" />
+        <TextField label="Width" />
       </Box>
       <ColorButton>
         <AddIcon />

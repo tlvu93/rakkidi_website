@@ -52,6 +52,22 @@ const themeDark: ThemeOptions = {
     text: {
       primary: '#2A3142'
     }
+  },
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiInputLabel-root': {
+            color: '#2A3142'
+          },
+          '& .MuiOutlinedInput-root': {
+            '& > fieldset': {
+              borderColor: '#2A3142'
+            }
+          }
+        }
+      }
+    }
   }
 };
 
