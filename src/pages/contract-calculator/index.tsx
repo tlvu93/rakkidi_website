@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useAppSelector } from 'hooks';
 import FileDropzone from 'feature/contract-calculator/file-dropzone';
 import OrderList from 'feature/contract-calculator/order-item-list';
@@ -16,31 +16,33 @@ const ContractCalculator = () => {
 
   return (
     <AppLayout>
-      <div>
-        <Typography variant="h3">Aufträge Berechnen</Typography>
-        <Typography variant="body1">
-          Berechnen Sie Ihre Auftragsberechnung spielend leicht,
-          <br /> indem Sie Ihre Auftragsdatei problemlos in das dafür
-          vorgesehene Feld ziehen.
-        </Typography>
-      </div>
-      <div style={{ display: hidden ? 'flex' : 'none' }}>
-        <OrderList />
-      </div>
-
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          alignContent: 'center'
-        }}
-      >
-        <FileDropzone />
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+        <Box sx={{ textAlign: 'center', display: hidden ? 'none' : 'block' }}>
+          <Typography variant="h3">Aufträge Berechnen</Typography>
+          <Typography variant="body1">
+            Berechnen Sie Ihre Auftragsberechnung spielend leicht,
+            <br /> indem Sie Ihre Auftragsdatei problemlos in das dafür
+            vorgesehene Feld ziehen.
+          </Typography>
+        </Box>
         <div style={{ display: hidden ? 'flex' : 'none' }}>
-          <CustomOrder />
+          <OrderList />
         </div>
-      </div>
-      <PriceList />
+
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            alignContent: 'center',
+            flexDirection: { xs: 'column', md: 'row' },
+            gap: 2
+          }}
+        >
+          <FileDropzone />
+          <CustomOrder />
+        </Box>
+        <PriceList />
+      </Box>
     </AppLayout>
   );
 };
