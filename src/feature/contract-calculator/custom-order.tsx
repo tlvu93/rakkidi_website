@@ -21,10 +21,10 @@ const CustomOrder = (props: Props) => {
     >
       <Typography variant="h5">Manuelle Eingabe</Typography>
       <TextField fullWidth label="Name" />
-      <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+      <div style={{ display: 'flex', gap: '0.5rem' }}>
         <TextField label="Height" />
         <TextField label="Width" />
-      </Box>
+      </div>
       <ColorButton>
         <AddIcon />
         Hinzufügen

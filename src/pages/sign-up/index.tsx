@@ -35,8 +35,8 @@ const SignUp = () => {
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <Box
-          sx={{
+        <div
+          style={{
             marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
@@ -123,7 +123,7 @@ const SignUp = () => {
               </Grid>
             </Grid>
           </Box>
-        </Box>
+        </div>
         <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>

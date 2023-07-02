@@ -71,8 +71,8 @@ const FileDropzone = () => {
             accept: 'image/*, .eps'
           })}
         />
-        <Box
-          sx={{
+        <div
+          style={{
             display: 'flex',
             padding: '15px 20px',
             justifyContent: 'center',
@@ -84,8 +84,8 @@ const FileDropzone = () => {
           }}
         >
           <Typography color={'#F5F7FA'}>BILD HOCHLADEN</Typography>
-        </Box>
-        <Box>
+        </div>
+        <div>
           <Typography
             display="flex"
             flexDirection={'column'}
@@ -102,7 +102,7 @@ const FileDropzone = () => {
             <br />
             hoch
           </Typography>
-        </Box>
+        </div>
       </div>
     </Card>
   );
