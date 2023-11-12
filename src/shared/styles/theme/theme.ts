@@ -1,5 +1,5 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
-import React from 'react';
+import React, { useMemo, useState, createContext } from 'react';
 import { Roboto } from 'next/font/google';
 
 export const roboto = Roboto({
@@ -9,68 +9,90 @@ export const roboto = Roboto({
   fallback: ['Helvetica', 'Arial', 'sans-serif']
 });
 
-export const ColorModeContext = React.createContext({
-  toggleColorMode: () => {}
-});
+type ThemeModes = 'light' | 'dark';
 
-const themeLight: ThemeOptions = {
-  palette: {
-    mode: 'light',
-    primary: {
-      contrastText: '#2A3142',
-      light: '#ffffff',
-      main: '#F7F6F5',
-      dark: '#c2c4c7'
-    },
-    secondary: {
-      main: '#DBC75A'
-    },
-    background: {
-      default: '#FEFEFE'
-    }
-  }
+export const ColorModeContext = createContext({ toggleColorMode: () => {} });
+
+const colors = {
+  primaryDark: '#00081c',
+  primaryNormal: '#2A3142',
+  primaryLight: '#535A6D',
+  // primaryLight: '#F7F6F5',
+  secondaryLight: '#FFFA8A',
+  secondaryNormal: '#DBC75A',
+  secondaryDark: 'A7972A',
+
+  white: '#ffffff',
+
+  lightGray: '#c2c4c7',
+  darkBlack: '#00081c',
+  backgroundDefault: '#FEFEFE',
+  backgroundPaperLight: '#ECECEC'
 };
 
-const themeDark: ThemeOptions = {
-  palette: {
-    mode: 'dark',
+const getTheme = (mode: ThemeModes) => {
+  const isLight = mode === 'light';
 
-    primary: {
-      contrastText: '#F7F6F5',
-      light: '#535a6d',
-      main: '#2A3142',
-      dark: '#00081c'
-    },
-
-    secondary: {
-      main: '#DBC75A'
-    },
-    background: {
-      default: '#F7F6F5',
-      paper: '#ECECEC'
-    },
-    text: {
-      primary: '#2A3142'
+  const themeOptions: ThemeOptions = {
+    palette: {
+      mode,
+      primary: {
+        contrastText: isLight ? colors.white : colors.white,
+        light: isLight ? colors.white : colors.backgroundPaperLight,
+        main: isLight ? colors.primaryNormal : colors.primaryNormal,
+        dark: isLight ? colors.lightGray : colors.primaryDark
+      },
+      secondary: {
+        main: colors.secondaryNormal
+      },
+      background: {
+        default: isLight ? colors.backgroundDefault : colors.primaryLight,
+        paper: isLight ? colors.white : colors.primaryNormal
+      },
+      text: {
+        primary: isLight ? colors.primaryDark : colors.white
+      }
     }
-  }
+    // components: {
+    //   MuiIconButton: {
+    //     styleOverrides: {
+    //       sizeMedium: {
+    //         color: colors.primaryDark
+    //       }
+    //     }
+    //   },
+    //   MuiOutlinedInput: {
+    //     styleOverrides: {
+    //       root: {
+    //         color: colors.primaryDark
+    //       }
+    //     }
+    //   },
+    //   MuiInputLabel: {
+    //     styleOverrides: {
+    //       root: {
+    //         color: colors.primaryDark
+    //       }
+    //     }
+    //   }
+    // }
+  };
+
+  return createTheme(themeOptions);
 };
 
 const useCustomTheme = () => {
-  const [mode, setMode] = React.useState<'light' | 'dark'>('dark');
+  const [mode, setMode] = useState<ThemeModes>('dark');
 
-  const colorMode = React.useMemo(
+  const colorMode = useMemo(
     () => ({
-      toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-      }
+      toggleColorMode: () =>
+        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'))
     }),
     []
   );
 
-  const theme = React.useMemo(
-    () => createTheme(mode === 'light' ? themeLight : themeDark),
-    [mode]
-  );
+  const theme = useMemo(() => getTheme(mode), [mode]);
 
   return { colorMode, theme };
 };

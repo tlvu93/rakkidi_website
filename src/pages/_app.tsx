@@ -9,6 +9,8 @@ import { wrapper } from 'store';
 import Head from 'next/head';
 import useCustomTheme, { ColorModeContext } from '@shared/styles/theme/theme';
 import { CacheProvider, EmotionCache } from '@emotion/react';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -40,7 +42,9 @@ const MyApp: React.FC<MyAppProps> = (pageProps) => {
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <Provider store={store}>
-              <Component {...props} />
+              <LocalizationProvider dateAdapter={AdapterMoment}>
+                <Component {...props} />
+              </LocalizationProvider>
             </Provider>
           </ThemeProvider>
         </CacheProvider>
