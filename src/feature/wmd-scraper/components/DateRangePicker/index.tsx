@@ -6,7 +6,7 @@ type Props = {};
 
 const DateRangePicker = (props: Props) => {
   return (
-    <Grid container>
+    <Grid container spacing={2}>
       <Grid item sm={6}>
         <Typography variant="h6" gutterBottom>
           Date from
@@ -18,11 +18,11 @@ const DateRangePicker = (props: Props) => {
         </Typography>
       </Grid>
       <Grid item sm={6}>
-        <DatePicker />
+        <DatePicker sx={{ width: '100%' }} />
       </Grid>
 
       <Grid item sm={6}>
-        <DatePicker />
+        <DatePicker sx={{ width: '100%' }} />
       </Grid>
     </Grid>
   );

@@ -1,15 +1,5 @@
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-  useTheme
-} from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers';
+import { Box, Container, Paper, Typography, useTheme } from '@mui/material';
+
 import AppLayout from '@shared/layouts/app-layout';
 import DateRangePicker from 'feature/wmd-scraper/components/DateRangePicker';
 import DownloadButtons from 'feature/wmd-scraper/components/DownloadButtons';
@@ -21,7 +11,7 @@ const WMDScraper = (props: Props) => {
   const theme = useTheme();
   return (
     <AppLayout>
-      <Container maxWidth="md">
+      <Container maxWidth="sm">
         <Box
           sx={{
             marginTop: 8,

@@ -1,5 +1,5 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
-import React, { useMemo, useState, createContext } from 'react';
+import React, { useMemo, useState, createContext, useEffect } from 'react';
 import { Roboto } from 'next/font/google';
 
 export const roboto = Roboto({
@@ -46,8 +46,8 @@ const getTheme = (mode: ThemeModes) => {
         main: colors.secondaryNormal
       },
       background: {
-        default: isLight ? colors.backgroundDefault : colors.primaryLight,
-        paper: isLight ? colors.white : colors.primaryNormal
+        default: isLight ? colors.backgroundDefault : colors.primaryNormal,
+        paper: isLight ? colors.backgroundPaperLight : colors.primaryNormal
       },
       text: {
         primary: isLight ? colors.primaryDark : colors.white
@@ -82,12 +82,29 @@ const getTheme = (mode: ThemeModes) => {
 };
 
 const useCustomTheme = () => {
+  // Initialize the mode state without accessing localStorage directly
   const [mode, setMode] = useState<ThemeModes>('dark');
+
+  // Effect to set the initial theme mode from localStorage when in the browser
+  useEffect(() => {
+    const storedThemeMode =
+      typeof window !== 'undefined' ? localStorage.getItem('themeMode') : null;
+    if (storedThemeMode) {
+      setMode(storedThemeMode as ThemeModes);
+    }
+  }, []);
 
   const colorMode = useMemo(
     () => ({
-      toggleColorMode: () =>
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'))
+      toggleColorMode: () => {
+        setMode((prevMode) => {
+          const newMode = prevMode === 'light' ? 'dark' : 'light';
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('themeMode', newMode); // Save the new mode to localStorage
+          }
+          return newMode;
+        });
+      }
     }),
     []
   );
