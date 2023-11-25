@@ -21,14 +21,6 @@ const SignUp = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-      lastname: data.get('lastName'),
-      firstName: data.get('firstName'),
-      allowExtraEmails: data.get('allowExtraEmails')
-    });
   };
 
   return (

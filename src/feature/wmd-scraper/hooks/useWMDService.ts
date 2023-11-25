@@ -1,5 +1,6 @@
 import { Moment } from 'moment';
 import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 // const BASE_URL = 'http://165.232.69.129';
 const BASE_URL = 'http://localhost:3001';
@@ -24,11 +25,13 @@ const useWMDService = () => {
 
       if (response.ok) {
         setIsAuthenticated(true);
+        return true;
       } else {
         setIsAuthenticated(false);
+        return false;
       }
     } catch (error) {
-      console.log(error);
+      return false;
     }
   };
 
@@ -50,17 +53,11 @@ const useWMDService = () => {
       });
 
       setIsAuthenticated(response.ok ? true : false);
+      toast.success('Login successful');
     } catch (error) {
       setIsAuthenticated(false);
-      console.log(error);
+      toast.error('Login failed');
     }
-
-    // const data = await response.json();
-
-    // if (data.token) {
-    //   sessionStorage.setItem('authToken', data.token); // Store the token
-    //   setIsAuthenticated(true);
-    // }
   };
 
   const logout = async () => {
@@ -73,9 +70,10 @@ const useWMDService = () => {
         credentials: 'include'
       });
     } catch (error) {
-      console.log(error);
+      toast.error('Logout failed');
     } finally {
       setIsAuthenticated(false);
+      toast.success('Logout successful');
     }
   };
 
@@ -95,15 +93,10 @@ const useWMDService = () => {
       );
 
       if (response.ok) {
-        // Get the filename from the Content-Disposition header
-
         let filename = 'invoices.zip';
 
-        // Create a blob URL
-        console.log(response);
         const blob = await response.blob();
 
-        console.log(blob);
         const blobUrl = window.URL.createObjectURL(blob);
 
         // Create a temporary link and trigger the download
@@ -122,7 +115,7 @@ const useWMDService = () => {
         console.error('Response not OK', response.statusText);
       }
     } catch (error) {
-      console.log(error);
+      toast.error(`Getting zipped invoices failed`);
     }
   };
   return {

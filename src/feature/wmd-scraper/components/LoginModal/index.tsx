@@ -26,7 +26,6 @@ const useLoginModal = (defaultOpen: boolean) => {
       event.preventDefault();
 
       const data = new FormData(event.currentTarget);
-      console.log(data.get('password'));
       const user = data.get('user');
       const password = data.get('password');
 

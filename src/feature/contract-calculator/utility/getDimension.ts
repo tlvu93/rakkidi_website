@@ -1,5 +1,6 @@
 import { Order } from '@shared/interfaces/contract-calculator';
 import { FileWithPath } from 'react-dropzone';
+import { toast } from 'react-toastify';
 import { decode, decodeImage } from 'utif';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -26,7 +27,7 @@ async function getDimensionFromImage(file: FileWithPath) {
             height: ifd.height * MM_PER_PIXEL
           });
         } catch (error) {
-          console.log(error);
+          toast.error('Error while reading file');
         }
       };
       reader.readAsArrayBuffer(file);
@@ -110,7 +111,7 @@ async function getDimensionFromOtherFiles(file: FileWithPath) {
         if (fileWithDimension) resolve(fileWithDimension);
         else reject();
       } else {
-        console.log(`We don't accept that file type ${file.type}`, file.name);
+        toast.error(`We don't accept that file type ${file.type} ${file.name}`);
         reject();
       }
     };

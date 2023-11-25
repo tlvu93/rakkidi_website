@@ -16,6 +16,7 @@ import useWMDService from 'feature/wmd-scraper/hooks/useWMDService';
 import moment from 'moment';
 import { Moment } from 'moment';
 import React from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 
 export type DateRange = {
   dateFrom: Moment | null;
@@ -36,7 +37,7 @@ const WMDScraper = () => {
 
   const downloadInvoiceZipped = () => {
     if (!dateRange.dateFrom || !dateRange.dateTo) {
-      console.log('Please provide a date range');
+      toast.error('Please provide a date range');
       return;
     }
 
