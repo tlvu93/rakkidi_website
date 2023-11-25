@@ -12,15 +12,37 @@ import DateRangePicker from 'feature/wmd-scraper/components/DateRangePicker';
 import DownloadButtons from 'feature/wmd-scraper/components/DownloadButtons';
 import useLoginModal from 'feature/wmd-scraper/components/LoginModal';
 
-import useAuth from 'feature/wmd-scraper/hooks/useAuth';
+import useWMDService from 'feature/wmd-scraper/hooks/useWMDService';
+import moment from 'moment';
+import { Moment } from 'moment';
 import React from 'react';
 
-type Props = {};
+export type DateRange = {
+  dateFrom: Moment | null;
+  dateTo: Moment | null;
+};
 
-const WMDScraper = (props: Props) => {
-  const { isAuthenticated, login } = useAuth();
+const defaultDateRange = {
+  dateFrom: moment().subtract(1, 'months'),
+  dateTo: moment()
+};
+
+const WMDScraper = () => {
+  const [dateRange, setDateRange] = React.useState<DateRange>(defaultDateRange);
+
+  const { isAuthenticated, login, logout, getInvoicesZipped } = useWMDService();
   const theme = useTheme();
   const { LoginModal, handleOpen } = useLoginModal(isAuthenticated);
+
+  const downloadInvoiceZipped = () => {
+    if (!dateRange.dateFrom || !dateRange.dateTo) {
+      console.log('Please provide a date range');
+      return;
+    }
+
+    getInvoicesZipped(dateRange.dateFrom, dateRange.dateTo);
+  };
+
   return (
     <>
       <AppLayout>
@@ -49,9 +71,25 @@ const WMDScraper = (props: Props) => {
               >
                 {isAuthenticated ? (
                   <>
-                    <DateRangePicker />
+                    <DateRangePicker
+                      dateRange={dateRange}
+                      setDateRange={setDateRange}
+                    />
 
-                    <DownloadButtons />
+                    <DownloadButtons
+                      downloadInvoiceZipped={downloadInvoiceZipped}
+                    />
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: 4
+                      }}
+                    >
+                      <Button color="error" onClick={() => logout()}>
+                        Logout
+                      </Button>
+                    </Box>
                   </>
                 ) : (
                   <Button

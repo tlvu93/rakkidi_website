@@ -1,14 +1,23 @@
 import { Grid, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import React from 'react';
-import moment from 'moment';
+import { Moment } from 'moment';
+import { DateRange } from '@pages/wmd-scraper';
 
-type Props = {};
+type Props = {
+  dateRange: DateRange;
+  setDateRange: (dateRange: DateRange) => void;
+};
 
-const DateRangePicker = (props: Props) => {
-  // Get current date
-  const currentDate = moment();
-  const oneMonthBefore = moment().subtract(1, 'months');
+const DateRangePicker = ({ dateRange, setDateRange }: Props) => {
+  const setDateFrom = (newValue: Moment | null) => {
+    setDateRange({ ...dateRange, dateFrom: newValue });
+  };
+
+  const setDateTo = (newValue: Moment | null) => {
+    setDateRange({ ...dateRange, dateTo: newValue });
+  };
+
   return (
     <Grid container spacing={2}>
       <Grid item sm={6}>
@@ -22,11 +31,19 @@ const DateRangePicker = (props: Props) => {
         </Typography>
       </Grid>
       <Grid item sm={6}>
-        <DatePicker sx={{ width: '100%' }} defaultValue={oneMonthBefore} />
+        <DatePicker
+          sx={{ width: '100%' }}
+          value={dateRange.dateFrom}
+          onChange={setDateFrom}
+        />
       </Grid>
 
       <Grid item sm={6}>
-        <DatePicker sx={{ width: '100%' }} defaultValue={currentDate} />
+        <DatePicker
+          sx={{ width: '100%' }}
+          value={dateRange.dateTo}
+          onChange={setDateTo}
+        />
       </Grid>
     </Grid>
   );

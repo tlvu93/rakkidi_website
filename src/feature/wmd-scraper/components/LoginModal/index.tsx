@@ -1,5 +1,4 @@
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
-import useAuth from 'feature/wmd-scraper/hooks/useAuth';
 import React from 'react';
 
 const style = {
@@ -54,14 +53,14 @@ const useLoginModal = (defaultOpen: boolean) => {
               Login with your WMD Account
             </Typography>
             <TextField
-              id="outlined-basic"
+              id="user"
               label="Kundennummer"
               name="user"
               variant="outlined"
               required
             />
             <TextField
-              id="outlined-basic"
+              id="password"
               label="Password"
               name="password"
               type="password"
