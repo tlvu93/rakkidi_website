@@ -17,8 +17,9 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Footer from '@shared/components/footer/footer';
 import DrawerLogo from '../header/drawer-logo';
-import { StayPrimaryLandscape } from '@mui/icons-material';
+import { Save, StayPrimaryLandscape } from '@mui/icons-material';
 import { layoutDimension } from 'config/ui-config';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 
 const iconMap = {
   HomeIcon: <HomeIcon />,
@@ -27,7 +28,8 @@ const iconMap = {
   DirtyLensOutlinedIcon: <DirtyLensOutlinedIcon />,
   CalculateIcon: <CalculateIcon />,
   ReceiptIcon: <ReceiptIcon />,
-  MapIcon: <MapIcon />
+  MapIcon: <MapIcon />,
+  WMDScraperIcon: <SaveAsIcon />
 };
 
 const sidebarLinks: SidebarLink[] = [
@@ -51,6 +53,11 @@ const sidebarLinks: SidebarLink[] = [
     name: 'Invoice Extractor',
     route: '/invoice-extractor',
     icon: iconMap.ReceiptIcon
+  },
+  {
+    name: 'WMD - Scraper',
+    route: '/wmd-scraper',
+    icon: iconMap.WMDScraperIcon
   }
 ];
 
@@ -100,7 +107,9 @@ const Sidebar = ({ drawerOpen, toggleDrawer }: SidebarProps) => {
               color: 'primary.contrastText'
             }}
           >
-            <ListItemIcon>{sidebarlink.icon}</ListItemIcon>
+            <ListItemIcon sx={{ color: 'primary.contrastText' }}>
+              {sidebarlink.icon}
+            </ListItemIcon>
             <ListItemText primary={sidebarlink.name} />
           </ListItem>
         </List>

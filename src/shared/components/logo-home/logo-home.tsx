@@ -16,9 +16,7 @@ const LogoHome = () => {
       sx={{
         height: 20,
         filter:
-          theme.palette.mode === 'dark'
-            ? 'invert(83%) sepia(100%) saturate(0%) hue-rotate(100deg) brightness(106%) contrast(100%)'
-            : 'none'
+          'invert(83%) sepia(100%) saturate(0%) hue-rotate(100deg) brightness(106%) contrast(100%)'
       }}
     >
       <Logo width={120} />

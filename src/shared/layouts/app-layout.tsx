@@ -6,6 +6,7 @@ import Header from '@shared/components/header/header';
 import Sidebar from '@shared/components/sidebar/sidebar';
 import { ColorModeContext } from '@shared/styles/theme/theme';
 import { layoutDimension } from 'config/ui-config';
+import { ToastContainer } from 'react-toastify';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -53,6 +54,18 @@ const AppLayout = (props: AppLayoutProps) => {
 
   return (
     <div>
+      <ToastContainer
+        position="top-right"
+        autoClose={1500}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
       <Header
         toggleDrawer={toggleDrawer}
         toggleColorMode={colorMode.toggleColorMode}

@@ -13,8 +13,6 @@ const getProjects = async () => {
     query: GET_PROJECTS
   });
 
-  console.log(data);
-
   return data;
 };
 
