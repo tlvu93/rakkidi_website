@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 const BASE_URL =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3001'
-    : 'https://rakkidi.de';
+    : 'https://api.rakkidi.de';
 
 const useWMDService = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
