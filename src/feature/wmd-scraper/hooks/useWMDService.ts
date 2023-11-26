@@ -2,8 +2,10 @@ import { Moment } from 'moment';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
-// const BASE_URL = 'http://165.232.69.129';
-const BASE_URL = 'http://localhost:3001';
+const BASE_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3001'
+    : 'http://165.232.69.129';
 
 const useWMDService = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
