@@ -6,6 +6,7 @@ import Header from '@shared/components/header/header';
 import Sidebar from '@shared/components/sidebar/sidebar';
 import { ColorModeContext } from '@shared/styles/theme/theme';
 import { layoutDimension } from 'config/ui-config';
+import { ToastContainer } from 'react-toastify';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -29,32 +30,42 @@ const AppLayout = (props: AppLayoutProps) => {
   };
 
   const MainApp = (props: React.PropsWithChildren) => (
-    <div>
-      <div
-        style={{
-          flexGrow: 1,
-          padding: theme.spacing(3),
+    <div
+      style={{
+        flexGrow: 1,
+        padding: `${theme.spacing(4)} ${theme.spacing(8)}`,
+        transition: theme.transitions.create('margin', {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.leavingScreen
+        }),
+        // marginTop: `${layoutDimension.headerHeight}px`,
+        ...(drawerOpen && {
           transition: theme.transitions.create('margin', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen
           }),
-          // marginTop: `${layoutDimension.headerHeight}px`,
-          ...(drawerOpen && {
-            transition: theme.transitions.create('margin', {
-              easing: theme.transitions.easing.easeOut,
-              duration: theme.transitions.duration.enteringScreen
-            }),
-            marginLeft: `${layoutDimension.drawerWidth}px`
-          })
-        }}
-      >
-        {props.children}
-      </div>
+          marginLeft: `${layoutDimension.drawerWidth}px`
+        })
+      }}
+    >
+      {props.children}
     </div>
   );
 
   return (
     <div>
+      <ToastContainer
+        position="top-right"
+        autoClose={1500}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
       <Header
         toggleDrawer={toggleDrawer}
         toggleColorMode={colorMode.toggleColorMode}

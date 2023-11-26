@@ -1,70 +1,117 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
-import React from 'react';
+import React, { useMemo, useState, createContext, useEffect } from 'react';
+import { Roboto } from 'next/font/google';
 
-export const ColorModeContext = React.createContext({
-  toggleColorMode: () => {}
+export const roboto = Roboto({
+  weight: ['300', '400', '500', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  fallback: ['Helvetica', 'Arial', 'sans-serif']
 });
 
-const useCustomTheme = () => {
-  const [mode, setMode] = React.useState<'light' | 'dark'>('dark');
+type ThemeModes = 'light' | 'dark';
 
-  const colorMode = React.useMemo(
+export const ColorModeContext = createContext({ toggleColorMode: () => {} });
+
+const colors = {
+  primaryDark: '#00081c',
+  primaryNormal: '#2A3142',
+  primaryLight: '#535A6D',
+  // primaryLight: '#F7F6F5',
+  secondaryLight: '#FFFA8A',
+  secondaryNormal: '#DBC75A',
+  secondaryDark: 'A7972A',
+
+  white: '#ffffff',
+
+  lightGray: '#c2c4c7',
+  darkBlack: '#00081c',
+  backgroundDefault: '#FEFEFE',
+  backgroundPaperLight: '#ECECEC'
+};
+
+const getTheme = (mode: ThemeModes) => {
+  const isLight = mode === 'light';
+
+  const themeOptions: ThemeOptions = {
+    palette: {
+      mode,
+      primary: {
+        contrastText: isLight ? colors.white : colors.white,
+        light: isLight ? colors.white : colors.backgroundPaperLight,
+        main: isLight ? colors.primaryNormal : colors.primaryNormal,
+        dark: isLight ? colors.lightGray : colors.primaryDark
+      },
+      secondary: {
+        main: colors.secondaryNormal
+      },
+      background: {
+        default: isLight ? colors.backgroundDefault : colors.primaryNormal,
+        paper: isLight ? colors.backgroundPaperLight : colors.primaryNormal
+      },
+      text: {
+        primary: isLight ? colors.primaryDark : colors.white
+      }
+    }
+    // components: {
+    //   MuiIconButton: {
+    //     styleOverrides: {
+    //       sizeMedium: {
+    //         color: colors.primaryDark
+    //       }
+    //     }
+    //   },
+    //   MuiOutlinedInput: {
+    //     styleOverrides: {
+    //       root: {
+    //         color: colors.primaryDark
+    //       }
+    //     }
+    //   },
+    //   MuiInputLabel: {
+    //     styleOverrides: {
+    //       root: {
+    //         color: colors.primaryDark
+    //       }
+    //     }
+    //   }
+    // }
+  };
+
+  return createTheme(themeOptions);
+};
+
+const useCustomTheme = () => {
+  // Initialize the mode state without accessing localStorage directly
+  const [mode, setMode] = useState<ThemeModes>('dark');
+
+  // Effect to set the initial theme mode from localStorage when in the browser
+  useEffect(() => {
+    const storedThemeMode =
+      typeof window !== 'undefined' ? localStorage.getItem('themeMode') : null;
+    if (storedThemeMode) {
+      setMode(storedThemeMode as ThemeModes);
+    }
+  }, []);
+
+  const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+        setMode((prevMode) => {
+          const newMode = prevMode === 'light' ? 'dark' : 'light';
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('themeMode', newMode); // Save the new mode to localStorage
+          }
+          return newMode;
+        });
       }
     }),
     []
   );
 
-  const theme = React.useMemo(
-    () => createTheme(mode === 'light' ? themeLight : themeDark),
-    [mode]
-  );
+  const theme = useMemo(() => getTheme(mode), [mode]);
 
   return { colorMode, theme };
-};
-
-const themeLight: ThemeOptions = {
-  palette: {
-    mode: 'light',
-    primary: {
-      contrastText: '#2A3142',
-      light: '#ffffff',
-      main: '#F7F6F5',
-      dark: '#c2c4c7'
-    },
-    secondary: {
-      main: '#DBC75A'
-    },
-    background: {
-      default: '#FEFEFE'
-    }
-  }
-};
-
-const themeDark: ThemeOptions = {
-  palette: {
-    mode: 'dark',
-
-    primary: {
-      contrastText: '#F7F6F5',
-      light: '#535a6d',
-      main: '#2A3142',
-      dark: '#00081c'
-    },
-
-    secondary: {
-      main: '#DBC75A'
-    },
-    background: {
-      default: '#F7F6F5',
-      paper: '#ECECEC'
-    },
-    text: {
-      primary: '#2A3142'
-    }
-  }
 };
 
 export default useCustomTheme;

@@ -14,6 +14,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Copyright from '@shared/components/copyright/copyright';
+import { toast } from 'react-toastify';
 
 const theme = createTheme();
 
@@ -21,10 +22,7 @@ export default function SignIn() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password')
-    });
+    toast.success(data.get('email')?.toString());
   };
 
   return (

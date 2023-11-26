@@ -11,7 +11,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['images.pexels.com', 'loremflickr.com']
+    domains: ['images.pexels.com', 'loremflickr.com', 'picsum.photos']
   },
   async redirects() {
     return [
