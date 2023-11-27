@@ -1,7 +1,7 @@
 import { ToggleDrawer } from '@shared/interfaces/ui';
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 
-import { useTheme } from '@mui/material';
+import { useMediaQuery, useTheme } from '@mui/material';
 import Header from '@shared/components/header/header';
 import Sidebar from '@shared/components/sidebar/sidebar';
 import { ColorModeContext } from '@shared/styles/theme/theme';
@@ -13,10 +13,20 @@ interface AppLayoutProps {
 }
 
 const AppLayout = (props: AppLayoutProps) => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('xl'));
   const colorMode = useContext(ColorModeContext);
 
-  const theme = useTheme();
-  const [drawerOpen, setDrawerOpen] = useState(true);
+  const getInitialDrawerState = useCallback(
+    () => !isSmallScreen,
+    [isSmallScreen]
+  );
+
+  const [drawerOpen, setDrawerOpen] = useState(getInitialDrawerState);
+
+  useEffect(() => {
+    setDrawerOpen(getInitialDrawerState);
+  }, [getInitialDrawerState]);
 
   const toggleDrawer: ToggleDrawer = () => (event) => {
     if (

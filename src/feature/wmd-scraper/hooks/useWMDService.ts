@@ -10,7 +10,6 @@ const BASE_URL =
 const useWMDService = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Check the session storage to set the initial authentication state
   useEffect(() => {
     checkAuthentication();
   }, []);
