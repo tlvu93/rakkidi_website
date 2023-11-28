@@ -82,8 +82,8 @@ const useWMDService = () => {
     try {
       const response = await fetch(
         `${BASE_URL}/invoices/zip?startDate=${startDate.format(
-          'DD.MM.YYYY'
-        )}&endDate=${endDate.format('DD.MM.YYYY')}`,
+          'YYYY-MM-DD'
+        )}&endDate=${endDate.format('YYYY-MM-DD')}`,
         {
           method: 'GET',
           credentials: 'include',

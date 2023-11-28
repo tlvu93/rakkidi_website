@@ -11,6 +11,7 @@ import AppLayout from '@shared/layouts/app-layout';
 import DateRangePicker from 'feature/wmd-scraper/components/DateRangePicker';
 import DownloadButtons from 'feature/wmd-scraper/components/DownloadButtons';
 import useLoginModal from 'feature/wmd-scraper/components/LoginModal';
+import ScraperProgressWS from 'feature/wmd-scraper/components/ScraperProgressWS';
 
 import useWMDService from 'feature/wmd-scraper/hooks/useWMDService';
 import moment from 'moment';
@@ -32,6 +33,7 @@ const WMDScraper = () => {
   const [dateRange, setDateRange] = React.useState<DateRange>(defaultDateRange);
 
   const { isAuthenticated, login, logout, getInvoicesZipped } = useWMDService();
+
   const theme = useTheme();
   const { LoginModal, handleOpen } = useLoginModal(isAuthenticated);
 
@@ -80,6 +82,8 @@ const WMDScraper = () => {
                     <DownloadButtons
                       downloadInvoiceZipped={downloadInvoiceZipped}
                     />
+                    <ScraperProgressWS />
+
                     <Box
                       sx={{
                         display: 'flex',
