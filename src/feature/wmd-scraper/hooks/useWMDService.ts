@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Moment } from 'moment';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
@@ -14,46 +15,40 @@ const useWMDService = () => {
     checkAuthentication();
   }, []);
 
+  const axiosInstance = axios.create({
+    baseURL: BASE_URL,
+    withCredentials: true,
+    headers: {
+      'Access-Control-Allow-Credentials': 'true'
+    }
+  });
+
   const checkAuthentication = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/check-authentication`, {
-        method: 'GET',
-        headers: {
-          'Access-Control-Allow-Credentials': 'true'
-        },
-        credentials: 'include'
-      });
+      const response = await axiosInstance.get('/check-authentication');
 
-      if (response.ok) {
-        setIsAuthenticated(true);
-        return true;
-      } else {
-        setIsAuthenticated(false);
-        return false;
-      }
+      setIsAuthenticated(response.status === 200);
+      return response.status === 200;
     } catch (error) {
+      setIsAuthenticated(false);
       return false;
     }
   };
 
   const login = async (user: string, password: string) => {
-    const userObject = {
+    const userObject = new URLSearchParams({
       user: user,
       pass: password
-    };
+    }).toString();
 
     try {
-      const response = await fetch(`${BASE_URL}/login`, {
-        method: 'POST',
+      const response = await axiosInstance.post('/login', userObject, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Access-Control-Allow-Credentials': 'true'
-        },
-        credentials: 'include',
-        body: new URLSearchParams(userObject).toString()
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       });
 
-      setIsAuthenticated(response.ok ? true : false);
+      setIsAuthenticated(response.status === 200);
       toast.success('Login successful');
     } catch (error) {
       setIsAuthenticated(false);
@@ -63,62 +58,46 @@ const useWMDService = () => {
 
   const logout = async () => {
     try {
-      await fetch(`${BASE_URL}/logout`, {
-        method: 'GET',
-        headers: {
-          'Access-Control-Allow-Credentials': 'true'
-        },
-        credentials: 'include'
-      });
-    } catch (error) {
-      toast.error('Logout failed');
-    } finally {
+      await axiosInstance.get('/logout');
       setIsAuthenticated(false);
       toast.success('Logout successful');
+    } catch (error) {
+      setIsAuthenticated(false);
+      toast.error('Logout failed');
     }
   };
 
   const getInvoicesZipped = async (startDate: Moment, endDate: Moment) => {
     try {
-      const response = await fetch(
-        `${BASE_URL}/invoices/zip?startDate=${startDate.format(
+      const response = await axiosInstance.get(
+        `/invoices/zip?startDate=${startDate.format(
           'YYYY-MM-DD'
         )}&endDate=${endDate.format('YYYY-MM-DD')}`,
         {
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            'Access-Control-Allow-Credentials': 'true'
-          }
+          responseType: 'blob'
         }
       );
 
-      if (response.ok) {
-        let filename = 'invoices.zip';
+      let filename = 'invoices.zip';
+      const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
 
-        const blob = await response.blob();
+      // Create a temporary link and trigger the download
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.setAttribute('download', filename);
 
-        const blobUrl = window.URL.createObjectURL(blob);
+      // Append link to the body, trigger click and remove it
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
 
-        // Create a temporary link and trigger the download
-        const link = document.createElement('a');
-        link.href = blobUrl;
-        link.setAttribute('download', filename);
-
-        // Append link to the body, trigger click and remove it
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode?.removeChild(link);
-
-        // Clean up the blob URL
-        window.URL.revokeObjectURL(blobUrl);
-      } else {
-        console.error('Response not OK', response.statusText);
-      }
+      // Clean up the blob URL
+      window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
       toast.error(`Getting zipped invoices failed`);
     }
   };
+
   return {
     isAuthenticated,
     login,
