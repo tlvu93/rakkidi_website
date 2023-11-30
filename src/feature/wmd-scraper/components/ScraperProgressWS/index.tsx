@@ -1,10 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import LinearProgress, {
   LinearProgressProps
 } from '@mui/material/LinearProgress';
 import { Box, Typography } from '@mui/material';
+import useWebSocket from 'react-use-websocket';
+import { toast } from 'react-toastify';
 
 export type ProgressStatus = 'idle' | 'scraping' | 'zipping' | 'finished';
+
+const WS_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'wss://www.api.rakkidi.de:8080'
+    : 'ws://localhost:8080';
 
 export type ProgressData = {
   status: ProgressStatus;
@@ -29,47 +36,58 @@ function LinearProgressWithLabel(
   );
 }
 
-const ScraperProgressWS = () => {
-  const [showProgress, setShowProgress] = useState(false);
-  const [progress, setProgress] = useState(0);
-  useEffect(() => {
-    const ws = new WebSocket('wss://www.api.rakkidi.de:8080'); // Use your server URL
+type Props = {
+  isScraping: boolean;
+  setIsScraping: (isScraping: boolean) => void;
+  setScrapingSuccess: (scrapingSuccess: boolean) => void;
+};
 
-    ws.onopen = () => {
-      console.log('Connected to the WebSocket server');
-      ws.send('Hello Server!');
-    };
+const ScraperProgressWS = ({
+  isScraping,
+  setIsScraping,
+  setScrapingSuccess
+}: Props) => {
+  const [progressData, setProgressData] = useState<ProgressData>();
 
-    ws.onmessage = (event: MessageEvent) => {
+  useWebSocket(WS_URL, {
+    onOpen: () => {
+      console.log('WebSocket connection established.');
+    },
+    onMessage: (event) => {
       const dataString: string = event.data;
 
       if (dataString.startsWith('{"status"')) {
         const data: ProgressData = JSON.parse(dataString);
-        console.log('Setting progress to: ', data.progress);
-        setProgress(data.progress);
 
-        if (data.status === 'scraping') setShowProgress(true);
-        else if (data.status === 'finished') setShowProgress(false);
+        setProgressData(data);
+
+        if (data.status === 'scraping') setIsScraping(true);
+        else if (data.status === 'finished') {
+          setIsScraping(false);
+          setScrapingSuccess(true);
+        }
       }
-    };
+      onerror = (error) => {
+        toast.error('WebSocket error: ' + error);
+        setIsScraping(false);
+      };
 
-    ws.onerror = (error) => {
-      console.log('WebSocket error: ', error);
-      setShowProgress(false);
-    };
+      onclose = () => {
+        console.log('Disconnected from the WebSocket server');
+        setIsScraping(false);
+      };
+    }
+  });
 
-    ws.onclose = () => {
-      console.log('Disconnected from the WebSocket server');
-      setShowProgress(false);
-    };
-
-    return () => {
-      ws.close();
-      setShowProgress(false);
-    };
-  }, []);
-
-  if (showProgress) return <LinearProgressWithLabel value={progress} />;
+  if (isScraping)
+    return (
+      <>
+        <Typography variant="h6" gutterBottom>
+          Scraping progress: {progressData?.message}
+        </Typography>
+        <LinearProgressWithLabel value={progressData?.progress || 0} />
+      </>
+    );
   else return <></>;
 };
 

@@ -16,10 +16,11 @@ const DownloadButtons = ({ downloadInvoiceZipped }: Props) => {
           variant="contained"
           sx={{ width: '100%' }}
           onClick={() => downloadInvoiceZipped()}
+          color="secondary"
         >
           DOWNLOAD AS ZIP
         </Button>
-        <Button variant="contained" sx={{ width: '100%' }}>
+        <Button variant="contained" sx={{ width: '100%' }} color="secondary">
           CSV
         </Button>
       </Stack>
