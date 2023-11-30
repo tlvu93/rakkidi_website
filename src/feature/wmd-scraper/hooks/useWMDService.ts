@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Moment } from 'moment';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 
 const BASE_URL =
@@ -10,30 +10,32 @@ const BASE_URL =
 
 const useWMDService = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isScraping, setIsScraping] = useState(false);
 
-  useEffect(() => {
-    checkAuthentication();
-  }, []);
+  const axiosInstance = useMemo(() => {
+    return axios.create({
+      baseURL: BASE_URL,
+      withCredentials: true,
+      headers: {
+        'Access-Control-Allow-Credentials': 'true'
+      }
+    });
+  }, []); // Empty dependency array to create only once
 
-  const axiosInstance = axios.create({
-    baseURL: BASE_URL,
-    withCredentials: true,
-    headers: {
-      'Access-Control-Allow-Credentials': 'true'
-    }
-  });
-
-  const checkAuthentication = async () => {
+  const checkAuthentication = useCallback(async () => {
     try {
       const response = await axiosInstance.get('/check-authentication');
-
       setIsAuthenticated(response.status === 200);
       return response.status === 200;
     } catch (error) {
       setIsAuthenticated(false);
       return false;
     }
-  };
+  }, [axiosInstance]);
+
+  useEffect(() => {
+    checkAuthentication();
+  }, [checkAuthentication]);
 
   const login = async (user: string, password: string) => {
     const userObject = new URLSearchParams({
@@ -49,7 +51,6 @@ const useWMDService = () => {
       });
 
       setIsAuthenticated(response.status === 201);
-      console.log(response.status);
       toast.success('Login successful');
     } catch (error) {
       setIsAuthenticated(false);
@@ -65,6 +66,20 @@ const useWMDService = () => {
     } catch (error) {
       setIsAuthenticated(false);
       toast.error('Logout failed');
+    }
+  };
+
+  const triggerScraper = async (startDate: Moment, endDate: Moment) => {
+    try {
+      setIsScraping(true);
+      await axiosInstance.get(
+        `/scraper/start?startDate=${startDate.format(
+          'YYYY-MM-DD'
+        )}&endDate=${endDate.format('YYYY-MM-DD')}`
+      );
+    } catch (error) {
+      setIsScraping(false);
+      toast.error('Triggering scraper failed');
     }
   };
 
@@ -101,6 +116,9 @@ const useWMDService = () => {
 
   return {
     isAuthenticated,
+    isScraping,
+    triggerScraper,
+    setIsScraping,
     login,
     logout,
     getInvoicesZipped

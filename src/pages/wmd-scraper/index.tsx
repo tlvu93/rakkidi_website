@@ -31,8 +31,17 @@ const defaultDateRange = {
 
 const WMDScraper = () => {
   const [dateRange, setDateRange] = React.useState<DateRange>(defaultDateRange);
+  const [scrapingSuccess, setScrapingSuccess] = React.useState<boolean>(false);
 
-  const { isAuthenticated, login, logout, getInvoicesZipped } = useWMDService();
+  const {
+    isAuthenticated,
+    login,
+    logout,
+    getInvoicesZipped,
+    triggerScraper,
+    setIsScraping,
+    isScraping
+  } = useWMDService();
 
   const theme = useTheme();
   const { LoginModal, handleOpen } = useLoginModal(isAuthenticated);
@@ -44,6 +53,16 @@ const WMDScraper = () => {
     }
 
     getInvoicesZipped(dateRange.dateFrom, dateRange.dateTo);
+  };
+
+  const submitTriggerScraper = () => {
+    setScrapingSuccess(false);
+    if (!dateRange.dateFrom || !dateRange.dateTo) {
+      toast.error('Please provide a date range');
+      return;
+    }
+
+    triggerScraper(dateRange.dateFrom, dateRange.dateTo);
   };
 
   return (
@@ -79,10 +98,30 @@ const WMDScraper = () => {
                       setDateRange={setDateRange}
                     />
 
-                    <DownloadButtons
-                      downloadInvoiceZipped={downloadInvoiceZipped}
+                    <Button
+                      variant="contained"
+                      sx={{ width: '100%' }}
+                      disabled={isScraping}
+                      onClick={() => submitTriggerScraper()}
+                    >
+                      {isScraping ? (
+                        <>Trigger Scraping...</>
+                      ) : (
+                        <>Trigger Scraping</>
+                      )}
+                    </Button>
+
+                    <ScraperProgressWS
+                      isScraping={isScraping}
+                      setIsScraping={setIsScraping}
+                      setScrapingSuccess={setScrapingSuccess}
                     />
-                    <ScraperProgressWS />
+
+                    {scrapingSuccess && (
+                      <DownloadButtons
+                        downloadInvoiceZipped={downloadInvoiceZipped}
+                      />
+                    )}
 
                     <Box
                       sx={{
