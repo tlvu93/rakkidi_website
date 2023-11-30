@@ -113,7 +113,6 @@ const useWMDService = () => {
       toast.error(`Getting zipped invoices failed`);
     }
   };
-
   return {
     isAuthenticated,
     isScraping,
