@@ -48,7 +48,8 @@ const useWMDService = () => {
         }
       });
 
-      setIsAuthenticated(response.status === 200);
+      setIsAuthenticated(response.status === 201);
+      console.log(response.status);
       toast.success('Login successful');
     } catch (error) {
       setIsAuthenticated(false);
