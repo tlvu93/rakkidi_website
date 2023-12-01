@@ -45,7 +45,7 @@ const ScraperProgressWS = () => {
 
       if (dataString.startsWith('{"status"')) {
         const data: ProgressData = JSON.parse(dataString);
-        console.log('Setting progress to: ', data.progress);
+
         setProgress(data.progress);
 
         if (data.status === 'scraping') setShowProgress(true);
