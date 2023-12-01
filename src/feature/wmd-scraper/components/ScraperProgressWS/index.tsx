@@ -33,7 +33,7 @@ const ScraperProgressWS = () => {
   const [showProgress, setShowProgress] = useState(false);
   const [progress, setProgress] = useState(0);
   useEffect(() => {
-    const ws = new WebSocket('wss://www.api.rakkidi.de:8080'); // Use your server URL
+    const ws = new WebSocket('wss://www.api.rakkidi.de/ws'); // Use your server URL
 
     ws.onopen = () => {
       console.log('Connected to the WebSocket server');
