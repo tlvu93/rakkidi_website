@@ -11,7 +11,20 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['images.pexels.com', 'loremflickr.com', 'picsum.photos']
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.pexels.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'loremflickr.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos'
+      }
+    ]
   },
   async redirects() {
     return [
@@ -24,4 +37,4 @@ const nextConfig = {
   }
 };
 
-module.exports = nextConfig;
+export default nextConfig;
