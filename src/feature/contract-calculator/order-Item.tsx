@@ -28,7 +28,11 @@ const OrderItem = ({ order }: OrderItemProps) => {
 
     const areaInSquareMeter = height_in_m * width_in_m;
 
-    return areaInSquareMeter * pricePerSquareMeterInEuro;
+    const price = areaInSquareMeter * pricePerSquareMeterInEuro;
+
+    if (price < 0.01) return 'Error: zu kleine Fläche';
+
+    return (areaInSquareMeter * pricePerSquareMeterInEuro).toFixed(2) + '€';
   };
 
   return (
@@ -48,13 +52,13 @@ const OrderItem = ({ order }: OrderItemProps) => {
               Breite: {Math.round(order.height * 100) / 100} mm
             </Typography>
             <Typography component="p">
-              Preis: {getPrice(order.height, order.width).toFixed(2)}€
+              Preis: {getPrice(order.height, order.width)}
             </Typography>
           </CardContent>
           <CardActions>
             <Button
               variant="contained"
-              color="secondary"
+              color="error"
               startIcon={<DeleteIcon />}
               onClick={() => dispatch(removeOrder(order.id))}
               sx={{ margin: 1 }}

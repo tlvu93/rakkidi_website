@@ -34,6 +34,7 @@ const ContractCalculator = () => {
             display: 'flex',
             alignItems: 'center',
             alignContent: 'center',
+            justifyContent: 'center',
             flexDirection: { xs: 'column', md: 'row' },
             gap: 2
           }}

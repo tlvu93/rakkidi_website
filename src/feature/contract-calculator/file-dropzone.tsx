@@ -44,11 +44,11 @@ const FileDropzone = () => {
         width: '26rem',
         height: '20rem',
         padding: '0.625rem',
-        backgroundColor: '#F5F7FA',
+        // backgroundColor: '#F5F7FA',
 
         border: isDragActive
           ? '2px dashed var(--primary-normal, #00081C)'
-          : '1px dashed var(--primary-normal, #2A3142)'
+          : '1px dashed var(--primary-normal, linear-gradient(rgba(255, 255, 255, 0.05))'
       }}
     >
       <div
@@ -83,7 +83,7 @@ const FileDropzone = () => {
             background: 'var(--primary-normal, #2A3142)'
           }}
         >
-          <Typography color={'#F5F7FA'}>BILD HOCHLADEN</Typography>
+          <Typography color={'#F5F7FA'}>Datei hochladen</Typography>
         </div>
         <div>
           <Typography
