@@ -10,7 +10,7 @@ export type ProgressStatus = 'idle' | 'scraping' | 'zipping' | 'finished';
 
 const WS_URL =
   process.env.NODE_ENV === 'production'
-    ? 'wss://www.api.rakkidi.de:8080'
+    ? 'wss://api.rakkidi.de/ws'
     : 'ws://localhost:8080';
 
 export type ProgressData = {
