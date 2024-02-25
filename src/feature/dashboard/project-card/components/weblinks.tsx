@@ -42,14 +42,14 @@ export const Weblink = ({ link }: WebLinkProps) => {
   switch (link.type.title) {
     case 'Website':
       return (
-        <Box sx={{ width: '100%', height: '100%' }}>
+        <div style={{ width: '100%', height: '100%' }}>
           <PublicIcon
             onClick={(e: React.MouseEvent<Element, MouseEvent>) =>
               handleClick(e, link.url)
             }
             sx={weblinkStyle}
           />
-        </Box>
+        </div>
       );
 
     case 'Figma':
@@ -105,8 +105,8 @@ export const Weblink = ({ link }: WebLinkProps) => {
 
 export const Weblinks = ({ data }: ProjectCardProps) => {
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -119,6 +119,6 @@ export const Weblinks = ({ data }: ProjectCardProps) => {
             <Weblink link={link} />
           </Box>
         ))}
-    </Box>
+    </div>
   );
 };

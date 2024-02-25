@@ -1,7 +1,8 @@
 import { ToggleDrawer } from '@shared/interfaces/ui';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
-import { useMediaQuery, useTheme } from '@mui/material';
+import { Box, useTheme, useMediaQuery } from '@mui/material';
+
 import Header from '@shared/components/header/header';
 import Sidebar from '@shared/components/sidebar/sidebar';
 import { ColorModeContext } from '@shared/styles/theme/theme';
@@ -40,10 +41,11 @@ const AppLayout = (props: AppLayoutProps) => {
   };
 
   const MainApp = (props: React.PropsWithChildren) => (
-    <div
-      style={{
-        flexGrow: 1,
-        padding: `${theme.spacing(4)} ${theme.spacing(8)}`,
+    <Box
+      paddingX={4}
+      paddingY={8}
+      flexGrow={1}
+      sx={{
         transition: theme.transitions.create('margin', {
           easing: theme.transitions.easing.sharp,
           duration: theme.transitions.duration.leavingScreen
@@ -59,7 +61,7 @@ const AppLayout = (props: AppLayoutProps) => {
       }}
     >
       {props.children}
-    </div>
+    </Box>
   );
 
   return (
