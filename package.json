@@ -31,7 +31,7 @@
     "next-redux-wrapper": "^8.1.0",
     "react": "^18.2.0",
     "react-csv": "^2.2.2",
-    "react-dom": "^18.3.0-next-fecc288b7-20221025",
+    "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-pdf": "^7.1.1",
     "react-redux": "^9.1.0",

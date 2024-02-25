@@ -2,13 +2,7 @@ import { DocumentInitParameters } from 'pdfjs-dist/types/src/display/api';
 import { pdfjs } from 'react-pdf';
 
 const getTextContentFromPDF = async (
-  file:
-    | string
-    | URL
-    | ArrayBuffer
-    | pdfjs.PDFDataRangeTransport
-    | DocumentInitParameters
-    | null
+  file: string | URL | ArrayBuffer | DocumentInitParameters | null
 ) => {
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
