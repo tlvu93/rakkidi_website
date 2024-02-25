@@ -17,7 +17,7 @@ const CardFront = ({ data }: ProjectCardProps) => {
         }}
       >
         <Typography variant="h6">{title}</Typography>
-        <Box>
+        <div>
           {tags.map((tag) => (
             <Typography
               key={tag.title}
@@ -27,15 +27,15 @@ const CardFront = ({ data }: ProjectCardProps) => {
               {`${tag.title}, `}
             </Typography>
           ))}
-        </Box>
+        </div>
       </div>
     );
   };
 
   return (
     <Card sx={cardStyle}>
-      <Box
-        sx={{
+      <div
+        style={{
           width: '100%',
           height: 0,
           paddingBottom: '56.25%',
@@ -53,15 +53,15 @@ const CardFront = ({ data }: ProjectCardProps) => {
           sizes="(max-width: 768px) 75vw, (max-width: 1200px) 54vw, 33vw"
           priority={true}
         />
-      </Box>
-      <Box
-        sx={{
+      </div>
+      <div
+        style={{
           flex: 1,
           padding: '1rem 2.5rem'
         }}
       >
         <CardFooter title={data.title} tags={data.tags} />
-      </Box>
+      </div>
     </Card>
   );
 };

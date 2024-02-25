@@ -29,8 +29,8 @@ export default function SignIn() {
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <Box
-          sx={{
+        <div
+          style={{
             marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
@@ -94,7 +94,7 @@ export default function SignIn() {
               </Grid>
             </Grid>
           </Box>
-        </Box>
+        </div>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
