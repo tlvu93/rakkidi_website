@@ -1,21 +1,33 @@
 import { ToggleDrawer } from '@shared/interfaces/ui';
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 
-import { Box, useTheme } from '@mui/material';
+import { Box, useTheme, useMediaQuery } from '@mui/material';
+
 import Header from '@shared/components/header/header';
 import Sidebar from '@shared/components/sidebar/sidebar';
 import { ColorModeContext } from '@shared/styles/theme/theme';
 import { layoutDimension } from 'config/ui-config';
+import { ToastContainer } from 'react-toastify';
 
 interface AppLayoutProps {
   children: React.ReactNode;
 }
 
 const AppLayout = (props: AppLayoutProps) => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('xl'));
   const colorMode = useContext(ColorModeContext);
 
-  const theme = useTheme();
-  const [drawerOpen, setDrawerOpen] = useState(true);
+  const getInitialDrawerState = useCallback(
+    () => !isSmallScreen,
+    [isSmallScreen]
+  );
+
+  const [drawerOpen, setDrawerOpen] = useState(getInitialDrawerState);
+
+  useEffect(() => {
+    setDrawerOpen(getInitialDrawerState);
+  }, [getInitialDrawerState]);
 
   const toggleDrawer: ToggleDrawer = () => (event) => {
     if (
@@ -54,6 +66,18 @@ const AppLayout = (props: AppLayoutProps) => {
 
   return (
     <div>
+      <ToastContainer
+        position="top-right"
+        autoClose={1500}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
       <Header
         toggleDrawer={toggleDrawer}
         toggleColorMode={colorMode.toggleColorMode}
