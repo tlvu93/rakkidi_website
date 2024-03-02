@@ -43,7 +43,8 @@ export async function getStaticProps() {
   return {
     props: {
       groupedProjects
-    }
+    },
+    revalidate: 10
   };
 }
 
