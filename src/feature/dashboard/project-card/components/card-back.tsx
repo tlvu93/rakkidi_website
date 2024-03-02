@@ -41,14 +41,15 @@ const CardBack = ({ data }: ProjectCardProps) => {
               flexWrap: 'wrap'
             }}
           >
-            {data.tags.map((tag, index) => (
-              <Chip
-                key={`${tag}_${index}`}
-                label={tag.title}
-                variant="outlined"
-                size="small"
-              />
-            ))}
+            {data.tags &&
+              data.tags.map((tag, index) => (
+                <Chip
+                  key={`${tag}_${index}`}
+                  label={tag.title}
+                  variant="outlined"
+                  size="small"
+                />
+              ))}
           </div>
         </div>
       </div>

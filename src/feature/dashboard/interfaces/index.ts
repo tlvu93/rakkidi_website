@@ -15,11 +15,11 @@ export interface ProjectCategory {
 export interface ProjectCardData {
   _id: string;
   projectCategory: ProjectCategory;
-  coverImage?: string;
+  coverImage?: { asset: { url: string } };
   title: string;
   description: string;
   weblinks?: WeblinkData[];
-  tags: Tags[];
+  tags?: Tags[];
 }
 
 export interface ProjectGroup {

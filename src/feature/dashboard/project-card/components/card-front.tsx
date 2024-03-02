@@ -45,7 +45,7 @@ const CardFront = ({ data }: ProjectCardProps) => {
         <Image
           src={
             data.coverImage
-              ? data.coverImage
+              ? data.coverImage.asset.url
               : '/images/pexels-pixabay-356079.jpg'
           }
           alt="Project Image"
@@ -60,7 +60,7 @@ const CardFront = ({ data }: ProjectCardProps) => {
           padding: '1rem 2.5rem'
         }}
       >
-        <CardFooter title={data.title} tags={data.tags} />
+        <CardFooter title={data.title} tags={data.tags || []} />
       </div>
     </Card>
   );
