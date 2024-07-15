@@ -34,10 +34,10 @@ To get started with this project, follow these steps:
 2. **Install dependencies:**
 
    ```sh
-    pnpm install
+    yarn install
    ```
 
 3. **Run the development server:**
    ```sh
-    pnpm dev
+    yarn dev
    ```
