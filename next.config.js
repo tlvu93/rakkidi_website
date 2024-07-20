@@ -5,8 +5,12 @@ const nextConfig = {
       test: /\.svg$/,
       use: ['@svgr/webpack']
     });
+    config.resolve.alias.canvas = false;
 
     return config;
+  },
+  experimental: {
+    esmExternals: 'loose' // This setting helps in dealing with ESM packages
   },
   reactStrictMode: true,
   swcMinify: true,

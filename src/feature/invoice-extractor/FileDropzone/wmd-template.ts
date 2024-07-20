@@ -1,5 +1,5 @@
 import { TextContent, TextItem } from 'pdfjs-dist/types/src/display/api';
-import { CSVData } from './dropzone';
+import { CSVData } from '../interfaces/csv-data';
 
 type Transform = [number, number, number, number, number, number];
 
