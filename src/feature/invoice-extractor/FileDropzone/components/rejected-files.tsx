@@ -5,9 +5,20 @@ type RejectedFilesProps = {
 };
 
 const RejectedFiles = ({ fileRejections }: RejectedFilesProps) => {
+  if (!fileRejections || fileRejections.length === 0) {
+    return (
+      <>
+        <h2>Rejected files</h2>
+        <ul>
+          <li>none</li>
+        </ul>
+      </>
+    );
+  }
+
   return (
     <>
-      <h4>Rejected files</h4>
+      <h2>Rejected files</h2>
       <ul>
         {fileRejections.map(({ file, errors }) => (
           <li key={file.name}>

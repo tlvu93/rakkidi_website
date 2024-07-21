@@ -98,7 +98,15 @@ const FileDropzone = () => {
         <RejectedFiles fileRejections={fileRejections} />
       </aside>
       {csvData.length !== 0 && (
-        <CSVLink data={csvData} headers={headers}>
+        <CSVLink
+          data={csvData}
+          headers={headers}
+          style={{
+            textDecoration: 'underline',
+            color: 'cornflowerblue',
+            cursor: 'pointer'
+          }}
+        >
           Download CSV
         </CSVLink>
       )}
