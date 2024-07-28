@@ -3,19 +3,18 @@ import { useDropzone, FileWithPath, FileError, Accept } from 'react-dropzone';
 import { Container } from '@mui/material';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 
-import getTextContentFromPDF from './pdf-extract';
-import { TextContent } from 'pdfjs-dist/types/src/display/api';
 import { CSVLink } from 'react-csv';
 import AcceptedFiles from './components/accepted-files';
 import RejectedFiles from './components/rejected-files';
-import { filterArea } from './wmd-template';
-import { CSVData } from '../interfaces/csv-data';
+import { wmdExtractFields } from '../ExtractTemplateManagement/wmd-template';
+import { WmdCsvData } from '../interfaces/wmd-csv-data';
 import {
   baseStyle,
   activeStyle,
   acceptStyle,
   rejectStyle
 } from './utils/styles';
+import { getTextTokenFromPdfFile } from '../ExtractTemplateManagement/pdf-extract';
 
 const headers = [
   { label: 'Rechnungsnummer', key: 'Rechnungsnummer' },
@@ -23,34 +22,14 @@ const headers = [
   { label: 'RechnungsbetragBrutto', key: 'RechnungsbetragBrutto' }
 ];
 
-const getTextTokenFromPdfFile = async (
-  file: FileWithPath
-): Promise<TextContent> => {
-  return new Promise((resolve, reject) => {
-    const fileReader = new FileReader();
-
-    fileReader.onload = async () => {
-      try {
-        const arrayBuffer = fileReader.result as ArrayBuffer;
-        resolve(await getTextContentFromPDF(arrayBuffer));
-      } catch (e) {
-        reject(e);
-      }
-    };
-
-    fileReader.onerror = reject;
-    fileReader.readAsArrayBuffer(file);
-  });
-};
-
 const FileDropzone = () => {
-  const [csvData, setCsvData] = useState<CSVData[]>([]);
+  const [csvData, setCsvData] = useState<WmdCsvData[]>([]);
 
   const onDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
     try {
       const csvPromises = acceptedFiles.map(async (file: FileWithPath) => {
         const tokenizedText = await getTextTokenFromPdfFile(file);
-        return filterArea(tokenizedText);
+        return wmdExtractFields(tokenizedText);
       });
 
       const csvData = await Promise.all(csvPromises);
