@@ -1,22 +1,22 @@
 import { StandardTextFieldProps, TextField } from '@mui/material';
 import React from 'react';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, FieldValues, Path } from 'react-hook-form';
 
-interface FormInputProps extends StandardTextFieldProps {
-  control: Control<any, any, any>;
+interface FormInputProps<T extends FieldValues> extends StandardTextFieldProps {
+  control: Control<T>;
   name: string;
   label: string;
 }
 
-const ControlledTextField = ({
+const ControlledTextField = <T extends FieldValues>({
   name,
   control,
   label,
   ...textFieldProps
-}: FormInputProps) => {
+}: FormInputProps<T>) => {
   return (
     <Controller
-      name={name}
+      name={name as Path<T>}
       control={control}
       render={({ field, fieldState: { error } }) => (
         <TextField

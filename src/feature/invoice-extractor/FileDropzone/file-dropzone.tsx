@@ -6,37 +6,16 @@ import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import getTextContentFromPDF from './pdf-extract';
 import { TextContent } from 'pdfjs-dist/types/src/display/api';
 import { CSVLink } from 'react-csv';
-import AcceptedFiles from './accepted-files';
-import RejectedFiles from './rejected-files';
+import AcceptedFiles from './components/accepted-files';
+import RejectedFiles from './components/rejected-files';
 import { filterArea } from './wmd-template';
-
-const baseStyle = {
-  flex: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: '20px',
-  borderWidth: 2,
-  borderRadius: 2,
-  borderColor: '#eeeeee',
-  borderStyle: 'dashed',
-  backgroundColor: '#fafafa',
-  color: '#bdbdbd',
-  outline: 'none',
-  transition: 'border .24s ease-in-out'
-};
-
-const activeStyle = {
-  borderColor: '#2196f3'
-};
-
-const acceptStyle = {
-  borderColor: '#00e676'
-};
-
-const rejectStyle = {
-  borderColor: '#ff1744'
-};
+import { CSVData } from '../interfaces/csv-data';
+import {
+  baseStyle,
+  activeStyle,
+  acceptStyle,
+  rejectStyle
+} from './utils/styles';
 
 const headers = [
   { label: 'Rechnungsnummer', key: 'Rechnungsnummer' },
@@ -44,40 +23,41 @@ const headers = [
   { label: 'RechnungsbetragBrutto', key: 'RechnungsbetragBrutto' }
 ];
 
-export interface CSVData {
-  Rechnungsnummer: string;
-  Rechnungsdatum: string;
-  RechnungsbetragBrutto: string;
-}
+const getTextTokenFromPdfFile = async (
+  file: FileWithPath
+): Promise<TextContent> => {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
 
-const getTextTokenFromPdfFile = async (file: FileWithPath) =>
-  new Promise<TextContent>((resolve, reject) => {
-    try {
-      const fileReader = new FileReader();
-      fileReader.onload = async () => {
-        const arrayBuffer = fileReader.result;
-
+    fileReader.onload = async () => {
+      try {
+        const arrayBuffer = fileReader.result as ArrayBuffer;
         resolve(await getTextContentFromPDF(arrayBuffer));
-      };
-      fileReader.readAsArrayBuffer(file);
-    } catch (e) {
-      reject(e);
-    }
+      } catch (e) {
+        reject(e);
+      }
+    };
+
+    fileReader.onerror = reject;
+    fileReader.readAsArrayBuffer(file);
   });
+};
 
 const FileDropzone = () => {
   const [csvData, setCsvData] = useState<CSVData[]>([]);
 
   const onDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
-    const csvPromises = acceptedFiles.map(async (file: FileWithPath) => {
-      const tokenizedText = await getTextTokenFromPdfFile(file);
+    try {
+      const csvPromises = acceptedFiles.map(async (file: FileWithPath) => {
+        const tokenizedText = await getTextTokenFromPdfFile(file);
+        return filterArea(tokenizedText);
+      });
 
-      return filterArea(tokenizedText);
-    });
-
-    const csvData = await Promise.all(csvPromises);
-
-    setCsvData(csvData);
+      const csvData = await Promise.all(csvPromises);
+      setCsvData(csvData);
+    } catch (error) {
+      console.error('Error processing files:', error);
+    }
   }, []);
 
   const {
@@ -107,7 +87,6 @@ const FileDropzone = () => {
   return (
     <Container maxWidth="sm">
       <div className="container">
-        {/* @ts-ignore */}
         <div {...getRootProps({ style })}>
           <input {...getInputProps()} />
           <p>Drag &apos;n&apos; drop pdf file in here</p>
@@ -119,7 +98,15 @@ const FileDropzone = () => {
         <RejectedFiles fileRejections={fileRejections} />
       </aside>
       {csvData.length !== 0 && (
-        <CSVLink data={csvData} headers={headers}>
+        <CSVLink
+          data={csvData}
+          headers={headers}
+          style={{
+            textDecoration: 'underline',
+            color: 'cornflowerblue',
+            cursor: 'pointer'
+          }}
+        >
           Download CSV
         </CSVLink>
       )}

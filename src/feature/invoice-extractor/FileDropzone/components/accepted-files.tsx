@@ -7,7 +7,7 @@ type AcceptedFiles = {
 const AcceptedFiles = ({ acceptedFiles }: AcceptedFiles) => {
   return (
     <>
-      <h4>Accepted files</h4>
+      <h2>Accepted files</h2>
       <ul>
         {acceptedFiles.map((file: FileWithPath) => (
           <li key={file.path}>
