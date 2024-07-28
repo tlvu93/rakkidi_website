@@ -1,11 +1,8 @@
-import { DocumentInitParameters } from 'pdfjs-dist/types/src/display/api';
+import { DocumentInitParameters } from 'react-pdf/node_modules/pdfjs-dist/types/src/display/api';
 
 import { pdfjs } from 'react-pdf';
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url
-).toString();
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const getTextContentFromPDF = async (
   file: string | URL | ArrayBuffer | DocumentInitParameters | null
