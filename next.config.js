@@ -9,9 +9,6 @@ const nextConfig = {
 
     return config;
   },
-  experimental: {
-    esmExternals: 'loose' // This setting helps in dealing with ESM packages
-  },
   reactStrictMode: true,
   swcMinify: true,
   images: {
