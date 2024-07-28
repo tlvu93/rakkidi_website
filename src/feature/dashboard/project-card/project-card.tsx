@@ -13,8 +13,8 @@ const ProjectCard = ({ data }: ProjectCardProps) => {
     <Box
       onClick={flipCard}
       sx={{
-        minWidth: '30rem',
-        maxWidth: '50rem',
+        minWidth: '20rem',
+        maxWidth: '28rem',
         aspectRatio: '18/13',
 
         width: '100%',

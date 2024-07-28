@@ -39,7 +39,8 @@ const CardFront = ({ data }: ProjectCardProps) => {
           width: '100%',
           height: 0,
           paddingBottom: '56.25%',
-          position: 'relative'
+          position: 'relative',
+          border: '2px solid rgba(0, 0, 0, 0.1)'
         }}
       >
         <Image
