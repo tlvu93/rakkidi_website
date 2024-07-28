@@ -12,6 +12,8 @@ const ProjectCard = ({ data }: ProjectCardProps) => {
   return (
     <Box
       onClick={flipCard}
+      role="button"
+      aria-pressed={flipped}
       sx={{
         minWidth: '20rem',
         maxWidth: '28rem',

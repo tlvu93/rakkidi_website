@@ -1,59 +1,35 @@
+import React, { useMemo } from 'react';
 import { Box } from '@mui/material';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import Slider from 'react-slick';
 
 import ProjectCard from 'feature/dashboard/project-card/project-card';
 import { CardGroupProps } from './project-card/interfaces';
 import { ProjectGroupProps } from './interfaces';
-import Slider from 'react-slick';
-import { ArrowBack, ArrowForward } from '@mui/icons-material';
+import { CustomArrow } from './slider/custom-arrows';
 
-const CustomNextArrow: React.FC<any> = (props) => {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        display: 'block',
-        color: 'black'
-      }}
-      onClick={onClick}
-    >
-      <ArrowForward />
-    </div>
+const MAX_VISIBLE_PROJECTS = 4; // Environment variable or constant
+
+const ProjectCardRow: React.FC<CardGroupProps> = ({ projects }) => {
+  const sliderSettings = useMemo(
+    () => ({
+      infinite: false,
+      slidesToShow: Math.min(projects.length, MAX_VISIBLE_PROJECTS),
+      slidesToScroll: 1,
+      nextArrow: <CustomArrow direction="next" />,
+      prevArrow: <CustomArrow direction="prev" />,
+      arrows: projects.length > MAX_VISIBLE_PROJECTS,
+      centerMode: false,
+      swipe: projects.length > MAX_VISIBLE_PROJECTS
+    }),
+    [projects.length]
   );
-};
 
-const CustomPrevArrow: React.FC<any> = (props) => {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        display: 'block',
-        color: 'black'
-      }}
-      onClick={onClick}
-    >
-      <ArrowBack />
-    </div>
-  );
-};
+  if (!projects || projects.length === 0) {
+    return <Box>No projects available.</Box>;
+  }
 
-const ProjectCardRow = ({ projects }: CardGroupProps) => {
-  console.log(projects);
-  const sliderSettings = {
-    infinite: false,
-    slidesToShow: Math.min(projects.length, 4),
-    slidesToScroll: 1,
-    nextArrow: <CustomNextArrow />,
-    prevArrow: <CustomPrevArrow />,
-    arrows: projects.length > 4,
-    centerMode: false,
-    swipe: projects.length > 4
-  };
   return (
     <Box pb={4}>
       <Slider {...sliderSettings}>
@@ -67,16 +43,17 @@ const ProjectCardRow = ({ projects }: CardGroupProps) => {
   );
 };
 
-const ProjectGroup = ({ projects }: ProjectGroupProps) => {
+const ProjectGroup: React.FC<ProjectGroupProps> = ({ projects }) => {
   return (
     <Box pl={10}>
-      {Object.entries(projects).map(([category, projects]) => (
+      {Object.entries(projects).map(([category, categoryProjects]) => (
         <div key={category}>
           <h1>{category}</h1>
-          <ProjectCardRow projects={projects} />
+          <ProjectCardRow projects={categoryProjects} />
         </div>
       ))}
     </Box>
   );
 };
+
 export default ProjectGroup;

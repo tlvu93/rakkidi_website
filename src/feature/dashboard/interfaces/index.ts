@@ -33,3 +33,9 @@ export interface ProjectGroupProps {
 export interface AllProjectResponse {
   allProject: ProjectCardData[];
 }
+
+export interface ArrowProps {
+  className?: string;
+  style?: React.CSSProperties;
+  onClick?: () => void;
+}
