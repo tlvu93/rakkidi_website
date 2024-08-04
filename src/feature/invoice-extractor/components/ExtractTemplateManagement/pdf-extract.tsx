@@ -22,7 +22,7 @@ export const getTextContentFromPDF = async (
 };
 
 export const getTextTokenFromPdfFile = async (
-  file: FileWithPath
+  file: File
 ): Promise<TextContent> => {
   return new Promise((resolve, reject) => {
     const fileReader = new FileReader();
@@ -67,13 +67,13 @@ export const getTextFromAreaTemplate = (
         isInRange(
           item,
           area.tfStart[TransformIndex.X],
-          area.tfEnd![TransformIndex.X],
+          area.tfEnd?.[TransformIndex.X] ?? area.tfStart[TransformIndex.X],
           TransformIndex.X
         ) &&
         isInRange(
           item,
           area.tfStart[TransformIndex.Y],
-          area.tfEnd![TransformIndex.Y],
+          area.tfEnd?.[TransformIndex.Y] ?? area.tfStart[TransformIndex.Y],
           TransformIndex.Y
         )
     )

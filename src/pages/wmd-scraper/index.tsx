@@ -17,7 +17,7 @@ import useWMDService from 'feature/wmd-scraper/hooks/useWMDService';
 import moment from 'moment';
 import { Moment } from 'moment';
 import React from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 export type DateRange = {
   dateFrom: Moment | null;

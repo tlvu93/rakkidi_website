@@ -6,15 +6,16 @@ import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import { CSVLink } from 'react-csv';
 import AcceptedFiles from './components/accepted-files';
 import RejectedFiles from './components/rejected-files';
-import { wmdExtractFields } from '../ExtractTemplateManagement/wmd-template';
-import { WmdCsvData } from '../interfaces/wmd-csv-data';
+
 import {
   baseStyle,
   activeStyle,
   acceptStyle,
   rejectStyle
 } from './utils/styles';
+import { WmdCsvData } from 'feature/invoice-extractor/interfaces/wmd-csv-data';
 import { getTextTokenFromPdfFile } from '../ExtractTemplateManagement/pdf-extract';
+import { wmdExtractFields } from '../ExtractTemplateManagement/wmd-template';
 
 const headers = [
   { label: 'Rechnungsnummer', key: 'Rechnungsnummer' },
