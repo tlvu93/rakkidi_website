@@ -6,7 +6,7 @@ import {
   ProjectGroup,
   ProjectCardData,
   ProjectCategory
-} from 'feature/dashboard/interfaces';
+} from 'features/dashboard/interfaces';
 
 const getProjects = async () => {
   const { data } = await client.query({
