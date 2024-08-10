@@ -4,7 +4,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
 
-import ProjectCard from 'feature/dashboard/project-card/project-card';
+import ProjectCard from 'features/dashboard/project-card/project-card';
 import { CardGroupProps } from './project-card/interfaces';
 import { ProjectGroupProps } from './interfaces';
 import { CustomArrow } from './slider/custom-arrows';

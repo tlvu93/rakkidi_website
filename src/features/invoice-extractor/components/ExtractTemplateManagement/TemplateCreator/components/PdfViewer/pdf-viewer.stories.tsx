@@ -2,7 +2,7 @@ import PDFViewer from './pdf-viewer';
 
 export default {
   component: PDFViewer,
-  title: 'PDF Viewer',
+  title: 'TemplateCreator/PDFViewer',
   tags: ['autodocs']
 };
 

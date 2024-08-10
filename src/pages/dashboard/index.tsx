@@ -3,8 +3,8 @@ import AppLayout from '@shared/layouts/app-layout';
 import {
   AllProjectResponse,
   ProjectGroup as IProjectGroup
-} from 'feature/dashboard/interfaces';
-import ProjectGroup from 'feature/dashboard/project-group';
+} from 'features/dashboard/interfaces';
+import ProjectGroup from 'features/dashboard/project-group';
 import client from 'services/sanity/apollo-client';
 import { GET_PROJECTS } from 'services/sanity/queries/queries';
 interface DashboardProps {

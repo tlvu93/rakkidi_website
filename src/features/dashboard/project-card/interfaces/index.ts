@@ -1,4 +1,4 @@
-import { ProjectCardData } from 'feature/dashboard/interfaces';
+import { ProjectCardData } from 'features/dashboard/interfaces';
 
 export type ProjectCardProps = {
   data: ProjectCardData;

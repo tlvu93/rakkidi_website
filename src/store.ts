@@ -1,5 +1,5 @@
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
-import { orderSlice } from 'feature/contract-calculator/order-slice';
+import { orderSlice } from 'features/contract-calculator/order-slice';
 import { createWrapper } from 'next-redux-wrapper';
 
 const makeStore = () =>

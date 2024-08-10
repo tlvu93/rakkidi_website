@@ -13,7 +13,7 @@ import {
   acceptStyle,
   rejectStyle
 } from './utils/styles';
-import { WmdCsvData } from 'feature/invoice-extractor/interfaces/wmd-csv-data';
+import { WmdCsvData } from 'features/invoice-extractor/interfaces/wmd-csv-data';
 import { getTextTokenFromPdfFile } from '../ExtractTemplateManagement/pdf-extract';
 import { wmdExtractFields } from '../ExtractTemplateManagement/wmd-template';
 

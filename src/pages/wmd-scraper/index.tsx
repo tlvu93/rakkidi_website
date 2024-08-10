@@ -8,12 +8,12 @@ import {
 } from '@mui/material';
 
 import AppLayout from '@shared/layouts/app-layout';
-import DateRangePicker from 'feature/wmd-scraper/components/DateRangePicker';
-import DownloadButtons from 'feature/wmd-scraper/components/DownloadButtons';
-import useLoginModal from 'feature/wmd-scraper/components/LoginModal';
-import ScraperProgressWS from 'feature/wmd-scraper/components/ScraperProgressWS';
+import DateRangePicker from 'features/wmd-scraper/components/DateRangePicker';
+import DownloadButtons from 'features/wmd-scraper/components/DownloadButtons';
+import useLoginModal from 'features/wmd-scraper/components/LoginModal';
+import ScraperProgressWS from 'features/wmd-scraper/components/ScraperProgressWS';
 
-import useWMDService from 'feature/wmd-scraper/hooks/useWMDService';
+import useWMDService from 'features/wmd-scraper/hooks/useWMDService';
 import moment from 'moment';
 import { Moment } from 'moment';
 import React from 'react';

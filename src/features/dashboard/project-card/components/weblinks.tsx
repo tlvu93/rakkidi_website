@@ -7,7 +7,7 @@ import LinkIcon from '@mui/icons-material/Link';
 
 import FigmaSVG from '@assets/figma_logo.svg';
 import GithubSVG from '@assets/github-mark.svg';
-import { WeblinkData } from 'feature/dashboard/interfaces';
+import { WeblinkData } from 'features/dashboard/interfaces';
 import { ProjectCardProps } from '../interfaces';
 
 type WebLinkProps = {

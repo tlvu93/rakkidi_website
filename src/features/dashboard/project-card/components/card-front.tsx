@@ -2,7 +2,7 @@ import { Box, Card, Typography } from '@mui/material';
 import Image from 'next/image';
 import { ProjectCardProps } from '../interfaces';
 import { cardStyle } from '../style/style';
-import { Tags } from 'feature/dashboard/interfaces';
+import { Tags } from 'features/dashboard/interfaces';
 
 const CardFront = ({ data }: ProjectCardProps) => {
   const CardFooter = ({ title, tags }: { title: string; tags: Tags[] }) => {

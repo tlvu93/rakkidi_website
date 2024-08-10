@@ -2,7 +2,7 @@ import PropertiesTable from './properties-table';
 
 export default {
   component: PropertiesTable,
-  title: 'PropertiesTable',
+  title: 'TemplateCreator/PropertiesTable',
   tags: ['autodocs']
 };
 
