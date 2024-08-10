@@ -72,10 +72,10 @@
     "@types/utif": "^3.0.1",
     "@types/uuid": "^10.0.0",
     "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.5",
+    "eslint-plugin-storybook": "^0.8.0",
     "globals": "^15.9.0",
     "storybook": "^8.2.7",
-    "typescript": "5.4.5",
-    "eslint-config-next": "^14.2.5",
-    "eslint-plugin-storybook": "^0.8.0"
+    "typescript": "5.4.5"
   }
 }
