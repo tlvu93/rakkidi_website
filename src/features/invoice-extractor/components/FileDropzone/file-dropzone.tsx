@@ -14,8 +14,8 @@ import {
   rejectStyle
 } from './utils/styles';
 import { WmdCsvData } from 'features/invoice-extractor/interfaces/wmd-csv-data';
-import { getTextTokenFromPdfFile } from '../ExtractTemplateManagement/pdf-extract';
-import { wmdExtractFields } from '../ExtractTemplateManagement/wmd-template';
+import { getTextTokenFromPdfFile } from '../ExtractTemplateManagement/utils/pdf-extract';
+import { wmdExtractFields } from '../ExtractTemplateManagement/utils/wmd-template';
 
 const headers = [
   { label: 'Rechnungsnummer', key: 'Rechnungsnummer' },

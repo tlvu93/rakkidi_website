@@ -11,7 +11,7 @@ interface PDFTextExtractorProps {
   filePath: string;
 }
 
-const PDFTextExtractor: React.FC<PDFTextExtractorProps> = ({ filePath }) => {
+const PdfViewer: React.FC<PDFTextExtractorProps> = ({ filePath }) => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   const [pageDimensions, setPageDimensions] = useState({
@@ -73,4 +73,4 @@ const PDFTextExtractor: React.FC<PDFTextExtractorProps> = ({ filePath }) => {
   );
 };
 
-export default PDFTextExtractor;
+export default PdfViewer;

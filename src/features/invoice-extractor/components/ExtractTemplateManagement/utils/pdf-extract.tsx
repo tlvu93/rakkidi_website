@@ -5,7 +5,6 @@ import {
   TransformIndex
 } from '@pages/invoice-extractor/types';
 import { TextContent, TextItem } from 'pdfjs-dist/types/src/display/api';
-import { FileWithPath } from 'react-dropzone';
 
 import { pdfjs } from 'react-pdf';
 

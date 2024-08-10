@@ -1,7 +1,8 @@
 import { TextContent, TextItem } from 'pdfjs-dist/types/src/display/api';
-import { WmdCsvData } from '../interfaces/wmd-csv-data';
+
 import { ElementTransformation } from '@pages/invoice-extractor/types';
 import { getIndexFromKeyword, getTextFromAreaTemplate } from './pdf-extract';
+import { WmdCsvData } from 'features/invoice-extractor/interfaces/wmd-csv-data';
 
 const rechnungsNummerAT: ElementTransformation = {
   tfStart: [7.2, 0, 0, 7.2, 495.57, 654.441],
