@@ -1,37 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import { Stage, Layer, Rect } from 'react-konva';
+import { FileWithPath } from 'react-dropzone';
+
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import PdfCanvasLayer from '../PdfCanvasLayer/pdf-canvas-layer';
+import FileDropzone from 'features/invoice-extractor/components/FileDropzone/file-dropzone';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
-// Define the props type
-interface PDFTextExtractorProps {
-  filePath: string;
-}
-
-const PdfViewer: React.FC<PDFTextExtractorProps> = ({ filePath }) => {
+const PdfViewer: React.FC = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
-
   const [pageDimensions, setPageDimensions] = useState({
     width: 0,
     height: 0,
     scale: 1
   });
 
-  useEffect(() => {
-    const loadFile = async () => {
-      const response = await fetch(filePath);
-      const blob = await response.blob();
-      const file = new File([blob], filePath.split('/').pop() || 'file.pdf', {
-        type: blob.type
-      });
-      setPdfFile(file);
-    };
-
-    loadFile();
-  }, [filePath]);
+  const handleDrop = (acceptedFiles: FileWithPath[]) => {
+    if (acceptedFiles.length > 0) {
+      setPdfFile(acceptedFiles[0]);
+    }
+  };
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     console.log(`Document loaded with ${numPages} pages`);
@@ -47,28 +36,33 @@ const PdfViewer: React.FC<PDFTextExtractorProps> = ({ filePath }) => {
     });
   };
 
-  if (!pdfFile) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: pageDimensions.width,
-        height: pageDimensions.height
-      }}
-    >
-      <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
-        <Page
-          pageNumber={1}
-          width={pageDimensions.width}
-          height={pageDimensions.height}
-          onRenderSuccess={onPageRenderSuccess}
-          renderTextLayer={false}
+    <div>
+      {!pdfFile ? (
+        <FileDropzone
+          onDrop={handleDrop}
+          accept={{ 'application/pdf': ['.pdf'] }}
         />
-      </Document>
-      <PdfCanvasLayer pageDimensions={pageDimensions} />
+      ) : (
+        <div
+          style={{
+            position: 'relative',
+            width: pageDimensions.width,
+            height: pageDimensions.height
+          }}
+        >
+          <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
+            <Page
+              pageNumber={1}
+              width={pageDimensions.width}
+              height={pageDimensions.height}
+              onRenderSuccess={onPageRenderSuccess}
+              renderTextLayer={false}
+            />
+          </Document>
+          <PdfCanvasLayer pageDimensions={pageDimensions} />
+        </div>
+      )}
     </div>
   );
 };

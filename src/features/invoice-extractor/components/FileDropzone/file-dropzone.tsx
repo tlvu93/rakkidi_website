@@ -1,11 +1,7 @@
-import { useCallback, useMemo, useState } from 'react';
-import { useDropzone, FileWithPath, FileError, Accept } from 'react-dropzone';
-import { Container } from '@mui/material';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useDropzone, FileWithPath, Accept, FileError } from 'react-dropzone';
+import { Container, CircularProgress } from '@mui/material';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
-
-import { CSVLink } from 'react-csv';
-import AcceptedFiles from './components/accepted-files';
-import RejectedFiles from './components/rejected-files';
 
 import {
   baseStyle,
@@ -13,45 +9,60 @@ import {
   acceptStyle,
   rejectStyle
 } from './utils/styles';
-import { WmdCsvData } from 'features/invoice-extractor/interfaces/wmd-csv-data';
-import { getTextTokenFromPdfFile } from '../ExtractTemplateManagement/utils/pdf-extract';
-import { wmdExtractFields } from '../ExtractTemplateManagement/utils/wmd-template';
 
-const headers = [
-  { label: 'Rechnungsnummer', key: 'Rechnungsnummer' },
-  { label: 'Rechnungsdatum', key: 'Rechnungsdatum' },
-  { label: 'RechnungsbetragBrutto', key: 'RechnungsbetragBrutto' }
-];
+interface FileDropzoneProps {
+  onDrop: (acceptedFiles: FileWithPath[]) => void;
+  accept?: Accept;
+  maxFiles?: number;
+  maxSize?: number;
+  minSize?: number;
+  onDropRejected?: (
+    fileRejections: Array<{ file: FileWithPath; errors: FileError[] }>
+  ) => void;
+}
 
-const FileDropzone = () => {
-  const [csvData, setCsvData] = useState<WmdCsvData[]>([]);
+const FileDropzone: React.FC<FileDropzoneProps> = ({
+  onDrop,
+  accept = { 'application/pdf': ['.pdf'] },
+  maxFiles,
+  maxSize,
+  minSize,
+  onDropRejected
+}) => {
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const onDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
-    try {
-      const csvPromises = acceptedFiles.map(async (file: FileWithPath) => {
-        const tokenizedText = await getTextTokenFromPdfFile(file);
-        return wmdExtractFields(tokenizedText);
+  const handleDrop = useCallback(
+    async (acceptedFiles: FileWithPath[]) => {
+      // Defer the execution of the onDrop to avoid blocking the UI
+      requestAnimationFrame(() => {
+        onDrop(acceptedFiles);
+        setLoading(false);
       });
-
-      const csvData = await Promise.all(csvPromises);
-      setCsvData(csvData);
-    } catch (error) {
-      console.error('Error processing files:', error);
-    }
-  }, []);
+    },
+    [onDrop]
+  );
 
   const {
-    acceptedFiles,
-    fileRejections,
     getRootProps,
     getInputProps,
     isDragActive,
     isDragAccept,
     isDragReject
   } = useDropzone({
-    onDrop,
-
-    accept: { 'application/pdf': ['.pdf'] }
+    onDrop: handleDrop,
+    accept,
+    maxFiles,
+    maxSize,
+    minSize,
+    onDropRejected: (fileRejections) => {
+      onDropRejected && onDropRejected(fileRejections);
+      setLoading(false);
+    },
+    onFileDialogOpen: () => setLoading(true),
+    onFileDialogCancel: () => setLoading(false),
+    onDragEnter: () => setLoading(true),
+    onDragLeave: () => setLoading(false),
+    onDropAccepted: () => setLoading(false)
   });
 
   const style = useMemo(
@@ -69,27 +80,25 @@ const FileDropzone = () => {
       <div className="container">
         <div {...getRootProps({ style })}>
           <input {...getInputProps()} />
-          <p>Drag &apos;n&apos; drop pdf file in here</p>
-          <SaveAltIcon style={{ fontSize: '2.5em' }} />
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100%'
+            }}
+          >
+            <p>Drag &apos;n&apos; drop files here, or click to select files</p>
+
+            {loading ? (
+              <CircularProgress />
+            ) : (
+              <SaveAltIcon style={{ fontSize: '2.5em' }} />
+            )}
+          </div>
         </div>
       </div>
-      <aside>
-        <AcceptedFiles acceptedFiles={acceptedFiles} />
-        <RejectedFiles fileRejections={fileRejections} />
-      </aside>
-      {csvData.length !== 0 && (
-        <CSVLink
-          data={csvData}
-          headers={headers}
-          style={{
-            textDecoration: 'underline',
-            color: 'cornflowerblue',
-            cursor: 'pointer'
-          }}
-        >
-          Download CSV
-        </CSVLink>
-      )}
     </Container>
   );
 };

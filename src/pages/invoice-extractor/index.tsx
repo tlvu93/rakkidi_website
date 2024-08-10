@@ -9,7 +9,9 @@ import ExtractTemplateManagement from 'features/invoice-extractor/components/Ext
 
 const DynamicFileDropzone = dynamic(
   () =>
-    import('features/invoice-extractor/components/FileDropzone/file-dropzone'),
+    import(
+      'features/invoice-extractor/components/FileDropzone/csv-filedropzone'
+    ),
   { ssr: false }
 );
 
