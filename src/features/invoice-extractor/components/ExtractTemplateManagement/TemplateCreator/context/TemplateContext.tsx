@@ -31,7 +31,7 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
     const newField: ExtractionField = {
       id: faker.string.uuid(),
       name: `field${template.extractionFields.length + 1}`,
-      tfMatrix: [7.5, 0, 7.5, 0, 10, 10],
+      tfMatrix: [50, 0, 0, 50, 100, 100],
       page: null
     };
 

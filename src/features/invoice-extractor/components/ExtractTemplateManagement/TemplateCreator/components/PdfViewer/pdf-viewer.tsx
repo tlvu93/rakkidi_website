@@ -63,6 +63,29 @@ const PdfViewer: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [pdfFile, pageDimensions.width]);
 
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (pdfFile && pageDimensions.width > 0) {
+        const containerWidth =
+          containerRef.current?.clientWidth || pageDimensions.width;
+        const scale = containerWidth / (pageDimensions.width / zoom);
+
+        if (scale !== pageDimensions.scale || zoom !== pageDimensions.scale) {
+          setPageDimensions((prevDimensions) => ({
+            ...prevDimensions,
+            width: prevDimensions.width * scale,
+            height: prevDimensions.height * scale,
+            scale: zoom
+          }));
+        }
+      }
+    };
+
+    updateDimensions();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [zoom]);
+
   const handleZoomIn = () => {
     setZoom((prevZoom) => Math.min(prevZoom + 0.25, 2.0));
   };
@@ -70,21 +93,6 @@ const PdfViewer: React.FC = () => {
   const handleZoomOut = () => {
     setZoom((prevZoom) => Math.max(prevZoom - 0.25, 0.5));
   };
-
-  useEffect(() => {
-    if (pdfFile && pageDimensions.width > 0) {
-      const containerWidth =
-        containerRef.current?.clientWidth || pageDimensions.width;
-      const scale = containerWidth / (pageDimensions.width / zoom);
-
-      setPageDimensions((prevDimensions) => ({
-        ...prevDimensions,
-        width: prevDimensions.width * scale,
-        height: prevDimensions.height * scale,
-        scale: zoom
-      }));
-    }
-  }, [zoom]);
 
   return (
     <div>
@@ -111,9 +119,9 @@ const PdfViewer: React.FC = () => {
               position: 'relative',
               width: '100%',
               maxWidth: '100%',
-              height: '500px', // Adjust this to your desired height
-              overflow: 'auto', // Enable scrolling
-              border: '1px solid #ccc' // Optional: add a border to see the container
+              height: '500px',
+              overflow: 'auto',
+              border: '1px solid #ccc'
             }}
           >
             <div
