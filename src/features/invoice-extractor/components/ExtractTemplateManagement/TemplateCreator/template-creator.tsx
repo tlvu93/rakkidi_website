@@ -1,17 +1,15 @@
-import { Container, Paper, Grid, Box } from '@mui/material';
 import React from 'react';
+import { Container, Paper, Grid, Box } from '@mui/material';
 import PropertiesTable from './components/PropertyTable/properties-table';
 import PdfViewer from './components/PdfViewer/pdf-viewer';
 import { TemplateProvider } from './context/TemplateContext';
 
-type Props = {};
-
-const TemplateCreator = (props: Props) => {
+const TemplateCreator: React.FC = () => {
   return (
     <TemplateProvider>
-      <Paper>
+      <Paper sx={{ padding: 4, borderRadius: 2 }}>
         <Container maxWidth="xl">
-          <Grid container spacing={2} padding={4}>
+          <Grid container spacing={4}>
             <Grid item xs={12} md={6}>
               <Box
                 height={'100%'}

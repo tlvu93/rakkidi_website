@@ -1,4 +1,5 @@
-import { AddCircle } from '@mui/icons-material';
+import React, { useState } from 'react';
+import { AddCircle, ImportExport, Save } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -11,8 +12,6 @@ import {
   Select,
   Typography
 } from '@mui/material';
-import React, { useState } from 'react';
-
 import { SelectChangeEvent } from '@mui/material';
 import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
 
@@ -21,26 +20,7 @@ type Props = {
 };
 
 const templates: InvoiceExtractTemplate[] = [
-  // {
-  //   name: 'Example Template',
-  //   description: 'This is an example template',
-  //   templateComponents: [
-  //     {
-  //       name: 'Feld1',
-  //       elementTF: {
-  //         tfStart: [7.2, 0, 0, 7.2, 495.57, 654.441],
-  //         tfEnd: [7.2, 0, 0, 7.2, 536.9963999999997, 654.441]
-  //       }
-  //     },
-  //     {
-  //       name: 'Feld2',
-  //       elementTF: {
-  //         tfStart: [7.2, 0, 0, 7.2, 502.271, 614.441],
-  //         tfEnd: [7.2, 0, 0, 7.2, 536.99659999, 614.441]
-  //       }
-  //     }
-  //   ]
-  // }
+  // Example templates could go here
 ];
 
 const ExtractTemplateManagement = ({ setTemplate }: Props) => {
@@ -48,10 +28,16 @@ const ExtractTemplateManagement = ({ setTemplate }: Props) => {
     useState<InvoiceExtractTemplate | null>(null);
 
   const handleSelectChange = (event: SelectChangeEvent<string>) => {
-    const templateName = event.target.value as string;
+    const templateName = event.target.value;
     const selected =
       templates.find((template) => template.name === templateName) || null;
     setSelectedTemplate(selected);
+  };
+
+  const handleTemplateSelection = () => {
+    if (selectedTemplate) {
+      setTemplate(selectedTemplate);
+    }
   };
 
   return (
@@ -69,52 +55,58 @@ const ExtractTemplateManagement = ({ setTemplate }: Props) => {
             <Button
               variant="outlined"
               startIcon={<AddCircle />}
-              style={{ textTransform: 'none' }}
+              sx={{ textTransform: 'none' }}
             >
               Create
             </Button>
           </Grid>
+
           <Grid item xs={12}>
             <FormControl fullWidth>
-              {/* <Typography variant="subtitle1">Choose Template</Typography> */}
-              <InputLabel id="demo-simple-select-label">
+              <InputLabel id="select-template-label">
                 Choose a Template
               </InputLabel>
               <Select
-                id="demo-simple-select"
+                id="select-template"
                 label="Choose a Template"
                 value={selectedTemplate ? selectedTemplate.name : ''}
                 onChange={handleSelectChange}
+                labelId="select-template-label"
               >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
                 {templates.length === 0 ? (
                   <MenuItem disabled>
                     <em>No Templates Created</em>
                   </MenuItem>
                 ) : (
-                  <>
-                    <MenuItem value="">
-                      <em>None</em>
+                  templates.map((template) => (
+                    <MenuItem key={template.name} value={template.name}>
+                      {template.name}
                     </MenuItem>
-                    {templates.map((template) => (
-                      <MenuItem key={template.name} value={template.name}>
-                        {template.name}
-                      </MenuItem>
-                    ))}
-                  </>
+                  ))
                 )}
               </Select>
             </FormControl>
           </Grid>
+
           <Grid item xs={12} container justifyContent="space-between">
             <Box>
-              <Button variant="outlined" sx={{ mr: 1 }}>
+              <Button
+                variant="outlined"
+                startIcon={<ImportExport />}
+                sx={{ mr: 1 }}
+              >
                 Import
               </Button>
-              <Button variant="outlined">Export</Button>
+              <Button variant="outlined" startIcon={<Save />}>
+                Export
+              </Button>
             </Box>
             <Button
               variant="contained"
-              onClick={() => selectedTemplate && setTemplate(selectedTemplate)}
+              onClick={handleTemplateSelection}
               disabled={!selectedTemplate || templates.length === 0}
             >
               Choose

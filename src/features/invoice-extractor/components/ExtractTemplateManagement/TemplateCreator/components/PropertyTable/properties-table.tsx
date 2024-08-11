@@ -9,7 +9,7 @@ import {
   GridRenderCellParams
 } from '@mui/x-data-grid';
 import { useTemplate } from '../../context/TemplateContext';
-import { Toolbar } from './toolbar';
+import Toolbar from './toolbar';
 import { ExtractionField } from 'features/invoice-extractor/interfaces';
 
 type CustomRenderCellParams = GridRenderCellParams<
@@ -22,15 +22,13 @@ export default function PropertiesTable() {
   const { template, deleteExtractionField, updateExtractionField } =
     useTemplate();
 
-  const rows: Partial<ExtractionField>[] = template.extractionFields.map(
-    (field) => ({
-      id: field.id,
-      name: field.name,
-      page: field.page || 1
-    })
-  );
+  const rows = template.extractionFields.map((field) => ({
+    id: field.id,
+    name: field.name,
+    page: field.page || 1
+  }));
 
-  const handleDeleteClick = (id: string) => () => {
+  const handleDeleteClick = (id: string) => {
     deleteExtractionField(id);
   };
 
@@ -55,20 +53,17 @@ export default function PropertiesTable() {
       cellClassName: 'actions',
       headerAlign: 'right',
       flex: 1,
-      renderCell: (params: CustomRenderCellParams) => {
-        const { id, row } = params;
-        return (
-          <Box display="flex" justifyContent="flex-end" width="100%">
-            <GridActionsCellItem
-              key={`delete-${id}`}
-              icon={<DeleteIcon sx={{ fontSize: '1.2rem' }} />}
-              label="Delete"
-              onClick={() => handleDeleteClick(row.id as string)()}
-              color="inherit"
-            />
-          </Box>
-        );
-      }
+      renderCell: (params: CustomRenderCellParams) => (
+        <Box display="flex" justifyContent="flex-end" width="100%">
+          <GridActionsCellItem
+            key={`delete-${params.id}`}
+            icon={<DeleteIcon sx={{ fontSize: '1.2rem' }} />}
+            label="Delete"
+            onClick={() => handleDeleteClick(params.row.id as string)}
+            color="inherit"
+          />
+        </Box>
+      )
     }
   ];
 

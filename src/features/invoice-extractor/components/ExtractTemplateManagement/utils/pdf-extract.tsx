@@ -4,7 +4,7 @@ import { TextContent, TextItem } from 'pdfjs-dist/types/src/display/api';
 
 import { pdfjs } from 'react-pdf';
 import {
-  TransformationMatrix,
+  PdfTransformationMatrix,
   TransformIndex
 } from 'features/invoice-extractor/interfaces';
 
@@ -49,7 +49,7 @@ export const getTextTokenFromPdfFile = async (
  */
 export const getTextFromAreaTemplate = (
   text: TextContent,
-  tf: TransformationMatrix
+  tf: PdfTransformationMatrix
 ): string => {
   const textItems = text.items as TextItem[];
 
