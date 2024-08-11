@@ -9,6 +9,7 @@ interface TemplateContextProps {
   template: InvoiceExtractTemplate;
   addExtractionField: () => void;
   deleteExtractionField: (id: string) => void;
+  updateExtractionField: (updateField: Partial<ExtractionField>) => void;
   updateExtractionFields: (fields: ExtractionField[]) => void;
   updateTemplate: (newTemplate: Partial<InvoiceExtractTemplate>) => void;
 }
@@ -30,7 +31,8 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
     const newField: ExtractionField = {
       id: faker.string.uuid(),
       name: `field${template.extractionFields.length + 1}`,
-      tfMatrix: [7.5, 0, 7.5, 0, 10, 10]
+      tfMatrix: [7.5, 0, 7.5, 0, 10, 10],
+      page: null
     };
 
     setTemplate((prevTemplate) => ({
@@ -55,6 +57,19 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
     }));
   };
 
+  const updateExtractionField = (updateField: Partial<ExtractionField>) => {
+    if (!updateField.id) {
+      console.error('Update must contain an id');
+      return;
+    }
+    setTemplate((prev) => ({
+      ...prev,
+      extractionFields: prev.extractionFields.map((field) =>
+        field.id === updateField.id ? { ...field, ...updateField } : field
+      )
+    }));
+  };
+
   const updateTemplate = (newTemplate: Partial<InvoiceExtractTemplate>) => {
     setTemplate((prevTemplate) => ({
       ...prevTemplate,
@@ -68,6 +83,7 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
         template,
         addExtractionField,
         deleteExtractionField,
+        updateExtractionField,
         updateExtractionFields,
         updateTemplate
       }}

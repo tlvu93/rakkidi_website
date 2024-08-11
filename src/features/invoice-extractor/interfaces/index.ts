@@ -34,6 +34,7 @@ export enum TransformIndex {
 
 export type ExtractionField = {
   id: string;
+  page: number | null;
   name: string;
   tfMatrix: TransformationMatrix;
 };
@@ -50,11 +51,13 @@ const exampleTemplate: InvoiceExtractTemplate = {
   extractionFields: [
     {
       id: '1',
+      page: 1,
       name: 'Feld1',
       tfMatrix: [7.2, 0, 0, 7.2, 495.57, 654.441]
     },
     {
       id: '2',
+      page: null,
       name: 'Feld2',
       tfMatrix: [7.2, 0, 0, 7.2, 502.271, 614.441]
     }

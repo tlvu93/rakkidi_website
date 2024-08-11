@@ -1,54 +1,42 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-
 import {
-  GridRowModesModel,
-  GridRowModes,
   DataGrid,
   GridColDef,
   GridActionsCellItem,
-  GridEventListener,
-  GridRowId,
-  GridRowEditStopReasons,
-  GridSlots
+  GridSlots,
+  GridRenderCellParams
 } from '@mui/x-data-grid';
 import { useTemplate } from '../../context/TemplateContext';
 import { Toolbar } from './toolbar';
+import { ExtractionField } from 'features/invoice-extractor/interfaces';
+
+type CustomRenderCellParams = GridRenderCellParams<
+  Partial<ExtractionField>,
+  string | number,
+  string
+>;
 
 export default function PropertiesTable() {
-  const { template, updateExtractionFields, deleteExtractionField } =
-    useTemplate(); // Get the template and update function from context
-  const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
-    {}
+  const { template, deleteExtractionField, updateExtractionField } =
+    useTemplate();
+
+  const rows: Partial<ExtractionField>[] = template.extractionFields.map(
+    (field) => ({
+      id: field.id,
+      name: field.name,
+      page: field.page || 1
+    })
   );
 
-  const rows = template.extractionFields.map((field, index) => ({
-    id: index + 1,
-    name: field.name,
-    page: 1
-  }));
-
-  const handleRowEditStop: GridEventListener<'rowEditStop'> = (
-    params,
-    event
-  ) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true;
-    }
+  const handleDeleteClick = (id: string) => () => {
+    deleteExtractionField(id);
   };
 
-  const handleDeleteClick = (id: GridRowId) => () => {
-    console.log(id);
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true }
-    });
-  };
-
-  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
-    setRowModesModel(newRowModesModel);
+  const handleUpdateRow = (data: Partial<ExtractionField>) => {
+    updateExtractionField(data);
+    return data;
   };
 
   const columns: GridColDef[] = [
@@ -67,18 +55,20 @@ export default function PropertiesTable() {
       cellClassName: 'actions',
       headerAlign: 'right',
       flex: 1,
-
-      renderCell: (params) => (
-        <Box display="flex" justifyContent="flex-end" width="100%">
-          <GridActionsCellItem
-            key={`delete-${params.id}`}
-            icon={<DeleteIcon sx={{ fontSize: '1.2rem' }} />}
-            label="Delete"
-            onClick={handleDeleteClick(params.id)}
-            color="inherit"
-          />
-        </Box>
-      )
+      renderCell: (params: CustomRenderCellParams) => {
+        const { id, row } = params;
+        return (
+          <Box display="flex" justifyContent="flex-end" width="100%">
+            <GridActionsCellItem
+              key={`delete-${id}`}
+              icon={<DeleteIcon sx={{ fontSize: '1.2rem' }} />}
+              label="Delete"
+              onClick={() => handleDeleteClick(row.id as string)()}
+              color="inherit"
+            />
+          </Box>
+        );
+      }
     }
   ];
 
@@ -99,9 +89,7 @@ export default function PropertiesTable() {
         rows={rows}
         columns={columns}
         editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop}
+        processRowUpdate={handleUpdateRow}
         slots={{
           toolbar: Toolbar as GridSlots['toolbar']
         }}
