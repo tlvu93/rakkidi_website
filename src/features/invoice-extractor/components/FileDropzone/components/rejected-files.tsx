@@ -1,37 +1,41 @@
 import { FileRejection } from 'react-dropzone';
+import { Typography, List, ListItem, ListItemText, Box } from '@mui/material';
 
 type RejectedFilesProps = {
   fileRejections: FileRejection[];
 };
 
 const RejectedFiles = ({ fileRejections }: RejectedFilesProps) => {
-  if (!fileRejections || fileRejections.length === 0) {
-    return (
-      <>
-        <h2>Rejected files</h2>
-        <ul>
-          <li>none</li>
-        </ul>
-      </>
-    );
-  }
-
   return (
-    <>
-      <h2>Rejected files</h2>
-      <ul>
-        {fileRejections.map(({ file, errors }) => (
-          <li key={file.name}>
-            {file.name} - {file.size} bytes
-            <ul>
-              {errors.map((e) => (
-                <li key={e.code}>{e.message}</li>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ul>
-    </>
+    <Box mt={2}>
+      <Typography variant="h6">Rejected files</Typography>
+      {fileRejections.length === 0 ? (
+        <List>
+          <ListItem>
+            <ListItemText primary="None" />
+          </ListItem>
+        </List>
+      ) : (
+        <List>
+          {fileRejections.map(({ file, errors }) => (
+            <ListItem key={file.name} divider>
+              <ListItemText
+                primary={`${file.name} - ${file.size} bytes`}
+                secondary={
+                  <List>
+                    {errors.map((e) => (
+                      <ListItem key={e.code} disableGutters>
+                        <ListItemText primary={e.message} />
+                      </ListItem>
+                    ))}
+                  </List>
+                }
+              />
+            </ListItem>
+          ))}
+        </List>
+      )}
+    </Box>
   );
 };
 

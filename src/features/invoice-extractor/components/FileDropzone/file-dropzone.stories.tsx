@@ -39,3 +39,17 @@ export default {
 export const Default = {
   args: {}
 };
+
+export const SingleFileDropzone = {
+  args: {
+    maxFiles: 1,
+    description: 'A dropzone that only accepts a single file'
+  }
+};
+
+export const LargeFileDropzone = {
+  args: {
+    maxSize: 10000000,
+    description: 'A dropzone that accepts larger files up to 10MB'
+  }
+};

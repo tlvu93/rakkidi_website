@@ -1,20 +1,4 @@
-export interface RectProps {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  fill: string;
-  id: string;
-  name: string;
-}
-
-export interface PageDimensions {
-  width: number;
-  height: number;
-  scale: number;
-}
-
-export type TransformationMatrix = [
+export type PdfTransformationMatrix = [
   number,
   number,
   number,
@@ -32,34 +16,35 @@ export enum TransformIndex {
   Y = 5
 }
 
-export type ExtractionField = {
+// Interface for rectangle properties
+export interface RectProps {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  fill: string;
+  id: string;
+  name: string;
+}
+
+// Interface for page dimensions
+export interface PageDimensions {
+  width: number;
+  height: number;
+  scale: number;
+}
+
+// Interface for extraction fields within a template
+export interface ExtractionField {
   id: string;
   page: number | null;
   name: string;
-  tfMatrix: TransformationMatrix;
-};
+  tfMatrix: PdfTransformationMatrix;
+}
 
-export type InvoiceExtractTemplate = {
+// Interface for the overall invoice extraction template
+export interface InvoiceExtractTemplate {
   name: string;
   description: string;
   extractionFields: ExtractionField[];
-};
-
-const exampleTemplate: InvoiceExtractTemplate = {
-  name: 'Example Template',
-  description: 'This is an example template',
-  extractionFields: [
-    {
-      id: '1',
-      page: 1,
-      name: 'Feld1',
-      tfMatrix: [7.2, 0, 0, 7.2, 495.57, 654.441]
-    },
-    {
-      id: '2',
-      page: null,
-      name: 'Feld2',
-      tfMatrix: [7.2, 0, 0, 7.2, 502.271, 614.441]
-    }
-  ]
-};
+}

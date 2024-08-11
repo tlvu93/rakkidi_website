@@ -32,8 +32,8 @@ const CSVFiledropzone = () => {
         return wmdExtractFields(tokenizedText);
       });
 
-      const csvData = await Promise.all(csvPromises);
-      setCsvData(csvData);
+      const extractedCsvData = await Promise.all(csvPromises);
+      setCsvData(extractedCsvData);
     } catch (error) {
       console.error('Error processing files:', error);
     }
@@ -57,14 +57,17 @@ const CSVFiledropzone = () => {
         <AcceptedFiles acceptedFiles={acceptedFiles} />
         <RejectedFiles fileRejections={fileRejections} />
       </aside>
-      {csvData.length !== 0 && (
+      {csvData.length > 0 && (
         <CSVLink
           data={csvData}
           headers={headers}
+          filename="extracted_data.csv"
           style={{
             textDecoration: 'underline',
             color: 'cornflowerblue',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            marginTop: '20px',
+            display: 'inline-block'
           }}
         >
           Download CSV

@@ -2,13 +2,13 @@ import { TextContent, TextItem } from 'pdfjs-dist/types/src/display/api';
 
 import { getIndexFromKeyword, getTextFromAreaTemplate } from './pdf-extract';
 import { WmdCsvData } from 'features/invoice-extractor/interfaces/wmd-csv-data';
-import { TransformationMatrix } from 'features/invoice-extractor/interfaces';
+import { PdfTransformationMatrix } from 'features/invoice-extractor/interfaces';
 
-const rechnungsNummerAT: TransformationMatrix = [
+const rechnungsNummerAT: PdfTransformationMatrix = [
   7.2, 0, 0, 7.2, 495.57, 654.441
 ];
 
-const rechnungsDatumAT: TransformationMatrix = [
+const rechnungsDatumAT: PdfTransformationMatrix = [
   7.2, 0, 0, 7.2, 502.271, 614.441
 ];
 

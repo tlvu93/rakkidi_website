@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDropzone, FileWithPath, Accept, FileError } from 'react-dropzone';
-import { Container, CircularProgress } from '@mui/material';
+import { Container, CircularProgress, Typography } from '@mui/material';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 
 import {
@@ -32,12 +32,9 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleDrop = useCallback(
-    async (acceptedFiles: FileWithPath[]) => {
-      // Defer the execution of the onDrop to avoid blocking the UI
-      requestAnimationFrame(() => {
-        onDrop(acceptedFiles);
-        setLoading(false);
-      });
+    (acceptedFiles: FileWithPath[]) => {
+      setLoading(false); // Ensure loading is stopped immediately after drop
+      onDrop(acceptedFiles);
     },
     [onDrop]
   );
@@ -55,7 +52,9 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
     maxSize,
     minSize,
     onDropRejected: (fileRejections) => {
-      onDropRejected && onDropRejected(fileRejections);
+      if (onDropRejected) {
+        onDropRejected(fileRejections);
+      }
       setLoading(false);
     },
     onFileDialogOpen: () => setLoading(true),
@@ -65,38 +64,36 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
     onDropAccepted: () => setLoading(false)
   });
 
-  const style = useMemo(
-    () => ({
+  const style = useMemo(() => {
+    return {
       ...baseStyle,
       ...(isDragActive ? activeStyle : {}),
       ...(isDragAccept ? acceptStyle : {}),
       ...(isDragReject ? rejectStyle : {})
-    }),
-    [isDragActive, isDragReject, isDragAccept]
-  );
+    };
+  }, [isDragActive, isDragReject, isDragAccept]);
 
   return (
     <Container maxWidth="sm">
-      <div className="container">
-        <div {...getRootProps({ style })}>
-          <input {...getInputProps()} />
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100%'
-            }}
-          >
-            <p>Drag &apos;n&apos; drop files here, or click to select files</p>
-
-            {loading ? (
-              <CircularProgress />
-            ) : (
-              <SaveAltIcon style={{ fontSize: '2.5em' }} />
-            )}
-          </div>
+      <div {...getRootProps({ style })}>
+        <input {...getInputProps()} />
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%'
+          }}
+        >
+          <Typography variant="body1" align="center">
+            Drag &apos;n&apos; drop files here, or click to select files
+          </Typography>
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <SaveAltIcon style={{ fontSize: '2.5em' }} />
+          )}
         </div>
       </div>
     </Container>

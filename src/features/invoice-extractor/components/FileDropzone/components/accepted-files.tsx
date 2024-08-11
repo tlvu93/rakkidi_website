@@ -1,21 +1,25 @@
 import { FileWithPath } from 'react-dropzone';
+import { Typography, List, ListItem, ListItemText, Box } from '@mui/material';
 
-type AcceptedFiles = {
+type AcceptedFilesProps = {
   acceptedFiles: FileWithPath[];
 };
 
-const AcceptedFiles = ({ acceptedFiles }: AcceptedFiles) => {
+const AcceptedFiles = ({ acceptedFiles }: AcceptedFilesProps) => {
   return (
-    <>
-      <h2>Accepted files</h2>
-      <ul>
-        {acceptedFiles.map((file: FileWithPath) => (
-          <li key={file.path}>
-            {file.path} - {file.size} bytes
-          </li>
+    <Box mt={2}>
+      <Typography variant="h6">Accepted files</Typography>
+      <List>
+        {acceptedFiles.map((file) => (
+          <ListItem key={file.path} divider>
+            <ListItemText
+              primary={file.path}
+              secondary={`${file.size} bytes`}
+            />
+          </ListItem>
         ))}
-      </ul>
-    </>
+      </List>
+    </Box>
   );
 };
 

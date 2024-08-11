@@ -24,20 +24,20 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
   const [template, setTemplate] = useState<InvoiceExtractTemplate>({
     name: 'New Template',
     description: '',
-    extractionFields: [] // Rename here
+    extractionFields: []
   });
 
   const addExtractionField = () => {
     const newField: ExtractionField = {
       id: faker.string.uuid(),
-      name: `field${template.extractionFields.length + 1}`,
+      name: `Field ${template.extractionFields.length + 1}`,
       tfMatrix: [50, 0, 0, 50, 100, 100],
       page: null
     };
 
     setTemplate((prevTemplate) => ({
       ...prevTemplate,
-      extractionFields: [...prevTemplate.extractionFields, newField] // Rename here
+      extractionFields: [...prevTemplate.extractionFields, newField]
     }));
   };
 
@@ -53,7 +53,7 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
   const updateExtractionFields = (updatedFields: ExtractionField[]) => {
     setTemplate((prevTemplate) => ({
       ...prevTemplate,
-      extractionFields: updatedFields // Rename here
+      extractionFields: updatedFields
     }));
   };
 
@@ -62,9 +62,9 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
       console.error('Update must contain an id');
       return;
     }
-    setTemplate((prev) => ({
-      ...prev,
-      extractionFields: prev.extractionFields.map((field) =>
+    setTemplate((prevTemplate) => ({
+      ...prevTemplate,
+      extractionFields: prevTemplate.extractionFields.map((field) =>
         field.id === updateField.id ? { ...field, ...updateField } : field
       )
     }));
