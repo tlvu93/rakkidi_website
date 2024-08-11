@@ -1,4 +1,6 @@
+import React from 'react';
 import PropertiesTable from './properties-table';
+import { TemplateProvider } from '../../context/TemplateContext';
 
 export default {
   component: PropertiesTable,
@@ -7,5 +9,12 @@ export default {
 };
 
 export const Default = {
-  args: {}
+  args: {},
+  decorators: [
+    (Story: React.ComponentType) => (
+      <TemplateProvider>
+        <Story />
+      </TemplateProvider>
+    )
+  ]
 };

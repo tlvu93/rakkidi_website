@@ -32,39 +32,31 @@ export enum TransformIndex {
   Y = 5
 }
 
-export interface ElementTransformation {
-  tfStart: TransformationMatrix;
-  tfEnd?: TransformationMatrix;
-}
-
-export type TemplateComponent = {
+export type ExtractionField = {
+  id: string;
   name: string;
-  elementTF: ElementTransformation;
+  tfMatrix: TransformationMatrix;
 };
 
 export type InvoiceExtractTemplate = {
   name: string;
   description: string;
-  templateComponents: TemplateComponent[];
+  extractionFields: ExtractionField[];
 };
 
 const exampleTemplate: InvoiceExtractTemplate = {
   name: 'Example Template',
   description: 'This is an example template',
-  templateComponents: [
+  extractionFields: [
     {
+      id: '1',
       name: 'Feld1',
-      elementTF: {
-        tfStart: [7.2, 0, 0, 7.2, 495.57, 654.441],
-        tfEnd: [7.2, 0, 0, 7.2, 536.9963999999997, 654.441]
-      }
+      tfMatrix: [7.2, 0, 0, 7.2, 495.57, 654.441]
     },
     {
+      id: '2',
       name: 'Feld2',
-      elementTF: {
-        tfStart: [7.2, 0, 0, 7.2, 502.271, 614.441],
-        tfEnd: [7.2, 0, 0, 7.2, 536.99659999, 614.441]
-      }
+      tfMatrix: [7.2, 0, 0, 7.2, 502.271, 614.441]
     }
   ]
 };

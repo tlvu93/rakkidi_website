@@ -1,3 +1,4 @@
+import { TemplateProvider } from '../../context/TemplateContext';
 import PDFViewer from './pdf-viewer';
 
 export default {
@@ -7,5 +8,11 @@ export default {
 };
 
 export const Default = {
-  args: {}
+  decorators: [
+    (Story: React.ComponentType) => (
+      <TemplateProvider>
+        <Story />
+      </TemplateProvider>
+    )
+  ]
 };

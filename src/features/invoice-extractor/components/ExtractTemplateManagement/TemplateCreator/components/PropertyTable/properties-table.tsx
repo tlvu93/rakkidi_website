@@ -1,75 +1,34 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import AddIcon from '@mui/icons-material/Add';
+
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Close';
+
 import {
-  GridRowsProp,
   GridRowModesModel,
   GridRowModes,
   DataGrid,
   GridColDef,
-  GridToolbarContainer,
   GridActionsCellItem,
   GridEventListener,
   GridRowId,
-  GridRowModel,
   GridRowEditStopReasons,
   GridSlots
 } from '@mui/x-data-grid';
-
-const initialRows: GridRowsProp = [
-  {
-    id: 1,
-    name: 'Example Name',
-    page: 1,
-    xPos: 10,
-    yPos: 20,
-    width: 100,
-    height: 50
-  }
-];
-
-interface EditToolbarProps {
-  setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
-}
-
-function EditToolbar(props: EditToolbarProps) {
-  const { setRows } = props;
-
-  const handleClick = () => {
-    const id = randomId();
-    setRows((oldRows) => [
-      ...oldRows,
-      {
-        id,
-        name: '',
-        page: 0,
-        xPos: 0,
-        yPos: 0,
-        width: 0,
-        height: 0,
-        isNew: true
-      }
-    ]);
-  };
-
-  return (
-    <GridToolbarContainer>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-        Add record
-      </Button>
-    </GridToolbarContainer>
-  );
-}
+import { useTemplate } from '../../context/TemplateContext';
+import { Toolbar } from './toolbar';
 
 export default function PropertiesTable() {
-  const [rows, setRows] = React.useState(initialRows);
+  const { template, updateExtractionFields, deleteExtractionField } =
+    useTemplate(); // Get the template and update function from context
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
   );
+
+  const rows = template.extractionFields.map((field, index) => ({
+    id: index + 1,
+    name: field.name,
+    page: 1
+  }));
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (
     params,
@@ -80,30 +39,12 @@ export default function PropertiesTable() {
     }
   };
 
-  const handleSaveClick = (id: GridRowId) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  };
-
   const handleDeleteClick = (id: GridRowId) => () => {
-    setRows(rows.filter((row) => row.id !== id));
-  };
-
-  const handleCancelClick = (id: GridRowId) => () => {
+    console.log(id);
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true }
     });
-
-    const editedRow = rows.find((row) => row.id === id);
-    if (editedRow!.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
-    }
-  };
-
-  const processRowUpdate = (newRow: GridRowModel) => {
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
   };
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
@@ -111,74 +52,33 @@ export default function PropertiesTable() {
   };
 
   const columns: GridColDef[] = [
-    { field: 'name', headerName: 'Name', width: 180, editable: true },
+    { field: 'name', headerName: 'Name', editable: true, width: 100 },
     {
       field: 'page',
       headerName: 'Page',
       type: 'number',
-      width: 80,
-      editable: true
-    },
-    {
-      field: 'xPos',
-      headerName: 'X Position',
-      type: 'number',
-      width: 100,
-      editable: true
-    },
-    {
-      field: 'yPos',
-      headerName: 'Y Position',
-      type: 'number',
-      width: 100,
-      editable: true
-    },
-    {
-      field: 'width',
-      headerName: 'Width',
-      type: 'number',
-      width: 100,
-      editable: true
-    },
-    {
-      field: 'height',
-      headerName: 'Height',
-      type: 'number',
-      width: 100,
-      editable: true
+      editable: true,
+      width: 100
     },
     {
       field: 'actions',
       type: 'actions',
       headerName: 'Actions',
-      width: 100,
       cellClassName: 'actions',
-      getActions: ({ id }) => [
-        <GridActionsCellItem
-          key={`save-${id}`}
-          icon={<SaveIcon />}
-          label="Save"
-          sx={{
-            color: 'primary.main'
-          }}
-          onClick={handleSaveClick(id)}
-        />,
-        <GridActionsCellItem
-          key={`cancel-${id}`}
-          icon={<CancelIcon />}
-          label="Cancel"
-          className="textPrimary"
-          onClick={handleCancelClick(id)}
-          color="inherit"
-        />,
-        <GridActionsCellItem
-          key={`delete-${id}`}
-          icon={<DeleteIcon />}
-          label="Delete"
-          onClick={handleDeleteClick(id)}
-          color="inherit"
-        />
-      ]
+      headerAlign: 'right',
+      flex: 1,
+
+      renderCell: (params) => (
+        <Box display="flex" justifyContent="flex-end" width="100%">
+          <GridActionsCellItem
+            key={`delete-${params.id}`}
+            icon={<DeleteIcon sx={{ fontSize: '1.2rem' }} />}
+            label="Delete"
+            onClick={handleDeleteClick(params.id)}
+            color="inherit"
+          />
+        </Box>
+      )
     }
   ];
 
@@ -202,16 +102,10 @@ export default function PropertiesTable() {
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
         slots={{
-          toolbar: EditToolbar as GridSlots['toolbar']
-        }}
-        slotProps={{
-          toolbar: { setRows, setRowModesModel }
+          toolbar: Toolbar as GridSlots['toolbar']
         }}
       />
     </Box>
   );
 }
-
-const randomId = () => Math.random().toString(36).substr(2, 9);

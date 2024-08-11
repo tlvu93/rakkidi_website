@@ -20,7 +20,7 @@ const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
       y: 0,
       width: 100,
       height: 100,
-      fill: 'rgba(128, 128, 128, 0.5)',
+      fill: 'rgba(128, 128, 128, 0.8)',
       id: '1',
       name: generateRandomName(0)
     }
@@ -61,13 +61,6 @@ const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
       style={{ position: 'absolute', top: 0, left: 0 }}
       onMouseDown={(e) => {
         checkDeselect(e);
-
-        // Adjust mouse position according to zoom level
-        const mousePos = stageRef.current.getPointerPosition();
-        const adjustedX = mousePos.x / zoom;
-        const adjustedY = mousePos.y / zoom;
-
-        console.log('Mouse position adjusted for zoom:', adjustedX, adjustedY);
       }}
       onTouchStart={checkDeselect}
     >
