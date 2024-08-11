@@ -4,7 +4,7 @@ import { TextContent, TextItem } from 'pdfjs-dist/types/src/display/api';
 
 import { pdfjs } from 'react-pdf';
 import {
-  ElementTransformation,
+  TransformationMatrix,
   TransformIndex
 } from 'features/invoice-extractor/interfaces';
 
@@ -44,14 +44,23 @@ export const getTextTokenFromPdfFile = async (
  * Extracts text from a PDF document within a specified rectangular area.
  *
  * @param text - The TextContent object representing the text in the PDF document.
- * @param area - An ElementTransformation object defining the rectangular area to extract text from.
+ * @param tf - An ElementTransformation object defining the rectangular area to extract text from.
  * @returns The extracted text as a string, with all whitespace removed.
  */
 export const getTextFromAreaTemplate = (
   text: TextContent,
-  area: ElementTransformation
+  tf: TransformationMatrix
 ): string => {
   const textItems = text.items as TextItem[];
+
+  // Extract the necessary values from the TransformationMatrix
+  const [fontHeight, , , fontWidth, x, y] = tf;
+
+  // Calculate the boundaries based on the transformation matrix
+  const xStart = x;
+  const xEnd = x + fontHeight; // Assuming fontHeight corresponds to the width
+  const yStart = y;
+  const yEnd = y + fontWidth; // Assuming fontWidth corresponds to the height
 
   const isInRange = (
     item: TextItem,
@@ -63,18 +72,8 @@ export const getTextFromAreaTemplate = (
   return textItems
     .filter(
       (item) =>
-        isInRange(
-          item,
-          area.tfStart[TransformIndex.X],
-          area.tfEnd?.[TransformIndex.X] ?? area.tfStart[TransformIndex.X],
-          TransformIndex.X
-        ) &&
-        isInRange(
-          item,
-          area.tfStart[TransformIndex.Y],
-          area.tfEnd?.[TransformIndex.Y] ?? area.tfStart[TransformIndex.Y],
-          TransformIndex.Y
-        )
+        isInRange(item, xStart, xEnd, TransformIndex.X) &&
+        isInRange(item, yStart, yEnd, TransformIndex.Y)
     )
     .map((s) => s.str)
     .join('')
