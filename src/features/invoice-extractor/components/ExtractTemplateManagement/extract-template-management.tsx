@@ -11,10 +11,10 @@ import {
   Select,
   Typography
 } from '@mui/material';
-import { InvoiceExtractTemplate } from '@pages/invoice-extractor/types';
 import React, { useState } from 'react';
 
 import { SelectChangeEvent } from '@mui/material';
+import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
 
 type Props = {
   setTemplate: (template: InvoiceExtractTemplate) => void;

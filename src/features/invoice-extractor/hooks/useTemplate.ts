@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { InvoiceExtractTemplate } from '../types';
+import { InvoiceExtractTemplate } from '../interfaces';
 
 export const useTemplate = () => {
   const [template, setTemplate] = useState<InvoiceExtractTemplate | null>(null);
