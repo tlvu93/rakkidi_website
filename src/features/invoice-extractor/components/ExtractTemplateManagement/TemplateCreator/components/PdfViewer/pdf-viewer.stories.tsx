@@ -7,7 +7,5 @@ export default {
 };
 
 export const Default = {
-  args: {
-    filePath: '341777-5819.pdf'
-  }
+  args: {}
 };
