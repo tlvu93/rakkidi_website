@@ -4,7 +4,7 @@ import { useTemplate } from '../../context/TemplateContext';
 import Rectangle from './rectangle';
 import {
   PageDimensions,
-  TransformationMatrix,
+  PdfTransformationMatrix,
   RectProps
 } from 'features/invoice-extractor/interfaces';
 
@@ -31,7 +31,7 @@ const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
 
   const handleChange = (id: string, newAttrs: Partial<RectProps>) => {
     // Convert RectProps back to tfMatrix
-    const updatedTfMatrix: TransformationMatrix = [
+    const updatedTfMatrix: PdfTransformationMatrix = [
       newAttrs.width! / zoom, // FontHeight (scale factor for width)
       0,
       0,
