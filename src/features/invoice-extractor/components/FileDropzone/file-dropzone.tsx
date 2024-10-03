@@ -86,7 +86,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
             height: '100%'
           }}
         >
-          <Typography variant="body1" align="center">
+          <Typography variant="body1" align="center" color={'gray'}>
             Drag &apos;n&apos; drop files here, or click to select files
           </Typography>
           {loading ? (
