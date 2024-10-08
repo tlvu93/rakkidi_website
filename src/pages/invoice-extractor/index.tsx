@@ -1,12 +1,12 @@
 import AppLayout from '@shared/layouts/app-layout';
-
 import dynamic from 'next/dynamic';
 
-import ExtractTemplateManagement from 'features/invoice-extractor/components/ExtractTemplateManagement/extract-template-management';
-import { useTemplateSelector } from 'features/invoice-extractor/hooks/useTemplateSelector';
+import ExtractTemplateManagement from 'features/invoice-extractor/components/ExtractTemplateManagement/template-management';
 
-// This is needed because the FileDropzone component uses react-pdf -> pdfjs -> FileReader API which is not available in the server-side rendering environment.
-// https://nextjs.org/docs/pages/building-your-application/optimizing/lazy-loading#with-no-ssr
+import {
+  TemplateManagementProvider,
+  useTemplateManagement
+} from 'features/invoice-extractor/components/ExtractTemplateManagement/context/template-management-context';
 
 const DynamicFileDropzone = dynamic(
   () =>
@@ -16,16 +16,22 @@ const DynamicFileDropzone = dynamic(
   { ssr: false }
 );
 
-const InvoiceExtractor = () => {
-  const { selectedTemplate, selectTemplate } = useTemplateSelector();
+const InvoiceExtractorContent = () => {
+  const { selectedTemplate } = useTemplateManagement();
 
+  return selectedTemplate ? (
+    <DynamicFileDropzone />
+  ) : (
+    <ExtractTemplateManagement />
+  );
+};
+
+const InvoiceExtractor = () => {
   return (
     <AppLayout>
-      {selectedTemplate ? (
-        <DynamicFileDropzone />
-      ) : (
-        <ExtractTemplateManagement setTemplate={selectTemplate} />
-      )}
+      <TemplateManagementProvider>
+        <InvoiceExtractorContent />
+      </TemplateManagementProvider>
     </AppLayout>
   );
 };

@@ -11,10 +11,9 @@ import {
 } from '@mui/material';
 import PropertiesTable from './components/PropertyTable/properties-table';
 import PdfViewer from './components/PdfViewer/pdf-viewer';
-import { TemplateProvider, useTemplate } from './context/TemplateContext';
+import { TemplateProvider } from './context/TemplateContext';
 import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
 import { useForm } from 'react-hook-form';
-import { height, width } from '@mui/system';
 
 interface TemplateCreatorProps {
   selectedTemplate: InvoiceExtractTemplate | null;
@@ -81,11 +80,11 @@ const TemplateCreator = ({
 export default TemplateCreator;
 
 const style = {
-  position: 'absolute' as 'absolute',
+  position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '90%',
+  width: '60%',
   height: '90%',
   bgcolor: 'background.paper',
   // border: '2px solid #000',

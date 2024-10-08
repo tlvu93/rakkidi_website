@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { AddCircle, ImportExport, Save } from '@mui/icons-material';
 import {
   Box,
@@ -13,26 +13,25 @@ import {
   Typography
 } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material';
-import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
 
 import useDisclosure from '@shared/hooks/useDisclosure';
 import { TemplateCreatorModal } from './TemplateCreator/template-creator';
 
-type Props = {
-  setTemplate: (template: InvoiceExtractTemplate) => void;
-};
+import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
+import { useTemplateManagement } from './context/template-management-context';
 
-const ExtractTemplateManagement = ({ setTemplate }: Props) => {
+const ExtractTemplateManagement = () => {
   const { opened, open, close } = useDisclosure();
-  const [templates, setTemplates] = useState<InvoiceExtractTemplate[]>([]);
-  const [selectedTemplate, setSelectedTemplate] =
-    useState<InvoiceExtractTemplate | null>(null);
+  const {
+    templates,
+    selectedTemplate,
+    addTemplate,
+    selectTemplate,
+    setTemplate
+  } = useTemplateManagement();
 
   const handleSelectChange = (event: SelectChangeEvent<string>) => {
-    const templateName = event.target.value;
-    const selected =
-      templates.find((template) => template.name === templateName) || null;
-    setSelectedTemplate(selected);
+    selectTemplate(event.target.value);
   };
 
   const handleTemplateSelection = () => {
@@ -42,7 +41,7 @@ const ExtractTemplateManagement = ({ setTemplate }: Props) => {
   };
 
   const handleAddTemplate = (form: InvoiceExtractTemplate) => {
-    setTemplates((prevTemplates) => [...prevTemplates, form]);
+    addTemplate(form);
     close();
   };
 
