@@ -46,30 +46,36 @@ const TemplateCreator = ({
           <Typography variant="h3" pb={4}>
             Template Creator
           </Typography>
-          <Box pb={4}>
-            <TextField
-              {...register('name', { required: 'Template name is required' })}
-              label="Template Name"
-              fullWidth
-              error={!!errors.name}
-              helperText={errors.name?.message}
-            />
-          </Box>
-          <Box pb={4}>
-            <TextField
-              {...register('description', {
-                required: 'Template description is required'
-              })}
-              label="Template Description"
-              fullWidth
-              multiline
-              rows={3}
-              error={!!errors.description}
-              helperText={errors.description?.message}
-            />
-          </Box>
-          <Grid container spacing={4}>
+          <Typography variant="h5" pb={2}>
+            Template Details
+          </Typography>
+          <Grid container spacing={2} pb={4}>
             <Grid item xs={12} md={6}>
+              <TextField
+                {...register('name', { required: 'Template name is required' })}
+                label="Template Name"
+                fullWidth
+                error={!!errors.name}
+                helperText={errors.name?.message}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                {...register('description', {
+                  required: 'Template description is required'
+                })}
+                label="Template Description"
+                fullWidth
+                error={!!errors.description}
+                helperText={errors.description?.message}
+              />
+            </Grid>
+          </Grid>
+          <Typography variant="h5" pb={2}>
+            Records and PDF Preview
+          </Typography>
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={7}>
               <Box
                 height={'100%'}
                 alignContent={'center'}
@@ -79,7 +85,7 @@ const TemplateCreator = ({
                 <PdfViewer />
               </Box>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={5}>
               <Box
                 height={'100%'}
                 alignContent={'center'}
@@ -111,12 +117,14 @@ const TemplateCreator = ({
 
 export default TemplateCreator;
 
-const style = {
+const modalStyle = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: '60%',
+  height: '90%',
+  overflow: 'auto',
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4
@@ -135,7 +143,7 @@ export const TemplateCreatorModal = ({
 }: TemplateCreatorModalProps) => {
   return (
     <Modal open={open} onClose={close}>
-      <Box sx={style}>
+      <Box sx={modalStyle}>
         <TemplateCreator
           onSubmit={onSubmit}
           selectedTemplate={null}
