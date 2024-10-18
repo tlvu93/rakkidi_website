@@ -36,6 +36,7 @@ const Rectangle: React.FC<RectangleProps> = ({
 
   const handleDragEnd = (e: KonvaEventObject<DragEvent>) => {
     onChange({
+      ...shapeProps,
       x: e.target.x(),
       y: e.target.y()
     });
