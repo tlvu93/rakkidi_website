@@ -3,7 +3,9 @@ import React, {
   useContext,
   useState,
   useEffect,
-  ReactNode
+  ReactNode,
+  useCallback,
+  useMemo
 } from 'react';
 import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
 
@@ -28,47 +30,47 @@ export const TemplateManagementProvider: React.FC<{ children: ReactNode }> = ({
   const [selectedTemplate, setSelectedTemplate] =
     useState<InvoiceExtractTemplate | null>(null);
 
-  // Load templates from localStorage on component mount
   useEffect(() => {
-    console.log('Loading templates from localStorage');
     const storedTemplates = localStorage.getItem(TEMPLATE_STORAGE_KEY);
     if (storedTemplates) {
       setTemplates(JSON.parse(storedTemplates));
     }
   }, []);
 
-  // Save templates to localStorage whenever the templates array changes
   useEffect(() => {
-    console.log('Saving templates to localStorage');
-    if (templates.length > 0) {
-      localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(templates));
-    }
+    localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(templates));
   }, [templates]);
 
-  const addTemplate = (template: InvoiceExtractTemplate) => {
+  const addTemplate = useCallback((template: InvoiceExtractTemplate) => {
     setTemplates((prevTemplates) => [...prevTemplates, template]);
-  };
+  }, []);
 
-  const setTemplate = (template: InvoiceExtractTemplate) => {
+  const setTemplate = useCallback((template: InvoiceExtractTemplate) => {
     setSelectedTemplate(template);
-  };
+  }, []);
 
-  const selectTemplate = (templateName: string) => {
-    const selected =
-      templates.find((template) => template.name === templateName) || null;
-    setSelectedTemplate(selected);
-  };
+  const selectTemplate = useCallback(
+    (templateName: string) => {
+      setSelectedTemplate(
+        templates.find((template) => template.name === templateName) || null
+      );
+    },
+    [templates]
+  );
+
+  const contextValue = useMemo(
+    () => ({
+      templates,
+      selectedTemplate,
+      setTemplate,
+      addTemplate,
+      selectTemplate
+    }),
+    [templates, selectedTemplate, setTemplate, addTemplate, selectTemplate]
+  );
 
   return (
-    <TemplateManagementContext.Provider
-      value={{
-        templates,
-        selectedTemplate,
-        setTemplate,
-        addTemplate,
-        selectTemplate
-      }}
-    >
+    <TemplateManagementContext.Provider value={contextValue}>
       {children}
     </TemplateManagementContext.Provider>
   );

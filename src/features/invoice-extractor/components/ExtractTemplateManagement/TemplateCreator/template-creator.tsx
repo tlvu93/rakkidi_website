@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Container,
-  Paper,
   Grid,
   Box,
   Button,
@@ -18,6 +17,7 @@ import { useForm } from 'react-hook-form';
 interface TemplateCreatorProps {
   selectedTemplate: InvoiceExtractTemplate | null;
   onSubmit: (form: InvoiceExtractTemplate) => void;
+  onCancel: () => void;
 }
 
 const defaultTemplate: InvoiceExtractTemplate = {
@@ -28,9 +28,14 @@ const defaultTemplate: InvoiceExtractTemplate = {
 
 const TemplateCreator = ({
   selectedTemplate,
-  onSubmit
+  onSubmit,
+  onCancel
 }: TemplateCreatorProps) => {
-  const { register, handleSubmit } = useForm<InvoiceExtractTemplate>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<InvoiceExtractTemplate>({
     defaultValues: selectedTemplate ?? defaultTemplate
   });
 
@@ -42,7 +47,26 @@ const TemplateCreator = ({
             Template Creator
           </Typography>
           <Box pb={4}>
-            <TextField {...register('name')} label="Template Name" fullWidth />
+            <TextField
+              {...register('name', { required: 'Template name is required' })}
+              label="Template Name"
+              fullWidth
+              error={!!errors.name}
+              helperText={errors.name?.message}
+            />
+          </Box>
+          <Box pb={4}>
+            <TextField
+              {...register('description', {
+                required: 'Template description is required'
+              })}
+              label="Template Description"
+              fullWidth
+              multiline
+              rows={3}
+              error={!!errors.description}
+              helperText={errors.description?.message}
+            />
           </Box>
           <Grid container spacing={4}>
             <Grid item xs={12} md={6}>
@@ -63,7 +87,15 @@ const TemplateCreator = ({
                 border={'1px solid #B5B5B5'}
               >
                 <PropertiesTable />
-                <Box display="flex" justifyContent={'right'} padding={2}>
+                <Box
+                  display="flex"
+                  justifyContent={'right'}
+                  padding={2}
+                  gap={2}
+                >
+                  <Button variant="outlined" onClick={onCancel}>
+                    Cancel
+                  </Button>
                   <Button variant="contained" type="submit">
                     Save Template
                   </Button>
@@ -85,9 +117,7 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: '60%',
-  height: '90%',
   bgcolor: 'background.paper',
-  // border: '2px solid #000',
   boxShadow: 24,
   p: 4
 };
@@ -106,7 +136,11 @@ export const TemplateCreatorModal = ({
   return (
     <Modal open={open} onClose={close}>
       <Box sx={style}>
-        <TemplateCreator onSubmit={onSubmit} selectedTemplate={null} />
+        <TemplateCreator
+          onSubmit={onSubmit}
+          selectedTemplate={null}
+          onCancel={close}
+        />
       </Box>
     </Modal>
   );

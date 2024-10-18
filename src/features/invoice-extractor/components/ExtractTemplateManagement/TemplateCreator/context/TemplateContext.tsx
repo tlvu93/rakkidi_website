@@ -12,6 +12,7 @@ interface TemplateContextProps {
   updateExtractionField: (updateField: Partial<ExtractionField>) => void;
   updateExtractionFields: (fields: ExtractionField[]) => void;
   updateTemplate: (newTemplate: Partial<InvoiceExtractTemplate>) => void;
+  canAddExtractionField: boolean;
 }
 
 const TemplateContext = createContext<TemplateContextProps | undefined>(
@@ -77,6 +78,13 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
     }));
   };
 
+  // New constant for maximum allowed extraction fields
+  const MAX_EXTRACTION_FIELDS = 20; // Adjust this number as needed
+
+  // New computed property
+  const canAddExtractionField =
+    template.extractionFields.length < MAX_EXTRACTION_FIELDS;
+
   return (
     <TemplateContext.Provider
       value={{
@@ -85,7 +93,8 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
         deleteExtractionField,
         updateExtractionField,
         updateExtractionFields,
-        updateTemplate
+        updateTemplate,
+        canAddExtractionField
       }}
     >
       {children}

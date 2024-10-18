@@ -9,8 +9,9 @@ import {
   GridRenderCellParams
 } from '@mui/x-data-grid';
 import { useTemplate } from '../../context/TemplateContext';
-import Toolbar from './toolbar';
+import Toolbar from './PropertyTableToolbar';
 import { ExtractionField } from 'features/invoice-extractor/interfaces';
+import { useCallback, useMemo } from 'react';
 
 type CustomRenderCellParams = GridRenderCellParams<
   Partial<ExtractionField>,
@@ -22,50 +23,63 @@ export default function PropertiesTable() {
   const { template, deleteExtractionField, updateExtractionField } =
     useTemplate();
 
-  const rows = template.extractionFields.map((field) => ({
-    id: field.id,
-    name: field.name,
-    page: field.page || 1
-  }));
+  const rows = useMemo(
+    () =>
+      template.extractionFields.map((field) => ({
+        id: field.id,
+        name: field.name,
+        page: field.page || 1
+      })),
+    [template.extractionFields]
+  );
 
-  const handleDeleteClick = (id: string) => {
-    deleteExtractionField(id);
-  };
-
-  const handleUpdateRow = (data: Partial<ExtractionField>) => {
-    updateExtractionField(data);
-    return data;
-  };
-
-  const columns: GridColDef[] = [
-    { field: 'name', headerName: 'Name', editable: true, width: 100 },
-    {
-      field: 'page',
-      headerName: 'Page',
-      type: 'number',
-      editable: true,
-      width: 100
+  const handleDeleteClick = useCallback(
+    (id: string) => {
+      deleteExtractionField(id);
     },
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: 'Actions',
-      cellClassName: 'actions',
-      headerAlign: 'right',
-      flex: 1,
-      renderCell: (params: CustomRenderCellParams) => (
-        <Box display="flex" justifyContent="flex-end" width="100%">
-          <GridActionsCellItem
-            key={`delete-${params.id}`}
-            icon={<DeleteIcon sx={{ fontSize: '1.2rem' }} />}
-            label="Delete"
-            onClick={() => handleDeleteClick(params.row.id as string)}
-            color="inherit"
-          />
-        </Box>
-      )
-    }
-  ];
+    [deleteExtractionField]
+  );
+
+  const handleUpdateRow = useCallback(
+    (data: Partial<ExtractionField>) => {
+      updateExtractionField(data);
+      return data;
+    },
+    [updateExtractionField]
+  );
+
+  const columns: GridColDef[] = useMemo(
+    () => [
+      { field: 'name', headerName: 'Name', editable: true, width: 100 },
+      {
+        field: 'page',
+        headerName: 'Page',
+        type: 'number',
+        editable: true,
+        width: 100
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: 'Actions',
+        cellClassName: 'actions',
+        headerAlign: 'right',
+        flex: 1,
+        renderCell: (params: CustomRenderCellParams) => (
+          <Box display="flex" justifyContent="flex-end" width="100%">
+            <GridActionsCellItem
+              key={`delete-${params.id}`}
+              icon={<DeleteIcon sx={{ fontSize: '1.2rem' }} />}
+              label="Delete"
+              onClick={() => handleDeleteClick(params.row.id as string)}
+              color="inherit"
+            />
+          </Box>
+        )
+      }
+    ],
+    [handleDeleteClick]
+  );
 
   return (
     <Box

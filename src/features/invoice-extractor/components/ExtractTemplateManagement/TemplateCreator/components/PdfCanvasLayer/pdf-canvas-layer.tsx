@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { Layer, Stage, Text } from 'react-konva';
 import { useTemplate } from '../../context/TemplateContext';
 import Rectangle from './rectangle';
@@ -7,6 +7,7 @@ import {
   PdfTransformationMatrix,
   RectProps
 } from 'features/invoice-extractor/interfaces';
+import Konva from 'konva';
 
 type Props = {
   pageDimensions: PageDimensions;
@@ -16,35 +17,40 @@ type Props = {
 const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
   const { template, updateExtractionField } = useTemplate();
   const [selectedId, selectShape] = useState<string | null>(null);
-  const stageRef = useRef<any>(null);
+  const stageRef = useRef<Konva.Stage>(null);
 
-  const checkDeselect = (e: any) => {
+  const checkDeselect = (
+    e: Konva.KonvaEventObject<MouseEvent | TouchEvent>
+  ) => {
     const clickedOnEmpty = e.target === e.target.getStage();
     if (clickedOnEmpty) {
       selectShape(null);
     }
   };
 
-  const handleSelect = (id: string) => {
+  const handleSelect = useCallback((id: string) => {
     selectShape(id);
-  };
+  }, []);
 
-  const handleChange = (id: string, newAttrs: Partial<RectProps>) => {
-    // Convert RectProps back to tfMatrix
-    const updatedTfMatrix: PdfTransformationMatrix = [
-      newAttrs.width! / zoom, // FontHeight (scale factor for width)
-      0,
-      0,
-      newAttrs.height! / zoom, // FontWidth (scale factor for height)
-      newAttrs.x! / zoom, // X position
-      newAttrs.y! / zoom // Y position
-    ];
+  const handleChange = useCallback(
+    (id: string, newAttrs: Partial<RectProps>) => {
+      // Convert RectProps back to tfMatrix
+      const updatedTfMatrix: PdfTransformationMatrix = [
+        newAttrs.width! / zoom, // FontHeight (scale factor for width)
+        0,
+        0,
+        newAttrs.height! / zoom, // FontWidth (scale factor for height)
+        newAttrs.x! / zoom, // X position
+        newAttrs.y! / zoom // Y position
+      ];
 
-    updateExtractionField({
-      id,
-      tfMatrix: updatedTfMatrix
-    });
-  };
+      updateExtractionField({
+        id,
+        tfMatrix: updatedTfMatrix
+      });
+    },
+    [zoom, updateExtractionField]
+  );
 
   return (
     <Stage
@@ -54,6 +60,7 @@ const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
       style={{ position: 'absolute', top: 0, left: 0 }}
       onMouseDown={checkDeselect}
       onTouchStart={checkDeselect}
+      aria-label="PDF Canvas Layer"
     >
       <Layer>
         {template.extractionFields.map((field) => {
@@ -67,6 +74,7 @@ const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
                 y={y * zoom - 12 * zoom}
                 fontSize={12 * zoom}
                 fill="black"
+                aria-label={`Field name: ${field.name}`}
               />
               <Rectangle
                 shapeProps={{
@@ -81,6 +89,7 @@ const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
                 isSelected={field.id === selectedId}
                 onSelect={() => handleSelect(field.id)}
                 onChange={(newAttrs) => handleChange(field.id, newAttrs)}
+                aria-label={`Extraction field: ${field.name}`}
               />
             </React.Fragment>
           );

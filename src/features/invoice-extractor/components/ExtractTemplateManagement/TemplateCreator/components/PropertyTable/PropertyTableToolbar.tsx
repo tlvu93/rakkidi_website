@@ -4,8 +4,8 @@ import { useTemplate } from '../../context/TemplateContext';
 import { Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-const Toolbar: React.FC = () => {
-  const { addExtractionField } = useTemplate();
+const PropertyTableToolbar: React.FC = () => {
+  const { addExtractionField, canAddExtractionField } = useTemplate();
 
   const handleClick = () => {
     addExtractionField();
@@ -17,6 +17,7 @@ const Toolbar: React.FC = () => {
         color="primary"
         startIcon={<AddIcon />}
         onClick={handleClick}
+        disabled={!canAddExtractionField}
         sx={{ textTransform: 'none' }}
       >
         Add Record
@@ -25,4 +26,4 @@ const Toolbar: React.FC = () => {
   );
 };
 
-export default Toolbar;
+export default PropertyTableToolbar;

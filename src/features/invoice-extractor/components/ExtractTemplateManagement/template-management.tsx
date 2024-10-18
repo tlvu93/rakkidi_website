@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { AddCircle, ImportExport, Save } from '@mui/icons-material';
 import {
   Box,
@@ -30,20 +30,31 @@ const ExtractTemplateManagement = () => {
     setTemplate
   } = useTemplateManagement();
 
-  const handleSelectChange = (event: SelectChangeEvent<string>) => {
-    selectTemplate(event.target.value);
-  };
+  const handleSelectChange = useCallback(
+    (event: SelectChangeEvent<string>) => {
+      selectTemplate(event.target.value);
+    },
+    [selectTemplate]
+  );
 
-  const handleTemplateSelection = () => {
+  const handleTemplateSelection = useCallback(() => {
     if (selectedTemplate) {
       setTemplate(selectedTemplate);
     }
-  };
+  }, [selectedTemplate, setTemplate]);
 
-  const handleAddTemplate = (form: InvoiceExtractTemplate) => {
-    addTemplate(form);
-    close();
-  };
+  const handleAddTemplate = useCallback(
+    (form: InvoiceExtractTemplate) => {
+      try {
+        addTemplate(form);
+        close();
+      } catch (error) {
+        console.error('Failed to add template:', error);
+        // Consider adding a user-friendly error message here
+      }
+    },
+    [addTemplate, close]
+  );
 
   return (
     <>

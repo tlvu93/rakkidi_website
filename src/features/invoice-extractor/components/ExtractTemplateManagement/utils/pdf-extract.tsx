@@ -13,11 +13,16 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 export const getTextContentFromPDF = async (
   file: string | URL | ArrayBuffer | DocumentInitParameters | null
 ) => {
-  const loadingTask = pdfjs.getDocument(file as DocumentInitParameters);
-  const loadedPDF = await loadingTask.promise;
-  const firstPage = await loadedPDF.getPage(1);
-  const textContent = await firstPage.getTextContent();
-  return textContent;
+  try {
+    const loadingTask = pdfjs.getDocument(file as DocumentInitParameters);
+    const loadedPDF = await loadingTask.promise;
+    const firstPage = await loadedPDF.getPage(1);
+    const textContent = await firstPage.getTextContent();
+    return textContent;
+  } catch (error) {
+    console.error('Error extracting text content from PDF:', error);
+    throw error; // Re-throw the error for the caller to handle
+  }
 };
 
 export const getTextTokenFromPdfFile = async (
@@ -51,6 +56,12 @@ export const getTextFromAreaTemplate = (
   text: TextContent,
   tf: PdfTransformationMatrix
 ): string => {
+  if (tf.length < 6) {
+    throw new Error(
+      'Invalid PdfTransformationMatrix: expected at least 6 elements'
+    );
+  }
+
   const textItems = text.items as TextItem[];
 
   // Extract the necessary values from the TransformationMatrix
@@ -94,11 +105,10 @@ export const getIndexFromKeyword = (
   keyword: string[]
 ): number | undefined => {
   const textItems = text.items as TextItem[];
-  for (let i = 0; i < textItems.length; i++) {
+  for (let i = 0; i < textItems.length - 1; i++) {
     if (
       textItems[i].str === keyword[0] &&
-      (textItems[i + 1]?.str === keyword[1] ||
-        textItems[i + 2]?.str === keyword[1])
+      textItems[i + 1].str === keyword[1]
     ) {
       return i;
     }

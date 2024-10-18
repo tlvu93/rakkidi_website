@@ -20,7 +20,8 @@ const InvoiceExtractorContent = () => {
   const { selectedTemplate } = useTemplateManagement();
 
   return selectedTemplate ? (
-    <DynamicFileDropzone />
+    // <DynamicFileDropzone />
+    <div></div>
   ) : (
     <ExtractTemplateManagement />
   );

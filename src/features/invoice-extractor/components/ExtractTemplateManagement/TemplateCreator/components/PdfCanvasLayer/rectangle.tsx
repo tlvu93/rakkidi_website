@@ -14,7 +14,7 @@ interface RectangleProps {
   };
   isSelected: boolean;
   onSelect: () => void;
-  onChange: (newAttrs: any) => void;
+  onChange: (newAttrs: Partial<RectangleProps['shapeProps']>) => void;
 }
 
 const Rectangle: React.FC<RectangleProps> = ({
@@ -34,6 +34,28 @@ const Rectangle: React.FC<RectangleProps> = ({
     }
   }, [isSelected]);
 
+  const handleDragEnd = (e: KonvaEventObject<DragEvent>) => {
+    onChange({
+      x: e.target.x(),
+      y: e.target.y()
+    });
+  };
+
+  const handleTransformEnd = (e: KonvaEventObject<Event>) => {
+    const node = shapeRef.current!;
+    const scaleX = node.scaleX();
+    const scaleY = node.scaleY();
+
+    node.scaleX(1);
+    node.scaleY(1);
+    onChange({
+      x: node.x(),
+      y: node.y(),
+      width: Math.max(5, node.width() * scaleX),
+      height: Math.max(5, node.height() * scaleY)
+    });
+  };
+
   return (
     <React.Fragment>
       <Rect
@@ -44,34 +66,8 @@ const Rectangle: React.FC<RectangleProps> = ({
         strokeWidth={0.5}
         {...shapeProps}
         draggable
-        onDragEnd={(e: KonvaEventObject<DragEvent>) => {
-          onChange({
-            ...shapeProps,
-            x: e.target.x(),
-            y: e.target.y()
-          });
-        }}
-        onTransformEnd={(e: KonvaEventObject<Event>) => {
-          // transformer is changing scale of the node
-          // and NOT its width or height
-          // but in the store we have only width and height
-          // to match the data better we will reset scale on transform end
-          const node = shapeRef.current!;
-          const scaleX = node.scaleX();
-          const scaleY = node.scaleY();
-
-          // we will reset it back
-          node.scaleX(1);
-          node.scaleY(1);
-          onChange({
-            ...shapeProps,
-            x: node.x(),
-            y: node.y(),
-            // set minimal value
-            width: Math.max(5, node.width() * scaleX),
-            height: Math.max(5, node.height() * scaleY)
-          });
-        }}
+        onDragEnd={handleDragEnd}
+        onTransformEnd={handleTransformEnd}
       />
       {isSelected && (
         <Transformer
@@ -79,8 +75,7 @@ const Rectangle: React.FC<RectangleProps> = ({
           flipEnabled={false}
           rotateEnabled={false}
           boundBoxFunc={(oldBox, newBox) => {
-            // limit resize
-            if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
+            if (newBox.width < 5 || newBox.height < 5) {
               return oldBox;
             }
             return newBox;
