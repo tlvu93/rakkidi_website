@@ -6,8 +6,11 @@ import {
   Button,
   TextField,
   Modal,
-  Typography
+  Typography,
+  Paper,
+  IconButton
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import PropertiesTable from './components/PropertyTable/properties-table';
 import PdfViewer from './components/PdfViewer/pdf-viewer';
 import { TemplateProvider } from './context/TemplateContext';
@@ -41,8 +44,11 @@ const TemplateCreator = ({
 
   return (
     <TemplateProvider>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Container maxWidth="xl">
+      <form onSubmit={handleSubmit(onSubmit)} style={{ height: '100%' }}>
+        <Container
+          maxWidth="xl"
+          sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+        >
           <Typography variant="h3" pb={4}>
             Template Creator
           </Typography>
@@ -74,7 +80,7 @@ const TemplateCreator = ({
           <Typography variant="h5" pb={2}>
             Records and PDF Preview
           </Typography>
-          <Grid container spacing={4}>
+          <Grid container spacing={4} sx={{ flexGrow: 1, mb: 2 }}>
             <Grid item xs={12} md={7}>
               <Box
                 height={'100%'}
@@ -93,22 +99,17 @@ const TemplateCreator = ({
                 border={'1px solid #B5B5B5'}
               >
                 <PropertiesTable />
-                <Box
-                  display="flex"
-                  justifyContent={'right'}
-                  padding={2}
-                  gap={2}
-                >
-                  <Button variant="outlined" onClick={onCancel}>
-                    Cancel
-                  </Button>
-                  <Button variant="contained" type="submit">
-                    Save Template
-                  </Button>
-                </Box>
               </Box>
             </Grid>
           </Grid>
+          <Box display="flex" justifyContent="flex-end" mt={2} gap={2}>
+            <Button variant="outlined" onClick={onCancel}>
+              Cancel
+            </Button>
+            <Button variant="contained" type="submit">
+              Save Template
+            </Button>
+          </Box>
         </Container>
       </form>
     </TemplateProvider>
@@ -126,8 +127,11 @@ const modalStyle = {
   height: '90%',
   overflow: 'auto',
   bgcolor: 'background.paper',
+  border: '2px solid #000',
+  borderRadius: 2,
   boxShadow: 24,
-  p: 4
+  py: 4,
+  px: 2
 };
 
 interface TemplateCreatorModalProps {
@@ -142,14 +146,37 @@ export const TemplateCreatorModal = ({
   onSubmit
 }: TemplateCreatorModalProps) => {
   return (
-    <Modal open={open} onClose={close}>
-      <Box sx={modalStyle}>
-        <TemplateCreator
-          onSubmit={onSubmit}
-          selectedTemplate={null}
-          onCancel={close}
-        />
-      </Box>
+    <Modal
+      open={open}
+      onClose={(event, reason) => {
+        if (reason !== 'backdropClick') {
+          close();
+        }
+      }}
+    >
+      <Paper sx={{ ...modalStyle, display: 'flex', flexDirection: 'column' }}>
+        <Box display="flex" justifyContent="flex-end">
+          <IconButton
+            aria-label="close"
+            onClick={close}
+            sx={{
+              position: 'absolute',
+              right: 16,
+              top: 16,
+              color: (theme) => theme.palette.grey[500]
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+          <TemplateCreator
+            onSubmit={onSubmit}
+            selectedTemplate={null}
+            onCancel={close}
+          />
+        </Box>
+      </Paper>
     </Modal>
   );
 };
