@@ -83,6 +83,14 @@ const getTheme = (mode: ThemeModes) => {
                 ? colors.primaryDark
                 : colors.secondaryDark
             }
+          },
+          text: {
+            color: isLight ? colors.primaryNormal : colors.darkModeText,
+            '&:hover': {
+              backgroundColor: isLight
+                ? 'rgba(42, 49, 66, 0.04)'
+                : 'rgba(224, 224, 224, 0.04)'
+            }
           }
         }
       },

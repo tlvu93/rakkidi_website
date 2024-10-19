@@ -18,7 +18,6 @@ const PropertyTableToolbar: React.FC = () => {
         startIcon={<AddIcon />}
         onClick={handleClick}
         disabled={!canAddExtractionField}
-        sx={{ textTransform: 'none' }}
       >
         Add Record
       </Button>
