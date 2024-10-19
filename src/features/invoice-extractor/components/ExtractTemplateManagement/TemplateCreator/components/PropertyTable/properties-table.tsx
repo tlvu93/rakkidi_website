@@ -22,6 +22,7 @@ type CustomRenderCellParams = GridRenderCellParams<
 export default function PropertiesTable() {
   const { template, deleteExtractionField, updateExtractionField } =
     useTemplate();
+  console.log(JSON.stringify(template, null, 4));
 
   const rows = useMemo(
     () =>

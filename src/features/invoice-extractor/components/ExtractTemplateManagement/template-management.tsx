@@ -46,6 +46,7 @@ const ExtractTemplateManagement = () => {
   const handleAddTemplate = useCallback(
     (form: InvoiceExtractTemplate) => {
       try {
+        console.log('handleAddTemplate called with:', form);
         addTemplate(form);
         close();
       } catch (error) {
@@ -63,81 +64,80 @@ const ExtractTemplateManagement = () => {
         close={close}
         onSubmit={handleAddTemplate}
       />
-      <Container maxWidth="md">
-        <Paper sx={{ padding: '1.5rem 2.5rem' }}>
-          <Grid container spacing={5}>
-            <Grid
-              item
-              xs={12}
-              container
-              justifyContent="space-between"
-              alignItems="center"
+
+      <Grid container spacing={5}>
+        <Grid
+          item
+          xs={12}
+          container
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography variant="h5" gutterBottom>
+            Template Management
+          </Typography>
+          <Button
+            variant="outlined"
+            startIcon={<AddCircle />}
+            sx={{ textTransform: 'none' }}
+            onClick={open}
+          >
+            Create
+          </Button>
+        </Grid>
+
+        <Grid item xs={12}>
+          <FormControl fullWidth>
+            <InputLabel id="select-template-label">
+              Choose a Template
+            </InputLabel>
+            <Select
+              id="select-template"
+              label="Choose a Template"
+              value={selectedTemplate ? selectedTemplate.name : ''}
+              onChange={handleSelectChange}
+              labelId="select-template-label"
             >
-              <Typography variant="h4">Extract Template Management</Typography>
-              <Button
-                variant="outlined"
-                startIcon={<AddCircle />}
-                sx={{ textTransform: 'none' }}
-                onClick={open}
-              >
-                Create
-              </Button>
-            </Grid>
-
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel id="select-template-label">
-                  Choose a Template
-                </InputLabel>
-                <Select
-                  id="select-template"
-                  label="Choose a Template"
-                  value={selectedTemplate ? selectedTemplate.name : ''}
-                  onChange={handleSelectChange}
-                  labelId="select-template-label"
-                >
-                  <MenuItem value="">
-                    <em>None</em>
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {templates.length === 0 ? (
+                <MenuItem disabled>
+                  <em>No Templates Created</em>
+                </MenuItem>
+              ) : (
+                templates.map((template) => (
+                  <MenuItem key={template.name} value={template.name}>
+                    {template.name}
                   </MenuItem>
-                  {templates.length === 0 ? (
-                    <MenuItem disabled>
-                      <em>No Templates Created</em>
-                    </MenuItem>
-                  ) : (
-                    templates.map((template) => (
-                      <MenuItem key={template.name} value={template.name}>
-                        {template.name}
-                      </MenuItem>
-                    ))
-                  )}
-                </Select>
-              </FormControl>
-            </Grid>
+                ))
+              )}
+            </Select>
+          </FormControl>
+        </Grid>
 
-            <Grid item xs={12} container justifyContent="space-between">
-              <Box>
-                <Button
-                  variant="outlined"
-                  startIcon={<ImportExport />}
-                  sx={{ mr: 1 }}
-                >
-                  Import
-                </Button>
-                <Button variant="outlined" startIcon={<Save />}>
-                  Export
-                </Button>
-              </Box>
-              <Button
-                variant="contained"
-                onClick={handleTemplateSelection}
-                disabled={!selectedTemplate || templates.length === 0}
-              >
-                Choose
-              </Button>
-            </Grid>
-          </Grid>
-        </Paper>
-      </Container>
+        <Grid item xs={12} container justifyContent="space-between">
+          <Box>
+            <Button
+              variant="outlined"
+              startIcon={<ImportExport />}
+              sx={{ mr: 1 }}
+            >
+              Import
+            </Button>
+            <Button variant="outlined" startIcon={<Save />}>
+              Export
+            </Button>
+          </Box>
+          <Button
+            variant="contained"
+            onClick={handleTemplateSelection}
+            disabled={!selectedTemplate || templates.length === 0}
+          >
+            Choose
+          </Button>
+        </Grid>
+      </Grid>
     </>
   );
 };
