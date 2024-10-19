@@ -17,17 +17,20 @@ const colors = {
   primaryDark: '#00081c',
   primaryNormal: '#2A3142',
   primaryLight: '#535A6D',
-  // primaryLight: '#F7F6F5',
   secondaryLight: '#FFFA8A',
   secondaryNormal: '#DBC75A',
-  secondaryDark: 'A7972A',
+  secondaryDark: '#A7972A',
 
   white: '#ffffff',
 
   lightGray: '#c2c4c7',
   darkBlack: '#00081c',
   backgroundDefault: '#FEFEFE',
-  backgroundPaperLight: '#ECECEC'
+  backgroundPaperLight: '#ECECEC',
+  // New colors for better contrast
+  darkModeBackground: '#111827',
+  darkModePaper: '#1f2937',
+  darkModeText: '#E0E0E0'
 };
 
 const getTheme = (mode: ThemeModes) => {
@@ -37,45 +40,61 @@ const getTheme = (mode: ThemeModes) => {
     palette: {
       mode,
       primary: {
-        contrastText: isLight ? colors.white : colors.white,
-        light: isLight ? colors.white : colors.backgroundPaperLight,
-        main: isLight ? colors.primaryNormal : colors.primaryNormal,
-        dark: isLight ? colors.lightGray : colors.primaryDark
+        light: colors.primaryLight,
+        main: colors.primaryNormal,
+        dark: colors.primaryDark,
+        contrastText: colors.white
       },
       secondary: {
-        main: colors.secondaryNormal
+        main: colors.secondaryNormal,
+        light: colors.secondaryLight,
+        dark: colors.secondaryDark
       },
       background: {
-        default: isLight ? colors.backgroundDefault : colors.primaryNormal,
-        paper: isLight ? colors.backgroundPaperLight : colors.primaryNormal
+        default: isLight ? colors.backgroundDefault : colors.darkModeBackground,
+        paper: isLight ? colors.backgroundPaperLight : colors.darkModePaper
       },
       text: {
-        primary: isLight ? colors.primaryDark : colors.white
+        primary: isLight ? colors.primaryDark : colors.darkModeText,
+        secondary: isLight ? colors.primaryLight : colors.lightGray
+      }
+    },
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none'
+          },
+          outlined: {
+            borderColor: isLight ? colors.primaryNormal : colors.darkModeText,
+            color: isLight ? colors.primaryNormal : colors.darkModeText,
+            '&:hover': {
+              borderColor: isLight ? colors.primaryDark : colors.white,
+              color: isLight ? colors.primaryDark : colors.white
+            }
+          },
+          contained: {
+            backgroundColor: isLight
+              ? colors.primaryNormal
+              : colors.secondaryNormal,
+            color: isLight ? colors.white : colors.darkBlack,
+            '&:hover': {
+              backgroundColor: isLight
+                ? colors.primaryDark
+                : colors.secondaryDark
+            }
+          }
+        }
+      },
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            borderRadius: 12,
+            border: `2px solid ${isLight ? colors.lightGray : colors.primaryLight}`
+          }
+        }
       }
     }
-    // components: {
-    //   MuiIconButton: {
-    //     styleOverrides: {
-    //       sizeMedium: {
-    //         color: colors.primaryDark
-    //       }
-    //     }
-    //   },
-    //   MuiOutlinedInput: {
-    //     styleOverrides: {
-    //       root: {
-    //         color: colors.primaryDark
-    //       }
-    //     }
-    //   },
-    //   MuiInputLabel: {
-    //     styleOverrides: {
-    //       root: {
-    //         color: colors.primaryDark
-    //       }
-    //     }
-    //   }
-    // }
   };
 
   return createTheme(themeOptions);
