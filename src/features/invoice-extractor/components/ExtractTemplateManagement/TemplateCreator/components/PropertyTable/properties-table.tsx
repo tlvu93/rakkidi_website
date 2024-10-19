@@ -50,13 +50,24 @@ export default function PropertiesTable() {
 
   const columns: GridColDef[] = useMemo(
     () => [
-      { field: 'name', headerName: 'Name', editable: true, width: 100 },
+      {
+        field: 'name',
+        headerName: 'Name',
+        width: 100,
+        renderCell: (params: CustomRenderCellParams) => (
+          <div>{params.value}</div>
+        )
+      },
       {
         field: 'page',
         headerName: 'Page',
         type: 'number',
-        editable: true,
-        width: 100
+        width: 100,
+        align: 'left',
+        headerAlign: 'left',
+        renderCell: (params: CustomRenderCellParams) => (
+          <div>{params.value}</div>
+        )
       },
       {
         field: 'actions',
@@ -84,7 +95,7 @@ export default function PropertiesTable() {
   return (
     <Box
       sx={{
-        height: 500,
+        height: '100%',
         width: '100%',
         '& .actions': {
           color: 'text.secondary'
@@ -101,6 +112,25 @@ export default function PropertiesTable() {
         processRowUpdate={handleUpdateRow}
         slots={{
           toolbar: Toolbar as GridSlots['toolbar']
+        }}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5
+            }
+          }
+        }}
+        pageSizeOptions={[5]}
+        disableRowSelectionOnClick
+        disableColumnFilter
+        disableColumnSelector
+        disableDensitySelector
+        disableColumnSorting
+        disableColumnMenu
+        sx={{
+          '& .MuiDataGrid-footerContainer': {
+            justifyContent: 'center'
+          }
         }}
       />
     </Box>

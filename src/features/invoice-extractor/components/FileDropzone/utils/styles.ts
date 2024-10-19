@@ -1,27 +1,34 @@
-export const baseStyle = {
-  flex: 1,
-  display: 'flex',
-  flexDirection: 'column' as const,
-  alignItems: 'center',
-  padding: '20px',
-  borderWidth: 2,
-  borderRadius: 16,
-  borderColor: '#eeeeee',
-  borderStyle: 'dashed',
-  backgroundColor: '#fafafa',
-  color: '#bdbdbd',
-  outline: 'none',
-  transition: 'border .24s ease-in-out'
-};
+import { Theme } from '@mui/material/styles';
 
-export const activeStyle = {
-  borderColor: '#2196f3'
-};
+export const getStyles = (theme: Theme) => ({
+  baseStyle: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column' as const,
+    alignItems: 'center',
+    padding: '6rem',
+    borderWidth: 2.5,
+    borderRadius: 16,
+    borderColor: theme.palette.divider,
+    borderStyle: 'dashed',
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.secondary,
+    outline: 'none',
+    transition: 'border .24s ease-in-out, background-color .24s ease-in-out'
+  },
 
-export const acceptStyle = {
-  borderColor: '#00e676'
-};
+  activeStyle: {
+    borderColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.action.hover
+  },
 
-export const rejectStyle = {
-  borderColor: '#ff1744'
-};
+  acceptStyle: {
+    borderColor: theme.palette.success.main,
+    backgroundColor: theme.palette.success.light
+  },
+
+  rejectStyle: {
+    borderColor: theme.palette.error.main,
+    backgroundColor: theme.palette.error.light
+  }
+});

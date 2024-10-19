@@ -81,25 +81,21 @@ const TemplateCreator = ({
             Records and PDF Preview
           </Typography>
           <Grid container spacing={4} sx={{ flexGrow: 1, mb: 2 }}>
-            <Grid item xs={12} md={7}>
-              <Box
-                height={'100%'}
-                alignContent={'center'}
-                borderRadius={1}
-                border={'1px solid #B5B5B5'}
-              >
+            <Grid item xs={12} md={9}>
+              <Paper sx={{ height: '100%', alignContent: 'center' }}>
                 <PdfViewer />
-              </Box>
+              </Paper>
             </Grid>
-            <Grid item xs={12} md={5}>
-              <Box
-                height={'100%'}
-                alignContent={'center'}
-                borderRadius={1}
-                border={'1px solid #B5B5B5'}
+            <Grid item xs={12} md={3}>
+              <Paper
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
               >
                 <PropertiesTable />
-              </Box>
+              </Paper>
             </Grid>
           </Grid>
           <Box display="flex" justifyContent="flex-end" mt={2} gap={2}>

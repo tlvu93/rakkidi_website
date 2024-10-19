@@ -24,6 +24,7 @@ const colors = {
   white: '#ffffff',
 
   lightGray: '#c2c4c7',
+  darkGray: '#5b636d',
   darkBlack: '#00081c',
   backgroundDefault: '#FEFEFE',
   backgroundPaperLight: '#ECECEC',
@@ -98,7 +99,8 @@ const getTheme = (mode: ThemeModes) => {
         styleOverrides: {
           root: {
             borderRadius: 12,
-            border: `2px solid ${isLight ? colors.lightGray : colors.primaryLight}`
+            // border: `2px solid ${isLight ? colors.lightGray : colors.primaryLight}`
+            border: `2px solid ${isLight ? 'rgb(224, 224, 224)' : colors.darkGray}`
           }
         }
       }

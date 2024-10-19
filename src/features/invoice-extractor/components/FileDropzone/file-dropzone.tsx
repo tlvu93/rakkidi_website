@@ -1,14 +1,13 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDropzone, FileWithPath, Accept, FileError } from 'react-dropzone';
-import { Container, CircularProgress, Typography } from '@mui/material';
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
-
 import {
-  baseStyle,
-  activeStyle,
-  acceptStyle,
-  rejectStyle
-} from './utils/styles';
+  Container,
+  CircularProgress,
+  Typography,
+  useTheme
+} from '@mui/material';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import { getStyles } from './utils/styles';
 
 interface FileDropzoneProps {
   onDrop: (acceptedFiles: FileWithPath[]) => void;
@@ -29,6 +28,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
   minSize,
   onDropRejected
 }) => {
+  const theme = useTheme();
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleDrop = useCallback(
@@ -64,14 +64,16 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
     onDropAccepted: () => setLoading(false)
   });
 
+  const styles = useMemo(() => getStyles(theme), [theme]);
+
   const style = useMemo(() => {
     return {
-      ...baseStyle,
-      ...(isDragActive ? activeStyle : {}),
-      ...(isDragAccept ? acceptStyle : {}),
-      ...(isDragReject ? rejectStyle : {})
+      ...styles.baseStyle,
+      ...(isDragActive ? styles.activeStyle : {}),
+      ...(isDragAccept ? styles.acceptStyle : {}),
+      ...(isDragReject ? styles.rejectStyle : {})
     };
-  }, [isDragActive, isDragReject, isDragAccept]);
+  }, [isDragAccept, isDragActive, isDragReject, styles]);
 
   return (
     <Container maxWidth="sm">
@@ -83,16 +85,19 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
+            gap: '1rem',
             height: '100%'
           }}
         >
-          <Typography variant="body1" align="center" color={'gray'}>
+          <Typography variant="h6" align="center" color="text.secondary">
             Drag &apos;n&apos; drop files here, or click to select files
           </Typography>
           {loading ? (
             <CircularProgress />
           ) : (
-            <SaveAltIcon style={{ fontSize: '2.5em' }} />
+            <SaveAltIcon
+              style={{ fontSize: '2.5em', color: theme.palette.text.secondary }}
+            />
           )}
         </div>
       </div>
