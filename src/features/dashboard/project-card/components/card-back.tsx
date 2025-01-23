@@ -1,4 +1,4 @@
-import { Card, Chip, Typography } from '@mui/material';
+import { Box, Card, Chip, Typography } from '@mui/material';
 import { Weblinks } from './weblinks';
 import { cardStyle } from '../style/style';
 import { ProjectCardProps } from '../interfaces';
@@ -6,39 +6,31 @@ import { ProjectCardProps } from '../interfaces';
 const CardBack = ({ data }: ProjectCardProps) => {
   return (
     <Card sx={{ ...cardStyle, height: '100%', transform: 'rotateY(180deg)' }}>
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          padding: '1rem 2.5rem',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between'
-        }}
+      <Box
+        sx={{ height: '100%', p: 3, display: 'flex', flexDirection: 'column' }}
       >
-        <div style={{ width: '100%', position: 'relative' }}>
-          <Typography variant="h6">{data.title}</Typography>
-          <Typography variant="body2">{data.description}</Typography>
-        </div>
+        <Typography variant="h6" gutterBottom>
+          {data.title}
+        </Typography>
 
-        <div>
+        <Box sx={{ mb: 2 }}>
           <Weblinks data={data} />
-        </div>
+        </Box>
 
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem'
+        <Box
+          sx={{
+            borderTop: 1,
+            borderColor: 'divider',
+            pt: 2
           }}
         >
           <Typography variant="h6">Tags</Typography>
-          <div
-            style={{
+          <Box
+            sx={{
               display: 'flex',
-              // justifyContent: 'space-evenly',
               gap: '0.5rem',
-              flexWrap: 'wrap'
+              flexWrap: 'wrap',
+              mt: 1
             }}
           >
             {data.tags &&
@@ -50,9 +42,9 @@ const CardBack = ({ data }: ProjectCardProps) => {
                   size="small"
                 />
               ))}
-          </div>
-        </div>
-      </div>
+          </Box>
+        </Box>
+      </Box>
     </Card>
   );
 };

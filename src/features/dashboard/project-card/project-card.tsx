@@ -23,7 +23,7 @@ const ProjectCard: FC<ProjectCardProps> = ({ data }): ReactElement => {
       sx={{
         minWidth: '20rem',
         maxWidth: '28rem',
-        aspectRatio: '18/13',
+        aspectRatio: '18/14',
 
         width: '100%',
         transition: 'transform 0.8s',
