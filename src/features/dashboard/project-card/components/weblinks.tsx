@@ -15,10 +15,11 @@ type WebLinkProps = {
 };
 
 const weblinkStyle = {
-  display: 'block', // This ensures the icon takes up all available space
+  display: 'block',
   width: '100%',
   height: '100%',
   transition: 'transform 0.3s',
+  cursor: 'pointer',
   ':hover': {
     transform: 'scale(1.1)'
   }
@@ -28,6 +29,7 @@ const svgStyle = {
   height: '100%',
   width: 'auto',
   transition: 'transform 0.3s',
+  cursor: 'pointer',
   ':hover': {
     transform: 'scale(1.1)'
   }
@@ -59,6 +61,7 @@ export const Weblink = ({ link }: WebLinkProps) => {
             width: '100%',
             height: '100%',
             transition: 'transform 0.3s',
+            cursor: 'pointer',
             ':hover': {
               transform: 'scale(1.1)'
             }
@@ -80,6 +83,7 @@ export const Weblink = ({ link }: WebLinkProps) => {
             width: '100%',
             height: '100%',
             transition: 'transform 0.3s',
+            cursor: 'pointer',
             ':hover': {
               transform: 'scale(1.1)'
             }

@@ -4,43 +4,46 @@ import { ProjectCardProps } from '../interfaces';
 import { cardStyle } from '../style/style';
 import { Tags } from 'features/dashboard/interfaces';
 
-const CardFront = ({ data }: ProjectCardProps) => {
-  const CardFooter = ({ title, tags }: { title: string; tags: Tags[] }) => {
-    return (
-      <div
-        style={{
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center'
-        }}
-      >
-        <Typography variant="h6">{title}</Typography>
-        <div>
-          {tags.map((tag) => (
-            <Typography
-              key={tag.title}
-              variant="caption"
-              sx={{ whiteSpace: 'nowrap' }}
-            >
-              {`${tag.title}, `}
-            </Typography>
-          ))}
-        </div>
+export const CardFooter = ({
+  title,
+  tags
+}: {
+  title: string;
+  tags: Tags[];
+}) => {
+  return (
+    <div
+      style={{
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center'
+      }}
+    >
+      <Typography variant="h6">{title}</Typography>
+      <div>
+        {tags.map((tag) => (
+          <Typography
+            key={tag.title}
+            variant="caption"
+            sx={{ whiteSpace: 'nowrap' }}
+          >
+            {`${tag.title}, `}
+          </Typography>
+        ))}
       </div>
-    );
-  };
+    </div>
+  );
+};
 
+const CardFront = ({ data }: ProjectCardProps) => {
   return (
     <Card sx={cardStyle}>
       <div
         style={{
-          width: '100%',
-          height: 0,
           paddingBottom: '56.25%',
-          position: 'relative',
-          border: '2px solid rgba(0, 0, 0, 0.1)'
+          position: 'relative'
         }}
       >
         <Image
@@ -55,14 +58,16 @@ const CardFront = ({ data }: ProjectCardProps) => {
           priority={true}
         />
       </div>
-      <div
-        style={{
+      <Box
+        sx={{
           flex: 1,
-          padding: '1rem 2.5rem'
+          padding: '1rem 2.5rem',
+          borderTop: 1,
+          borderColor: 'divider'
         }}
       >
         <CardFooter title={data.title} tags={data.tags || []} />
-      </div>
+      </Box>
     </Card>
   );
 };
