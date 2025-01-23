@@ -54,7 +54,9 @@ export const getTextTokenFromPdfFile = async (
  */
 export const getTextFromAreaTemplate = (
   text: TextContent,
-  tf: PdfTransformationMatrix
+  tf: PdfTransformationMatrix,
+  width?: number,
+  height?: number
 ): string => {
   if (tf.length < 6) {
     throw new Error(
@@ -64,28 +66,54 @@ export const getTextFromAreaTemplate = (
 
   const textItems = text.items as TextItem[];
 
-  // Extract the necessary values from the TransformationMatrix
-  const [fontHeight, , , fontWidth, x, y] = tf;
+  // Extract position from the transformation matrix
+  const [, , , , x, y] = tf;
 
-  // Calculate the boundaries based on the transformation matrix
+  // Use provided width/height or fallback to defaults
+  const rectWidth = width || 0;
+  const rectHeight = height || 0;
+
+  // Calculate the boundaries based on position and dimensions
   const xStart = x;
-  const xEnd = x + fontHeight; // Assuming fontHeight corresponds to the width
+  const xEnd = x + rectWidth;
   const yStart = y;
-  const yEnd = y + fontWidth; // Assuming fontWidth corresponds to the height
+  const yEnd = y + rectHeight;
+
+  const TOLERANCE = 1; // 1 point tolerance for slight positioning variations
 
   const isInRange = (
     item: TextItem,
     start: number,
     end: number,
     index: TransformIndex
-  ) => item.transform[index] >= start && item.transform[index] <= end;
+  ): boolean => {
+    const pos = item.transform[index];
+    const width = index === TransformIndex.X ? item.width || 0 : 0;
 
-  return textItems
-    .filter(
-      (item) =>
-        isInRange(item, xStart, xEnd, TransformIndex.X) &&
-        isInRange(item, yStart, yEnd, TransformIndex.Y)
-    )
+    // Check if any part of the text item overlaps with the selection area
+    return (
+      (pos >= start - TOLERANCE && pos <= end + TOLERANCE) || // Text starts within range
+      (pos + width >= start - TOLERANCE && pos + width <= end + TOLERANCE) || // Text ends within range
+      (pos <= start && pos + width >= end) // Text spans the entire range
+    );
+  };
+
+  // Filter text items that overlap with the selection area
+  const selectedItems = textItems.filter(
+    (item) =>
+      isInRange(item, xStart, xEnd, TransformIndex.X) &&
+      isInRange(item, yStart, yEnd, TransformIndex.Y)
+  );
+
+  // Sort items by their position to maintain reading order
+  selectedItems.sort((a, b) => {
+    const yDiff = a.transform[TransformIndex.Y] - b.transform[TransformIndex.Y];
+    return Math.abs(yDiff) < 5
+      ? a.transform[TransformIndex.X] - b.transform[TransformIndex.X]
+      : yDiff;
+  });
+
+  return selectedItems
     .map((s) => s.str)
     .join('')
     .replace(/\s/g, '');

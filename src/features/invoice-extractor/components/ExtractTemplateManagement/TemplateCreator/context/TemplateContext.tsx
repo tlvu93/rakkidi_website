@@ -41,20 +41,49 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
       if (savedTemplate) {
         try {
           const parsed = JSON.parse(savedTemplate);
+          // Migrate existing fields to include width and height if they don't have them
+          if (parsed.extractionFields) {
+            parsed.extractionFields = parsed.extractionFields.map(
+              (field: ExtractionField) => ({
+                ...field,
+                width: field.width || 50, // Default width if not present
+                height: field.height || 50 // Default height if not present
+              })
+            );
+          }
           setTemplate(parsed);
 
           // Also add to templates list if not already present
           const storedTemplates = localStorage.getItem('templates');
           if (storedTemplates) {
             const templates = JSON.parse(storedTemplates);
+            // Migrate all stored templates
+            const migratedTemplates = templates.map(
+              (t: InvoiceExtractTemplate) => ({
+                ...t,
+                extractionFields: t.extractionFields.map(
+                  (field: ExtractionField) => ({
+                    ...field,
+                    width: field.width || 50,
+                    height: field.height || 50
+                  })
+                )
+              })
+            );
+
+            // Add current template if not present
             if (
-              !templates.some(
+              !migratedTemplates.some(
                 (t: InvoiceExtractTemplate) => t.name === parsed.name
               )
             ) {
-              templates.push(parsed);
-              localStorage.setItem('templates', JSON.stringify(templates));
+              migratedTemplates.push(parsed);
             }
+
+            localStorage.setItem(
+              'templates',
+              JSON.stringify(migratedTemplates)
+            );
           } else {
             localStorage.setItem('templates', JSON.stringify([parsed]));
           }
@@ -89,7 +118,9 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
     const newField: ExtractionField = {
       id: faker.string.uuid(),
       name: `Field ${template.extractionFields.length + 1}`,
-      tfMatrix: [50, 0, 0, 50, 100, 100],
+      tfMatrix: [1.0, 0, 0, 1.0, 100, 100], // unit scale transformation matrix
+      width: 50, // default width
+      height: 50, // default height
       page: null
     };
 

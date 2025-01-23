@@ -35,18 +35,22 @@ const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
   const handleChange = useCallback(
     (id: string, newAttrs: Partial<RectProps>) => {
       // Convert RectProps back to tfMatrix
+      // Create proper PDF transformation matrix
       const updatedTfMatrix: PdfTransformationMatrix = [
-        newAttrs.width! / zoom, // FontHeight (scale factor for width)
-        0,
-        0,
-        newAttrs.height! / zoom, // FontWidth (scale factor for height)
-        newAttrs.x! / zoom, // X position
-        newAttrs.y! / zoom // Y position
+        1.0, // scaleX - unit scale
+        0, // skewY
+        0, // skewX
+        1.0, // scaleY - unit scale
+        newAttrs.x! / zoom, // x position
+        newAttrs.y! / zoom // y position
       ];
 
+      // Store width and height in the extraction field
       updateExtractionField({
         id,
-        tfMatrix: updatedTfMatrix
+        tfMatrix: updatedTfMatrix,
+        width: newAttrs.width! / zoom,
+        height: newAttrs.height! / zoom
       });
     },
     [zoom, updateExtractionField]
@@ -64,7 +68,9 @@ const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
     >
       <Layer>
         {template.extractionFields.map((field) => {
-          const [fontHeight, , , fontWidth, x, y] = field.tfMatrix;
+          const [, , , , x, y] = field.tfMatrix;
+          const width = field.width || 0;
+          const height = field.height || 0;
 
           return (
             <React.Fragment key={field.id}>
@@ -82,8 +88,8 @@ const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
                   name: field.name,
                   x: x * zoom,
                   y: y * zoom,
-                  width: fontHeight * zoom,
-                  height: fontWidth * zoom,
+                  width: width * zoom,
+                  height: height * zoom,
                   fill: 'rgba(128, 128, 128, 0.8)'
                 }}
                 isSelected={field.id === selectedId}

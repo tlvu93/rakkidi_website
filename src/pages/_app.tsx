@@ -12,6 +12,11 @@ import { CacheProvider, EmotionCache } from '@emotion/react';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import 'react-toastify/dist/ReactToastify.css';
+import setupLocatorUI from '@locator/runtime';
+
+// if (process.env.NODE_ENV === 'development') {
+//   setupLocatorUI();
+// }
 
 const clientSideEmotionCache = createEmotionCache();
 

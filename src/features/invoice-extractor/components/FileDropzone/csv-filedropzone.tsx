@@ -1,43 +1,55 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { FileWithPath } from 'react-dropzone';
-import { Container } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import { CSVLink } from 'react-csv';
 
 import AcceptedFiles from './components/accepted-files';
 import RejectedFiles from './components/rejected-files';
 
-import { WmdCsvData } from 'features/invoice-extractor/interfaces/wmd-csv-data';
+import { TemplateCsvData } from 'features/invoice-extractor/interfaces/template-csv-data';
 import { getTextTokenFromPdfFile } from '../ExtractTemplateManagement/utils/pdf-extract';
-import { wmdExtractFields } from '../ExtractTemplateManagement/utils/wmd-template';
+import { extractFieldsFromTemplate } from '../ExtractTemplateManagement/utils/template-extractor';
+import { useTemplateManagement } from '../ExtractTemplateManagement/context/template-management-context';
 import FileDropzone from './file-dropzone';
 
-const headers = [
-  { label: 'Rechnungsnummer', key: 'Rechnungsnummer' },
-  { label: 'Rechnungsdatum', key: 'Rechnungsdatum' },
-  { label: 'RechnungsbetragBrutto', key: 'RechnungsbetragBrutto' }
-];
-
 const CSVFiledropzone = () => {
-  const [csvData, setCsvData] = useState<WmdCsvData[]>([]);
+  const { selectedTemplate } = useTemplateManagement();
+  const [csvData, setCsvData] = useState<TemplateCsvData[]>([]);
   const [acceptedFiles, setAcceptedFiles] = useState<FileWithPath[]>([]);
   const [fileRejections, setFileRejections] = useState<
     Array<{ file: FileWithPath; errors: any[] }>
   >([]);
 
-  const handleDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
-    setAcceptedFiles(acceptedFiles);
-    try {
-      const csvPromises = acceptedFiles.map(async (file) => {
-        const tokenizedText = await getTextTokenFromPdfFile(file);
-        return wmdExtractFields(tokenizedText);
-      });
+  const headers = useMemo(() => {
+    if (!selectedTemplate) return [];
+    return selectedTemplate.extractionFields.map((field) => ({
+      label: field.name,
+      key: field.name
+    }));
+  }, [selectedTemplate]);
 
-      const extractedCsvData = await Promise.all(csvPromises);
-      setCsvData(extractedCsvData);
-    } catch (error) {
-      console.error('Error processing files:', error);
-    }
-  }, []);
+  const handleDrop = useCallback(
+    async (acceptedFiles: FileWithPath[]) => {
+      if (!selectedTemplate) {
+        console.error('No template selected');
+        return;
+      }
+
+      setAcceptedFiles(acceptedFiles);
+      try {
+        const csvPromises = acceptedFiles.map(async (file) => {
+          const tokenizedText = await getTextTokenFromPdfFile(file);
+          return extractFieldsFromTemplate(tokenizedText, selectedTemplate);
+        });
+
+        const extractedCsvData = await Promise.all(csvPromises);
+        setCsvData(extractedCsvData);
+      } catch (error) {
+        console.error('Error processing files:', error);
+      }
+    },
+    [selectedTemplate]
+  );
 
   const handleRejected = useCallback(
     (fileRejections: Array<{ file: FileWithPath; errors: any[] }>) => {
@@ -57,7 +69,12 @@ const CSVFiledropzone = () => {
         <AcceptedFiles acceptedFiles={acceptedFiles} />
         <RejectedFiles fileRejections={fileRejections} />
       </aside>
-      {csvData.length > 0 && (
+      {!selectedTemplate && (
+        <Typography color="error" sx={{ mt: 2 }}>
+          Please select a template first
+        </Typography>
+      )}
+      {selectedTemplate && csvData.length > 0 && (
         <CSVLink
           data={csvData}
           headers={headers}

@@ -55,7 +55,10 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.26.3",
     "@chromatic-com/storybook": "3.2.4",
+    "@locator/babel-jsx": "^0.4.4",
+    "@locator/runtime": "^0.4.4",
     "@storybook/addon-essentials": "^8.5.1",
     "@storybook/addon-interactions": "^8.5.1",
     "@storybook/addon-links": "^8.5.1",

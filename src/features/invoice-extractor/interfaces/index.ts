@@ -8,10 +8,10 @@ export type PdfTransformationMatrix = [
 ];
 
 export enum TransformIndex {
-  FontHeight = 0,
-  FontWidth = 1,
-  Rotation = 2,
-  Skew = 3,
+  ScaleX = 0,
+  SkewY = 1,
+  SkewX = 2,
+  ScaleY = 3,
   X = 4,
   Y = 5
 }
