@@ -1,10 +1,10 @@
 import { Box } from '@mui/material';
 import { FC, ReactElement } from 'react';
-
 import { useFlip } from '@shared/hooks';
 import CardBack from './components/card-back';
 import CardFront from './components/card-front';
 import { ProjectCardProps } from './interfaces';
+import { projectCardStyle } from './style/style';
 
 /**
  * A flippable card component that displays project information
@@ -21,17 +21,8 @@ const ProjectCard: FC<ProjectCardProps> = ({ data }): ReactElement => {
       role="button"
       aria-pressed={flipped}
       sx={{
-        minWidth: '20rem',
-        maxWidth: '28rem',
-        aspectRatio: '18/14',
-
-        width: '100%',
-        transition: 'transform 0.8s',
-        transformStyle: 'preserve-3d',
-        transform: flipped ? 'rotateY(180deg)' : '',
-        '&:hover': {
-          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.4)'
-        }
+        ...projectCardStyle,
+        transform: flipped ? 'rotateY(180deg)' : ''
       }}
     >
       <CardFront data={data} />

@@ -2,6 +2,7 @@ import { Box, Card, Chip, Typography } from '@mui/material';
 import { Weblinks } from './weblinks';
 import { cardStyle } from '../style/style';
 import { ProjectCardProps } from '../interfaces';
+import { CardSection, ImageContainer } from './shared/card-section';
 
 const CardBack = ({ data }: ProjectCardProps) => {
   return (
@@ -11,12 +12,7 @@ const CardBack = ({ data }: ProjectCardProps) => {
         transform: 'rotateY(180deg)'
       }}
     >
-      <div
-        style={{
-          paddingBottom: '56.25%',
-          position: 'relative'
-        }}
-      >
+      <ImageContainer>
         <Box
           sx={{
             position: 'absolute',
@@ -41,16 +37,8 @@ const CardBack = ({ data }: ProjectCardProps) => {
             <Weblinks data={data} />
           </Box>
         </Box>
-      </div>
-      <Box
-        sx={{
-          flex: 1,
-
-          borderTop: 1,
-          borderColor: 'divider',
-          p: '1rem 2.5rem'
-        }}
-      >
+      </ImageContainer>
+      <CardSection hasBorder>
         <Typography variant="h6" gutterBottom>
           Tags
         </Typography>
@@ -61,17 +49,16 @@ const CardBack = ({ data }: ProjectCardProps) => {
             flexWrap: 'wrap'
           }}
         >
-          {data.tags &&
-            data.tags.map((tag, index) => (
-              <Chip
-                key={`${tag}_${index}`}
-                label={tag.title}
-                variant="outlined"
-                size="small"
-              />
-            ))}
+          {data.tags?.map((tag, index) => (
+            <Chip
+              key={`${tag.title}_${index}`}
+              label={tag.title}
+              variant="outlined"
+              size="small"
+            />
+          ))}
         </Box>
-      </Box>
+      </CardSection>
     </Card>
   );
 };
