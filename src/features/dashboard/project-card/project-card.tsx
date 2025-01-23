@@ -1,12 +1,18 @@
 import { Box } from '@mui/material';
+import { FC, ReactElement } from 'react';
 
-import useFlip from './hooks/useFlip';
+import { useFlip } from '@shared/hooks';
 import CardBack from './components/card-back';
-
-import { ProjectCardProps } from './interfaces';
 import CardFront from './components/card-front';
+import { ProjectCardProps } from './interfaces';
 
-const ProjectCard = ({ data }: ProjectCardProps) => {
+/**
+ * A flippable card component that displays project information
+ * @param props - Component props
+ * @param props.data - Project data to display
+ * @returns A flippable card with front and back views
+ */
+const ProjectCard: FC<ProjectCardProps> = ({ data }): ReactElement => {
   const { flipped, flipCard } = useFlip();
 
   return (
