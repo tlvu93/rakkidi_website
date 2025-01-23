@@ -1,4 +1,10 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect
+} from 'react';
 import {
   ExtractionField,
   InvoiceExtractTemplate
@@ -27,6 +33,57 @@ export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
     description: '',
     extractionFields: []
   });
+
+  // Load template from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedTemplate = localStorage.getItem('current-template');
+      if (savedTemplate) {
+        try {
+          const parsed = JSON.parse(savedTemplate);
+          setTemplate(parsed);
+
+          // Also add to templates list if not already present
+          const storedTemplates = localStorage.getItem('templates');
+          if (storedTemplates) {
+            const templates = JSON.parse(storedTemplates);
+            if (
+              !templates.some(
+                (t: InvoiceExtractTemplate) => t.name === parsed.name
+              )
+            ) {
+              templates.push(parsed);
+              localStorage.setItem('templates', JSON.stringify(templates));
+            }
+          } else {
+            localStorage.setItem('templates', JSON.stringify([parsed]));
+          }
+        } catch (error) {
+          console.error('Error parsing saved template:', error);
+        }
+      }
+    }
+  }, []);
+
+  // Save current template to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('current-template', JSON.stringify(template));
+
+      // Update template in templates list if it exists
+      const storedTemplates = localStorage.getItem('templates');
+      if (storedTemplates) {
+        const templates = JSON.parse(storedTemplates);
+        const index = templates.findIndex(
+          (t: InvoiceExtractTemplate) => t.name === template.name
+        );
+        if (index >= 0) {
+          templates[index] = template;
+          localStorage.setItem('templates', JSON.stringify(templates));
+        }
+      }
+    }
+  }, [template]);
 
   const addExtractionField = () => {
     const newField: ExtractionField = {
