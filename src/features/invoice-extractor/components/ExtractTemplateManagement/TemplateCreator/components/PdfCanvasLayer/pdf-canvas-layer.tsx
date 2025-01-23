@@ -36,21 +36,32 @@ const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
     (id: string, newAttrs: Partial<RectProps>) => {
       // Convert RectProps back to tfMatrix
       // Create proper PDF transformation matrix
+      const x = newAttrs.x! / zoom;
+      const y = newAttrs.y! / zoom;
+      const width = newAttrs.width! / zoom;
+      const height = newAttrs.height! / zoom;
+
+      console.log('Rectangle coordinates:', {
+        screen: newAttrs,
+        pdf: { x, y, width, height },
+        zoom
+      });
+
       const updatedTfMatrix: PdfTransformationMatrix = [
         1.0, // scaleX - unit scale
         0, // skewY
         0, // skewX
         1.0, // scaleY - unit scale
-        newAttrs.x! / zoom, // x position
-        newAttrs.y! / zoom // y position
+        x, // x position
+        y // y position
       ];
 
       // Store width and height in the extraction field
       updateExtractionField({
         id,
         tfMatrix: updatedTfMatrix,
-        width: newAttrs.width! / zoom,
-        height: newAttrs.height! / zoom
+        width,
+        height
       });
     },
     [zoom, updateExtractionField]

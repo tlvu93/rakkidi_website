@@ -2,25 +2,31 @@ import { TextContent } from 'pdfjs-dist/types/src/display/api';
 import { getTextFromAreaTemplate } from './pdf-extract';
 import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
 
-export const extractFieldsFromTemplate = (
+export const extractFieldsFromTemplate = async (
   text: TextContent,
   template: InvoiceExtractTemplate
-): Record<string, string> => {
+): Promise<Record<string, string>> => {
   const extractedData: Record<string, string> = {};
 
   // Extract data for each field defined in the template
-  template.extractionFields.forEach((field) => {
-    if (field.tfMatrix && field.name) {
-      const extractedValue =
-        getTextFromAreaTemplate(
-          text,
-          field.tfMatrix,
-          field.width,
-          field.height
-        ) || '';
-      extractedData[field.name] = extractedValue;
-    }
-  });
+  await Promise.all(
+    template.extractionFields.map(async (field) => {
+      if (field.tfMatrix && field.name) {
+        try {
+          const extractedValue = await getTextFromAreaTemplate(
+            text,
+            field.tfMatrix,
+            field.width,
+            field.height
+          );
+          extractedData[field.name] = extractedValue || '';
+        } catch (error) {
+          console.error(`Error extracting field ${field.name}:`, error);
+          extractedData[field.name] = '';
+        }
+      }
+    })
+  );
 
   return extractedData;
 };

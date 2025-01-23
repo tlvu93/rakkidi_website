@@ -37,13 +37,18 @@ const CSVFiledropzone = () => {
 
       setAcceptedFiles(acceptedFiles);
       try {
-        const csvPromises = acceptedFiles.map(async (file) => {
+        // Process files sequentially to maintain order
+        const extractedData = [];
+        for (const file of acceptedFiles) {
           const tokenizedText = await getTextTokenFromPdfFile(file);
-          return extractFieldsFromTemplate(tokenizedText, selectedTemplate);
-        });
-
-        const extractedCsvData = await Promise.all(csvPromises);
-        setCsvData(extractedCsvData);
+          console.log('tokenizedText:', tokenizedText);
+          const extractedFields = await extractFieldsFromTemplate(
+            tokenizedText,
+            selectedTemplate
+          );
+          extractedData.push(extractedFields);
+        }
+        setCsvData(extractedData);
       } catch (error) {
         console.error('Error processing files:', error);
       }
