@@ -21,7 +21,33 @@ const ProjectCardRow: React.FC<CardGroupProps> = ({ projects }) => {
       prevArrow: <CustomArrow direction="prev" />,
       arrows: projects.length > MAX_VISIBLE_PROJECTS,
       centerMode: false,
-      swipe: projects.length > MAX_VISIBLE_PROJECTS
+      swipe: projects.length > MAX_VISIBLE_PROJECTS,
+      responsive: [
+        {
+          breakpoint: 1280,
+          settings: {
+            slidesToShow: Math.min(projects.length, 3),
+            slidesToScroll: 1,
+            arrows: projects.length > 3
+          }
+        },
+        {
+          breakpoint: 960,
+          settings: {
+            slidesToShow: Math.min(projects.length, 2),
+            slidesToScroll: 1,
+            arrows: projects.length > 2
+          }
+        },
+        {
+          breakpoint: 600,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            arrows: projects.length > 1
+          }
+        }
+      ]
     }),
     [projects.length]
   );
