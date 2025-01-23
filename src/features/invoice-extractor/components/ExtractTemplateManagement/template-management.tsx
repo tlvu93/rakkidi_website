@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { AddCircle, ImportExport, Save } from '@mui/icons-material';
+import { AddCircle, ImportExport, Save, Delete } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -27,7 +27,8 @@ const ExtractTemplateManagement = () => {
     selectedTemplate,
     addTemplate,
     selectTemplate,
-    setTemplate
+    setTemplate,
+    deleteTemplate
   } = useTemplateManagement();
 
   const handleSelectChange = useCallback(
@@ -97,6 +98,7 @@ const ExtractTemplateManagement = () => {
               value={selectedTemplate ? selectedTemplate.name : ''}
               onChange={handleSelectChange}
               labelId="select-template-label"
+              renderValue={(value) => <span>{value || <em>None</em>}</span>}
             >
               <MenuItem value="">
                 <em>None</em>
@@ -106,11 +108,41 @@ const ExtractTemplateManagement = () => {
                   <em>No Templates Created</em>
                 </MenuItem>
               ) : (
-                templates.map((template) => (
-                  <MenuItem key={template.name} value={template.name}>
-                    {template.name}
-                  </MenuItem>
-                ))
+                templates.map((template) => {
+                  const isSelected = selectedTemplate?.name === template.name;
+                  return (
+                    <MenuItem
+                      key={template.name}
+                      value={template.name}
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        '& .delete-icon': {
+                          opacity: isSelected ? 0 : 1,
+                          visibility: isSelected ? 'hidden' : 'visible'
+                        }
+                      }}
+                    >
+                      <span>{template.name}</span>
+                      <Delete
+                        className="delete-icon"
+                        sx={{
+                          ml: 2,
+                          fontSize: '1.2rem',
+                          color: 'error.main',
+                          '&:hover': {
+                            color: 'error.dark'
+                          }
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteTemplate(template.name);
+                        }}
+                      />
+                    </MenuItem>
+                  );
+                })
               )}
             </Select>
           </FormControl>

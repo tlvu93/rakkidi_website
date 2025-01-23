@@ -14,6 +14,7 @@ interface TemplateManagementContextProps {
   selectedTemplate: InvoiceExtractTemplate | null;
   setTemplate: (template: InvoiceExtractTemplate) => void;
   addTemplate: (template: InvoiceExtractTemplate) => void;
+  deleteTemplate: (templateName: string) => void;
   selectTemplate: (templateName: string) => void;
 }
 
@@ -58,15 +59,35 @@ export const TemplateManagementProvider: React.FC<{ children: ReactNode }> = ({
     [templates]
   );
 
+  const deleteTemplate = useCallback(
+    (templateName: string) => {
+      setTemplates((prevTemplates) =>
+        prevTemplates.filter((template) => template.name !== templateName)
+      );
+      if (selectedTemplate?.name === templateName) {
+        setSelectedTemplate(null);
+      }
+    },
+    [selectedTemplate]
+  );
+
   const contextValue = useMemo(
     () => ({
       templates,
       selectedTemplate,
       setTemplate,
       addTemplate,
+      deleteTemplate,
       selectTemplate
     }),
-    [templates, selectedTemplate, setTemplate, addTemplate, selectTemplate]
+    [
+      templates,
+      selectedTemplate,
+      setTemplate,
+      addTemplate,
+      deleteTemplate,
+      selectTemplate
+    ]
   );
 
   return (
