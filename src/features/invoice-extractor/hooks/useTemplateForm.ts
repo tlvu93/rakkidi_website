@@ -13,29 +13,21 @@ export interface UseTemplateFormProps {
   currentFields: ExtractionField[];
 }
 
-export interface UseTemplateFormReturn {
-  register: ReturnType<typeof useForm<InvoiceExtractTemplate>>['register'];
-  handleSubmit: (e: React.FormEvent) => void;
-  errors: FieldErrors<InvoiceExtractTemplate>;
-  isValid: boolean;
-}
+export type UseTemplateFormReturn = ReturnType<
+  typeof useForm<InvoiceExtractTemplate>
+>;
 
 export const useTemplateForm = ({
   selectedTemplate,
   onSubmit,
   currentFields
-}: UseTemplateFormProps): UseTemplateFormReturn => {
-  const {
-    register,
-    handleSubmit: handleRHFSubmit,
-    formState: { errors, isValid }
-  } = useForm<InvoiceExtractTemplate>({
+}: UseTemplateFormProps) => {
+  const methods = useForm<InvoiceExtractTemplate>({
     defaultValues: selectedTemplate ?? defaultTemplate,
     mode: 'onChange'
   });
 
-  const handleFormSubmit = (data: InvoiceExtractTemplate) => {
-    // Include the current extraction fields from the template context
+  const onSubmitHandler = (data: InvoiceExtractTemplate) => {
     const updatedTemplate = {
       ...data,
       extractionFields: currentFields
@@ -43,10 +35,5 @@ export const useTemplateForm = ({
     onSubmit(updatedTemplate);
   };
 
-  return {
-    register,
-    handleSubmit: handleRHFSubmit(handleFormSubmit),
-    errors,
-    isValid
-  };
+  return methods;
 };

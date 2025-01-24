@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import {
   ExtractionField,
+  ExtractionFieldType,
   InvoiceExtractTemplate
 } from 'features/invoice-extractor/interfaces';
 import { faker } from '@faker-js/faker';
@@ -8,14 +9,14 @@ import { useTemplateStorage } from 'features/invoice-extractor/hooks/useTemplate
 
 export interface TemplateContextProps {
   template: InvoiceExtractTemplate;
-  addExtractionField: () => void;
+  addExtractionField: (type?: ExtractionFieldType) => void;
   deleteExtractionField: (id: string) => void;
   updateExtractionField: (updateField: Partial<ExtractionField>) => void;
   updateExtractionFields: (fields: ExtractionField[]) => void;
   updateTemplate: (newTemplate: Partial<InvoiceExtractTemplate>) => void;
   canAddExtractionField: boolean;
-  exportTemplate: () => void;
-  importTemplate: (file: File) => Promise<void>;
+  exportTemplate: (formName?: string) => void;
+  importTemplate: (file: File, newName?: string) => Promise<void>;
 }
 
 const TemplateContext = createContext<TemplateContextProps | undefined>(
@@ -42,15 +43,30 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
   // Use the template storage hook
   useTemplateStorage({ template, setTemplate, initialTemplate });
 
-  const addExtractionField = () => {
-    const newField: ExtractionField = {
+  const addExtractionField = (
+    type: ExtractionFieldType = ExtractionFieldType.Rectangle
+  ) => {
+    const baseField = {
       id: faker.string.uuid(),
       name: `Field ${template.extractionFields.length + 1}`,
-      tfMatrix: [1.0, 0, 0, 1.0, 100, 100], // unit scale transformation matrix
-      width: 50, // default width
-      height: 50, // default height
+      type,
       page: null
     };
+
+    const newField: ExtractionField =
+      type === ExtractionFieldType.Rectangle
+        ? {
+            ...baseField,
+            tfMatrix: [1.0, 0, 0, 1.0, 100, 100], // unit scale transformation matrix
+            width: 50, // default width
+            height: 50 // default height
+          }
+        : {
+            ...baseField,
+            keyword: '',
+            searchDirection: 'right' as const,
+            maxDistance: 100 // default max distance in pixels
+          };
 
     setTemplate((prevTemplate) => ({
       ...prevTemplate,
@@ -101,33 +117,53 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
   const canAddExtractionField =
     template.extractionFields.length < MAX_EXTRACTION_FIELDS;
 
-  const exportTemplate = () => {
-    const jsonString = JSON.stringify(template, null, 2);
+  const exportTemplate = (formName?: string) => {
+    // Use form name if provided, otherwise use template name
+    const name = formName?.trim() || template.name.trim();
+
+    // Ensure we have a valid name
+    if (!name || name === 'New Template') {
+      console.error('Please provide a name for the template');
+      return;
+    }
+
+    // Create a copy of the template with the current state and name
+    const templateToExport = {
+      ...template,
+      name // Use the provided or current name
+    };
+
+    const jsonString = JSON.stringify(templateToExport, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${template.name.replace(/\s+/g, '_')}_template.json`;
+    // Use template name for the file name, replacing spaces and special characters with underscores
+    const fileName = templateToExport.name.replace(/[^a-zA-Z0-9]/g, '_');
+    a.download = `${fileName}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
-  const importTemplate = async (file: File) => {
+  const importTemplate = async (file: File, newName?: string) => {
     try {
       const text = await file.text();
       const importedTemplate = JSON.parse(text) as InvoiceExtractTemplate;
 
       // Validate the imported template structure
-      if (
-        !importedTemplate.name ||
-        !Array.isArray(importedTemplate.extractionFields)
-      ) {
+      if (!Array.isArray(importedTemplate.extractionFields)) {
         throw new Error('Invalid template format');
       }
 
-      setTemplate(importedTemplate);
+      // Allow overriding the template name
+      const templateToImport = {
+        ...importedTemplate,
+        name: newName?.trim() || importedTemplate.name || 'Imported Template'
+      };
+
+      setTemplate(templateToImport);
     } catch (error) {
       throw new Error('Failed to import template: ' + (error as Error).message);
     }

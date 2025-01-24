@@ -21,6 +21,7 @@ import {
 } from 'features/invoice-extractor/contexts/TemplateContext';
 import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
 import { useTemplateForm } from 'features/invoice-extractor/hooks/useTemplateForm';
+import { FormProvider } from 'react-hook-form';
 import * as styles from './styles/template-creator.styles';
 
 interface TemplateCreatorProps {
@@ -35,16 +36,23 @@ const TemplateCreatorInner = ({
   onCancel
 }: TemplateCreatorProps) => {
   const { template } = useTemplate();
-  const { register, handleSubmit, errors, isValid } = useTemplateForm({
+  const formMethods = useTemplateForm({
     selectedTemplate,
     onSubmit,
     currentFields: template.extractionFields
   });
 
+  const onSubmitHandler = formMethods.handleSubmit((data) => {
+    onSubmit({
+      ...data,
+      extractionFields: template.extractionFields
+    });
+  });
+
   return (
     <Box
       component="form"
-      onSubmit={handleSubmit}
+      onSubmit={onSubmitHandler}
       sx={{
         ...styles.formStyle,
         display: 'flex',
@@ -52,53 +60,57 @@ const TemplateCreatorInner = ({
         height: '100%'
       }}
     >
-      <Box sx={{ flex: 1, overflow: 'auto' }}>
-        <Container maxWidth="xl" sx={styles.containerStyle}>
-          <Typography variant="h3" sx={styles.templateDetailsStyle}>
-            Template Creator
-          </Typography>
-          <Typography variant="h5" sx={styles.templateFieldsStyle}>
-            Template Details
-          </Typography>
-          <Grid container spacing={2} pb={4}>
-            <Grid item xs={12} md={6}>
-              <TextField
-                {...register('name', { required: 'Template name is required' })}
-                label="Template Name"
-                fullWidth
-                error={!!errors.name}
-                helperText={errors.name?.message}
-              />
+      <FormProvider {...formMethods}>
+        <Box sx={{ flex: 1, overflow: 'auto' }}>
+          <Container maxWidth="xl" sx={styles.containerStyle}>
+            <Typography variant="h3" sx={styles.templateDetailsStyle}>
+              Template Creator
+            </Typography>
+            <Typography variant="h5" sx={styles.templateFieldsStyle}>
+              Template Details
+            </Typography>
+            <Grid container spacing={2} pb={4}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  {...formMethods.register('name', {
+                    required: 'Template name is required'
+                  })}
+                  label="Template Name"
+                  fullWidth
+                  error={!!formMethods.formState.errors.name}
+                  helperText={formMethods.formState.errors.name?.message}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  {...formMethods.register('description', {
+                    required: 'Template description is required'
+                  })}
+                  label="Template Description"
+                  fullWidth
+                  error={!!formMethods.formState.errors.description}
+                  helperText={formMethods.formState.errors.description?.message}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                {...register('description', {
-                  required: 'Template description is required'
-                })}
-                label="Template Description"
-                fullWidth
-                error={!!errors.description}
-                helperText={errors.description?.message}
-              />
+            <Typography variant="h5" pb={2}>
+              Records and PDF Preview
+            </Typography>
+            <Grid container spacing={4} sx={styles.gridContainerStyle}>
+              <Grid item xs={12} md={8}>
+                <Paper sx={styles.pdfPreviewStyle}>
+                  <PdfViewer />
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Paper sx={styles.propertiesTableStyle}>
+                  <PropertiesTable />
+                </Paper>
+              </Grid>
             </Grid>
-          </Grid>
-          <Typography variant="h5" pb={2}>
-            Records and PDF Preview
-          </Typography>
-          <Grid container spacing={4} sx={styles.gridContainerStyle}>
-            <Grid item xs={12} md={8}>
-              <Paper sx={styles.pdfPreviewStyle}>
-                <PdfViewer />
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Paper sx={styles.propertiesTableStyle}>
-                <PropertiesTable />
-              </Paper>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
+          </Container>
+        </Box>
+      </FormProvider>
       <Box
         sx={{
           borderTop: 1,

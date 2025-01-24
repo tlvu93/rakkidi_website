@@ -34,14 +34,26 @@ export interface PageDimensions {
   scale: number;
 }
 
+// Enum for extraction field types
+export enum ExtractionFieldType {
+  Rectangle = 'rectangle',
+  Keyword = 'keyword'
+}
+
 // Interface for extraction fields within a template
 export interface ExtractionField {
   id: string;
   page: number | null;
   name: string;
-  tfMatrix: PdfTransformationMatrix;
+  type: ExtractionFieldType;
+  // For rectangle type
+  tfMatrix?: PdfTransformationMatrix;
   width?: number;
   height?: number;
+  // For keyword type
+  keyword?: string;
+  searchDirection?: 'right' | 'below';
+  maxDistance?: number; // Maximum distance to search from keyword in pixels
 }
 
 // Interface for the overall invoice extraction template

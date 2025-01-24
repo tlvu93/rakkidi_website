@@ -5,7 +5,9 @@ import { TextContent, TextItem } from 'pdfjs-dist/types/src/display/api';
 import { pdfjs } from 'react-pdf';
 import {
   PdfTransformationMatrix,
-  TransformIndex
+  TransformIndex,
+  ExtractionField,
+  ExtractionFieldType
 } from 'features/invoice-extractor/interfaces';
 import { visualizeCoordinates, logCoordinateAnalysis } from './debug-helpers';
 
@@ -68,13 +70,23 @@ export const getTextTokenFromPdfFile = async (
   });
 };
 
-/**
- * Extracts text from a PDF document within a specified rectangular area.
- *
- * @param text - The TextContent object representing the text in the PDF document.
- * @param tf - An ElementTransformation object defining the rectangular area to extract text from.
- * @returns The extracted text as a string, with all whitespace removed.
- */
+export const getTextFromTemplate = async (
+  text: TextContent,
+  field: ExtractionField
+): Promise<string> => {
+  if (field.type === ExtractionFieldType.Rectangle && field.tfMatrix) {
+    return getTextFromAreaTemplate(
+      text,
+      field.tfMatrix,
+      field.width,
+      field.height
+    );
+  } else if (field.type === ExtractionFieldType.Keyword && field.keyword) {
+    return getTextFromKeyword(text, field);
+  }
+  return '';
+};
+
 export const getTextFromAreaTemplate = async (
   text: TextContent,
   tf: PdfTransformationMatrix,
@@ -134,7 +146,7 @@ export const getTextFromAreaTemplate = async (
     return xOverlap && yOverlap;
   });
 
-  // Sort items by their position to maintain reading order
+  // Sort items by position
   selectedItems.sort((a, b) => {
     const yDiff = a.transform[TransformIndex.Y] - b.transform[TransformIndex.Y];
     return Math.abs(yDiff) < 5
@@ -148,41 +160,157 @@ export const getTextFromAreaTemplate = async (
     .replace(/\s/g, '');
 };
 
-/**
- * Finds the index of the first text item in the given `TextContent` that matches the provided `keyword` array.
- *
- * The function searches through the `TextItem` objects in the `TextContent` and returns the index of the first text item that matches the first element of the `keyword` array, and the next text item matches the second element of the `keyword` array.
- *
- * @param text - The `TextContent` object containing the text items to search.
- * @param keyword - An array of two strings representing the keyword to search for.
- * @returns The index of the first text item that matches the keyword, or `undefined` if the keyword is not found.
- */
-export const getIndexFromKeyword = (
+export const getTextFromKeyword = async (
   text: TextContent,
-  keyword: string[]
-): number | undefined => {
+  field: ExtractionField
+): Promise<string> => {
+  if (!field.keyword) return '';
+
   const textItems = text.items as TextItem[];
-  for (let i = 0; i < textItems.length - 1; i++) {
-    if (
-      textItems[i].str === keyword[0] &&
-      textItems[i + 1].str === keyword[1]
-    ) {
-      return i;
+  const viewport = (text as ExtendedTextContent).viewport || {
+    width: 0,
+    height: 0,
+    rotation: 0
+  };
+
+  // Find the keyword in the text content
+  let keywordIndex = -1;
+  let keywordItem: TextItem | null = null;
+
+  console.log('textItems', textItems);
+  for (let i = 0; i < textItems.length; i++) {
+    if (textItems[i].str.includes(field.keyword)) {
+      keywordIndex = i;
+      keywordItem = textItems[i];
+      console.log(
+        `Found keyword "${field.keyword}" at index ${i}:`,
+        textItems[i].str
+      );
+      break;
     }
   }
-  return undefined;
+
+  if (keywordIndex === -1 || !keywordItem) {
+    console.log(`Keyword "${field.keyword}" not found in document`);
+    return 'No match found';
+  }
+
+  const maxDistance = field.maxDistance || 200;
+  const keywordX = keywordItem.transform[TransformIndex.X];
+  const keywordY = keywordItem.transform[TransformIndex.Y];
+
+  // Filter items based on search direction and distance
+  const relevantItems = textItems.filter((item, index) => {
+    if (index <= keywordIndex) return false;
+
+    const itemX = item.transform[TransformIndex.X];
+    const itemY = item.transform[TransformIndex.Y];
+
+    if (field.searchDirection === 'right') {
+      // Check if item is on the same line (tighter tolerance)
+      const sameLineY = Math.abs(itemY - keywordY) < 10;
+      // Check if item is to the right and within maxDistance
+      const isToRight = itemX > keywordX;
+      const withinDistance = itemX - keywordX <= maxDistance;
+      // Log coordinate comparison
+      console.log('Right direction check:', {
+        item: item.str,
+        yDiff: Math.abs(itemY - keywordY),
+        xDiff: itemX - keywordX,
+        sameLineY,
+        isToRight,
+        withinDistance,
+        maxDistance
+      });
+      return sameLineY && isToRight && withinDistance;
+    } else {
+      // 'below' direction
+      // In PDF coordinates, higher Y values are lower on the page
+      // Check if item is below the keyword (Y value is less than keyword's Y)
+      const isBelow = itemY < keywordY;
+      // Check if item is within maxDistance below (tighter tolerance)
+      const withinYDistance = keywordY - itemY <= 20;
+      // Check if item is roughly aligned with keyword (tighter tolerance)
+      const alignedX = Math.abs(itemX - keywordX) < 50;
+      // Log coordinate comparison
+      console.log('Below direction check:', {
+        item: item.str,
+        yDiff: keywordY - itemY,
+        isBelow,
+        withinYDistance,
+        alignedX
+      });
+      return isBelow && withinYDistance && alignedX;
+    }
+  });
+
+  // Sort items by position and filter out items that might be part of other fields
+  const sortedItems = relevantItems.sort((a, b) => {
+    if (field.searchDirection === 'right') {
+      // For right direction, sort by X coordinate
+      const xDiff =
+        a.transform[TransformIndex.X] - b.transform[TransformIndex.X];
+      // If items are very close horizontally, they might be part of the same number
+      if (Math.abs(xDiff) < 5) {
+        // Secondary sort by Y coordinate for items that are close horizontally
+        return b.transform[TransformIndex.Y] - a.transform[TransformIndex.Y];
+      }
+      return xDiff;
+    } else {
+      // For below direction, sort by Y coordinate
+      const yDiff =
+        b.transform[TransformIndex.Y] - a.transform[TransformIndex.Y];
+      // If items are very close vertically, they might be part of the same line
+      if (Math.abs(yDiff) < 5) {
+        // Secondary sort by X coordinate for items that are close vertically
+        return a.transform[TransformIndex.X] - b.transform[TransformIndex.X];
+      }
+      return yDiff;
+    }
+  });
+  // .filter((item, index, array) => {
+  //   // Filter out items that are likely part of other fields
+  //   if (index === 0) return true;
+  //   const prevItem = array[index - 1];
+  //   const xDiff =
+  //     item.transform[TransformIndex.X] - prevItem.transform[TransformIndex.X];
+  //   const yDiff =
+  //     item.transform[TransformIndex.Y] - prevItem.transform[TransformIndex.Y];
+
+  //   // If items are very close, they're probably part of the same number/text
+  //   const closeX = Math.abs(xDiff) < 5;
+  //   const closeY = Math.abs(yDiff) < 5;
+  //   const isNumber = !isNaN(Number(item.str.trim()));
+  //   const prevIsNumber = !isNaN(Number(prevItem.str.trim()));
+
+  //   // Keep items that are either:
+  //   // 1. Close to previous item and both are numbers (part of same number)
+  //   // 2. Not too close to previous item (different field)
+  //   return (
+  //     (closeX && closeY && isNumber && prevIsNumber) || (!closeX && !closeY)
+  //   );
+  // });
+
+  // Filter out empty strings and return all relevant items concatenated
+  if (sortedItems.length > 0) {
+    const extractedText = sortedItems
+      .map((item) => {
+        console.log(`Including matched item: "${item.str}"`);
+        return item.str;
+      })
+      .join('');
+    console.log(
+      `Found values "${extractedText}" for keyword "${field.keyword}"`
+    );
+    return extractedText;
+  } else {
+    console.log(
+      `No matching text found ${field.searchDirection} of keyword "${field.keyword}"`
+    );
+    return 'No match found';
+  }
 };
 
-/**
- * Extracts the text content from a list of `TextItem` objects, removing any whitespace.
- *
- * @param items - An array of `TextItem` objects containing the text content.
- * @param start - The starting index of the text items to extract.
- * @param end - The ending index of the text items to extract.
- * @returns The extracted text content with all whitespace removed.
- *
- * Note: Is used when exact index of the text is known. Useful to be paired with getIndexFromKeyword()
- */
 export const extractText = (items: TextItem[], start: number, end: number) =>
   items
     .slice(start, end)

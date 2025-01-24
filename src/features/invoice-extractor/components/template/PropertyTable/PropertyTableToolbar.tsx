@@ -1,12 +1,18 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { GridToolbarContainer } from '@mui/x-data-grid';
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, Menu, MenuItem } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import UploadIcon from '@mui/icons-material/Upload';
 import DownloadIcon from '@mui/icons-material/Download';
+import CropIcon from '@mui/icons-material/Crop';
+import SearchIcon from '@mui/icons-material/Search';
 import { useTemplate } from 'features/invoice-extractor';
+import { ExtractionFieldType } from 'features/invoice-extractor/interfaces';
+import { useFormContext } from 'react-hook-form';
+import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
 
-const PropertyTableToolbar: React.FC = () => {
+const PropertyTableToolbar = () => {
+  const { getValues } = useFormContext<InvoiceExtractTemplate>();
   const {
     addExtractionField,
     canAddExtractionField,
@@ -15,8 +21,20 @@ const PropertyTableToolbar: React.FC = () => {
   } = useTemplate();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleAddClick = () => {
-    addExtractionField();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleAddClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleAddField = (type: ExtractionFieldType) => {
+    addExtractionField(type);
+    handleMenuClose();
   };
 
   const handleImportClick = () => {
@@ -44,14 +62,39 @@ const PropertyTableToolbar: React.FC = () => {
   return (
     <GridToolbarContainer>
       <Stack direction="row" spacing={2}>
-        <Button
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={handleAddClick}
-          disabled={!canAddExtractionField}
-        >
-          Add Record
-        </Button>
+        <div>
+          <Button
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleAddClick}
+            disabled={!canAddExtractionField}
+            aria-controls={open ? 'add-field-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+          >
+            Add Field
+          </Button>
+          <Menu
+            id="add-field-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleMenuClose}
+            MenuListProps={{
+              'aria-labelledby': 'add-field-button'
+            }}
+          >
+            <MenuItem
+              onClick={() => handleAddField(ExtractionFieldType.Rectangle)}
+            >
+              <CropIcon sx={{ mr: 1 }} /> Rectangle Field
+            </MenuItem>
+            <MenuItem
+              onClick={() => handleAddField(ExtractionFieldType.Keyword)}
+            >
+              <SearchIcon sx={{ mr: 1 }} /> Keyword Field
+            </MenuItem>
+          </Menu>
+        </div>
         <Button
           color="primary"
           startIcon={<UploadIcon />}
@@ -62,7 +105,10 @@ const PropertyTableToolbar: React.FC = () => {
         <Button
           color="primary"
           startIcon={<DownloadIcon />}
-          onClick={exportTemplate}
+          onClick={() => {
+            const currentName = getValues('name');
+            exportTemplate(currentName);
+          }}
         >
           Export
         </Button>

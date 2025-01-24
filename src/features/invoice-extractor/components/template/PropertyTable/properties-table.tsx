@@ -10,7 +10,10 @@ import {
 } from '@mui/x-data-grid';
 
 import Toolbar from './PropertyTableToolbar';
-import { ExtractionField } from 'features/invoice-extractor/interfaces';
+import {
+  ExtractionField,
+  ExtractionFieldType
+} from 'features/invoice-extractor/interfaces';
 import { useCallback, useMemo } from 'react';
 import { useTemplate } from 'features/invoice-extractor';
 
@@ -18,6 +21,10 @@ interface FieldRow {
   id: string;
   name: string;
   page: number;
+  type: ExtractionFieldType;
+  keyword?: string;
+  searchDirection?: 'right' | 'below';
+  maxDistance?: number;
 }
 
 type CustomRenderCellParams = GridRenderCellParams<FieldRow, string | number>;
@@ -31,7 +38,13 @@ export default function PropertiesTable() {
       template.extractionFields.map((field) => ({
         id: field.id,
         name: field.name,
-        page: field.page || 1
+        page: field.page || 1,
+        type: field.type,
+        ...(field.type === ExtractionFieldType.Keyword && {
+          keyword: field.keyword,
+          searchDirection: field.searchDirection,
+          maxDistance: field.maxDistance
+        })
       })),
     [template.extractionFields]
   );
@@ -45,11 +58,21 @@ export default function PropertiesTable() {
 
   const handleUpdateRow = useCallback(
     (data: FieldRow) => {
-      updateExtractionField({
+      const updateData: Partial<ExtractionField> = {
         id: data.id,
         name: data.name,
         page: data.page
-      });
+      };
+
+      if (data.type === ExtractionFieldType.Keyword) {
+        Object.assign(updateData, {
+          keyword: data.keyword,
+          searchDirection: data.searchDirection,
+          maxDistance: data.maxDistance
+        });
+      }
+
+      updateExtractionField(updateData);
       return data;
     },
     [updateExtractionField]
@@ -60,17 +83,53 @@ export default function PropertiesTable() {
       {
         field: 'name',
         headerName: 'Name',
-
-        editable: true
+        editable: true,
+        flex: 1
+      },
+      {
+        field: 'type',
+        headerName: 'Type',
+        width: 100,
+        renderCell: (params: CustomRenderCellParams) =>
+          params.value === ExtractionFieldType.Rectangle
+            ? 'Rectangle'
+            : 'Keyword'
       },
       {
         field: 'page',
         headerName: 'Page',
         type: 'number',
-
+        width: 70,
         align: 'left',
         headerAlign: 'left',
         renderCell: (params: CustomRenderCellParams) => params.value
+      },
+      {
+        field: 'keyword',
+        headerName: 'Keyword',
+        width: 120,
+        editable: true,
+        renderCell: (params: CustomRenderCellParams) =>
+          params.row.type === ExtractionFieldType.Keyword ? params.value : '-'
+      },
+      {
+        field: 'searchDirection',
+        headerName: 'Direction',
+        width: 100,
+        editable: true,
+        type: 'singleSelect',
+        valueOptions: ['right', 'below'],
+        renderCell: (params: CustomRenderCellParams) =>
+          params.row.type === ExtractionFieldType.Keyword ? params.value : '-'
+      },
+      {
+        field: 'maxDistance',
+        headerName: 'Max Distance',
+        type: 'number',
+        width: 100,
+        editable: true,
+        renderCell: (params: CustomRenderCellParams) =>
+          params.row.type === ExtractionFieldType.Keyword ? params.value : '-'
       },
       {
         field: 'actions',

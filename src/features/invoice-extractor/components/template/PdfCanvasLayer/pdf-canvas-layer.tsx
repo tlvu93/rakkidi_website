@@ -4,7 +4,8 @@ import { Layer, Stage, Text } from 'react-konva';
 import Rectangle from './rectangle';
 import {
   PageDimensions,
-  RectProps
+  RectProps,
+  ExtractionFieldType
 } from 'features/invoice-extractor/interfaces';
 import Konva from 'konva';
 import { CoordinateTransformer } from 'features/invoice-extractor/utils/coordinate-transform';
@@ -83,43 +84,62 @@ const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
     >
       <Layer>
         {template.extractionFields.map((field) => {
-          // Convert PDF coordinates to screen coordinates
-          const pdfCoords = CoordinateTransformer.getCoordinatesFromMatrix(
-            field.tfMatrix,
-            field.width || 0,
-            field.height || 0
-          );
-          const screenCoords = CoordinateTransformer.pdfToScreen(pdfCoords, {
-            zoom
-          });
+          if (field.type === ExtractionFieldType.Rectangle && field.tfMatrix) {
+            // Convert PDF coordinates to screen coordinates for rectangle fields
+            const pdfCoords = CoordinateTransformer.getCoordinatesFromMatrix(
+              field.tfMatrix,
+              field.width || 0,
+              field.height || 0
+            );
+            const screenCoords = CoordinateTransformer.pdfToScreen(pdfCoords, {
+              zoom
+            });
 
-          return (
-            <React.Fragment key={field.id}>
-              <Text
-                text={field.name}
-                x={screenCoords.x}
-                y={screenCoords.y - 12 * zoom}
-                fontSize={12 * zoom}
-                fill="black"
-                aria-label={`Field name: ${field.name}`}
-              />
-              <Rectangle
-                shapeProps={{
-                  id: field.id,
-                  name: field.name,
-                  x: screenCoords.x,
-                  y: screenCoords.y,
-                  width: screenCoords.width,
-                  height: screenCoords.height,
-                  fill: 'rgba(128, 128, 128, 0.8)'
-                }}
-                isSelected={field.id === selectedId}
-                onSelect={() => handleSelect(field.id)}
-                onChange={(newAttrs) => handleChange(field.id, newAttrs)}
-                aria-label={`Extraction field: ${field.name}`}
-              />
-            </React.Fragment>
-          );
+            return (
+              <React.Fragment key={field.id}>
+                <Text
+                  text={field.name}
+                  x={screenCoords.x}
+                  y={screenCoords.y - 12 * zoom}
+                  fontSize={12 * zoom}
+                  fill="black"
+                  aria-label={`Field name: ${field.name}`}
+                />
+                <Rectangle
+                  shapeProps={{
+                    id: field.id,
+                    name: field.name,
+                    x: screenCoords.x,
+                    y: screenCoords.y,
+                    width: screenCoords.width,
+                    height: screenCoords.height,
+                    fill: 'rgba(128, 128, 128, 0.8)'
+                  }}
+                  isSelected={field.id === selectedId}
+                  onSelect={() => handleSelect(field.id)}
+                  onChange={(newAttrs) => handleChange(field.id, newAttrs)}
+                  aria-label={`Extraction field: ${field.name}`}
+                />
+              </React.Fragment>
+            );
+          } else if (field.type === ExtractionFieldType.Keyword) {
+            // For keyword fields, show a visual indicator
+            return (
+              <React.Fragment key={field.id}>
+                <Text
+                  text={`🔍 ${field.name} (${
+                    field.keyword || 'No keyword set'
+                  })`}
+                  x={10}
+                  y={10 + template.extractionFields.indexOf(field) * 20 * zoom}
+                  fontSize={12 * zoom}
+                  fill="blue"
+                  aria-label={`Keyword field: ${field.name}`}
+                />
+              </React.Fragment>
+            );
+          }
+          return null;
         })}
       </Layer>
     </Stage>
