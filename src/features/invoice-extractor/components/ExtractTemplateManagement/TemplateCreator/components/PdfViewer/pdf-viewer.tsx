@@ -23,6 +23,14 @@ const PdfViewer: React.FC = () => {
     height: 0,
     scale: 1
   });
+
+  const [originalViewport, setOriginalViewport] = useState<{
+    width: number;
+    height: number;
+  }>({ width: 0, height: 0 });
+
+  console.log('pageDimension', pageDimensions);
+  console.log('originalViewport', originalViewport);
   const [zoom, setZoom] = useState(1.0);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -41,60 +49,34 @@ const PdfViewer: React.FC = () => {
 
   const onPageRenderSuccess = useCallback(
     async (page: pdfjs.PDFPageProxy) => {
-      const viewport = page.getViewport({ scale: zoom });
-      const containerWidth =
-        containerRef.current?.clientWidth || viewport.width;
+      // Get the original (unscaled) viewport
+      const unscaledViewport = page.getViewport({ scale: 1 });
+      setOriginalViewport({
+        width: unscaledViewport.width,
+        height: unscaledViewport.height
+      });
 
-      const scale = containerWidth / viewport.width;
-
+      // Use original viewport dimensions (A4 size) for scaling
       setPageDimensions({
-        width: viewport.width * scale,
-        height: viewport.height * scale,
-        scale
+        width: unscaledViewport.width,
+        height: unscaledViewport.height,
+        scale: zoom
       });
     },
     [zoom, containerRef]
   );
 
-  const handleResize = useCallback(() => {
-    if (pdfFile && pageDimensions.width > 0) {
-      const containerWidth =
-        containerRef.current?.clientWidth || pageDimensions.width;
-      const scale = containerWidth / pageDimensions.width;
-
-      setPageDimensions((prevDimensions) => ({
-        ...prevDimensions,
-        width: prevDimensions.width * scale,
-        height: prevDimensions.height * scale,
-        scale
-      }));
-    }
-  }, [pdfFile, pageDimensions.width]);
-
-  useWindowResize(handleResize);
+  // Remove handleResize since we're using fixed A4 dimensions
+  useWindowResize(() => {});
 
   useEffect(() => {
-    const updateDimensions = () => {
-      if (pdfFile && pageDimensions.width > 0) {
-        const containerWidth =
-          containerRef.current?.clientWidth || pageDimensions.width;
-        const scale = containerWidth / (pageDimensions.width / zoom);
-
-        if (scale !== pageDimensions.scale || zoom !== pageDimensions.scale) {
-          setPageDimensions((prevDimensions) => ({
-            ...prevDimensions,
-            width: prevDimensions.width * scale,
-            height: prevDimensions.height * scale,
-            scale: zoom
-          }));
-        }
-      }
-    };
-
-    updateDimensions();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoom]);
+    if (pdfFile && originalViewport.width > 0) {
+      setPageDimensions((prevDimensions) => ({
+        ...prevDimensions,
+        scale: zoom
+      }));
+    }
+  }, [zoom, pdfFile, originalViewport.width]);
 
   const handleZoomIn = useCallback(() => {
     setZoom((prevZoom) => Math.min(prevZoom + 0.25, 2.0));
