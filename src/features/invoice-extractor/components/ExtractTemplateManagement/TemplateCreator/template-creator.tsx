@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import {
   Container,
   Grid,
@@ -8,14 +8,17 @@ import {
   Modal,
   Typography,
   Paper,
-  IconButton
+  IconButton,
+  CircularProgress
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { ErrorBoundary } from 'features/invoice-extractor/components/ErrorBoundary/error-boundary';
 import PropertiesTable from './components/PropertyTable/properties-table';
 import PdfViewer from './components/PdfViewer/pdf-viewer';
 import { TemplateProvider, useTemplate } from './context/TemplateContext';
 import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
-import { useForm } from 'react-hook-form';
+import { useTemplateForm } from 'features/invoice-extractor/hooks/useTemplateForm';
+import * as styles from './styles/template-creator.styles';
 
 interface TemplateCreatorProps {
   selectedTemplate: InvoiceExtractTemplate | null;
@@ -23,46 +26,25 @@ interface TemplateCreatorProps {
   onCancel: () => void;
 }
 
-const defaultTemplate: InvoiceExtractTemplate = {
-  name: 'New Template',
-  description: 'New Template',
-  extractionFields: []
-};
-
 const TemplateCreatorInner = ({
   selectedTemplate,
   onSubmit,
   onCancel
 }: TemplateCreatorProps) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm<InvoiceExtractTemplate>({
-    defaultValues: selectedTemplate ?? defaultTemplate
+  const { template } = useTemplate();
+  const { register, handleSubmit, errors, isValid } = useTemplateForm({
+    selectedTemplate,
+    onSubmit,
+    currentFields: template.extractionFields
   });
 
-  const { template } = useTemplate();
-
-  const handleFormSubmit = (data: InvoiceExtractTemplate) => {
-    // Include the extraction fields from the template context
-    const updatedTemplate = {
-      ...data,
-      extractionFields: template.extractionFields
-    };
-    onSubmit(updatedTemplate);
-  };
-
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} style={{ height: '100%' }}>
-      <Container
-        maxWidth="xl"
-        sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-      >
-        <Typography variant="h3" pb={4}>
+    <Box component="form" onSubmit={handleSubmit} sx={styles.formStyle}>
+      <Container maxWidth="xl" sx={styles.containerStyle}>
+        <Typography variant="h3" sx={styles.templateDetailsStyle}>
           Template Creator
         </Typography>
-        <Typography variant="h5" pb={2}>
+        <Typography variant="h5" sx={styles.templateFieldsStyle}>
           Template Details
         </Typography>
         <Grid container spacing={2} pb={4}>
@@ -90,25 +72,19 @@ const TemplateCreatorInner = ({
         <Typography variant="h5" pb={2}>
           Records and PDF Preview
         </Typography>
-        <Grid container spacing={4} sx={{ flexGrow: 1, mb: 2 }}>
+        <Grid container spacing={4} sx={styles.gridContainerStyle}>
           <Grid item xs={12} md={9}>
-            <Paper sx={{ height: '100%', alignContent: 'center' }}>
+            <Paper sx={styles.pdfPreviewStyle}>
               <PdfViewer />
             </Paper>
           </Grid>
           <Grid item xs={12} md={3}>
-            <Paper
-              sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column'
-              }}
-            >
+            <Paper sx={styles.propertiesTableStyle}>
               <PropertiesTable />
             </Paper>
           </Grid>
         </Grid>
-        <Box display="flex" justifyContent="flex-end" mt={2} gap={2}>
+        <Box sx={styles.actionButtonsStyle}>
           <Button variant="outlined" onClick={onCancel}>
             Cancel
           </Button>
@@ -117,37 +93,38 @@ const TemplateCreatorInner = ({
           </Button>
         </Box>
       </Container>
-    </form>
+    </Box>
   );
 };
 
+const LoadingFallback = () => (
+  <Box
+    sx={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%'
+    }}
+  >
+    <CircularProgress />
+  </Box>
+);
+
 const TemplateCreator = (props: TemplateCreatorProps) => {
   return (
-    <TemplateProvider initialTemplate={props.selectedTemplate}>
-      <TemplateCreatorInner {...props} />
-    </TemplateProvider>
+    <ErrorBoundary>
+      <Suspense fallback={<LoadingFallback />}>
+        <TemplateProvider initialTemplate={props.selectedTemplate}>
+          <TemplateCreatorInner {...props} />
+        </TemplateProvider>
+      </Suspense>
+    </ErrorBoundary>
   );
 };
 
 export default TemplateCreator;
 
-const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '60%',
-  height: '90%',
-  overflow: 'auto',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  borderRadius: 2,
-  boxShadow: 24,
-  py: 4,
-  px: 2
-};
-
-interface TemplateCreatorModalProps {
+export interface TemplateCreatorModalProps {
   open: boolean;
   close: () => void;
   onSubmit: (form: InvoiceExtractTemplate) => void;
@@ -169,22 +146,17 @@ export const TemplateCreatorModal = ({
         }
       }}
     >
-      <Paper sx={{ ...modalStyle, display: 'flex', flexDirection: 'column' }}>
+      <Paper sx={styles.modalStyle}>
         <Box display="flex" justifyContent="flex-end">
           <IconButton
             aria-label="close"
             onClick={close}
-            sx={{
-              position: 'absolute',
-              right: 16,
-              top: 16,
-              color: (theme) => theme.palette.grey[500]
-            }}
+            sx={styles.closeButtonStyle}
           >
             <CloseIcon />
           </IconButton>
         </Box>
-        <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+        <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 400 }}>
           <TemplateCreator
             onSubmit={onSubmit}
             selectedTemplate={selectedTemplate}

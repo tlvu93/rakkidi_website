@@ -13,18 +13,19 @@ import Toolbar from './PropertyTableToolbar';
 import { ExtractionField } from 'features/invoice-extractor/interfaces';
 import { useCallback, useMemo } from 'react';
 
-type CustomRenderCellParams = GridRenderCellParams<
-  Partial<ExtractionField>,
-  string | number,
-  string
->;
+interface FieldRow {
+  id: string;
+  name: string;
+  page: number;
+}
+
+type CustomRenderCellParams = GridRenderCellParams<FieldRow, string | number>;
 
 export default function PropertiesTable() {
   const { template, deleteExtractionField, updateExtractionField } =
     useTemplate();
-  console.log(JSON.stringify(template, null, 4));
 
-  const rows = useMemo(
+  const rows = useMemo<FieldRow[]>(
     () =>
       template.extractionFields.map((field) => ({
         id: field.id,
@@ -42,14 +43,18 @@ export default function PropertiesTable() {
   );
 
   const handleUpdateRow = useCallback(
-    (data: Partial<ExtractionField>) => {
-      updateExtractionField(data);
+    (data: FieldRow) => {
+      updateExtractionField({
+        id: data.id,
+        name: data.name,
+        page: data.page
+      });
       return data;
     },
     [updateExtractionField]
   );
 
-  const columns: GridColDef[] = useMemo(
+  const columns = useMemo<GridColDef<FieldRow>[]>(
     () => [
       {
         field: 'name',
@@ -64,9 +69,7 @@ export default function PropertiesTable() {
         width: 100,
         align: 'left',
         headerAlign: 'left',
-        renderCell: (params: CustomRenderCellParams) => (
-          <div>{params.value}</div>
-        )
+        renderCell: (params: CustomRenderCellParams) => params.value
       },
       {
         field: 'actions',
@@ -75,7 +78,7 @@ export default function PropertiesTable() {
         cellClassName: 'actions',
         headerAlign: 'right',
         flex: 1,
-        renderCell: (params: CustomRenderCellParams) => (
+        renderCell: (params: GridRenderCellParams<FieldRow>) => (
           <Box display="flex" justifyContent="flex-end" width="100%">
             <GridActionsCellItem
               key={`delete-${params.id}`}
@@ -101,6 +104,9 @@ export default function PropertiesTable() {
         },
         '& .textPrimary': {
           color: 'text.primary'
+        },
+        '& .MuiDataGrid-footerContainer': {
+          justifyContent: 'center'
         }
       }}
     >
@@ -126,11 +132,6 @@ export default function PropertiesTable() {
         disableDensitySelector
         disableColumnSorting
         disableColumnMenu
-        sx={{
-          '& .MuiDataGrid-footerContainer': {
-            justifyContent: 'center'
-          }
-        }}
       />
     </Box>
   );

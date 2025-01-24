@@ -7,17 +7,22 @@ import React, {
 } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { FileWithPath } from 'react-dropzone';
+import { Box } from '@mui/material';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import PdfCanvasLayer from '../PdfCanvasLayer/pdf-canvas-layer';
 import FileDropzone from 'features/invoice-extractor/components/FileDropzone/file-dropzone';
 import useWindowResize from './useWindowResize';
 import ZoomControls from './ZoomControls';
+import { LoadingOverlay } from './LoadingOverlay';
+import { ErrorState } from './ErrorState';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const PdfViewer: React.FC = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | undefined>(undefined);
   const [pageDimensions, setPageDimensions] = useState({
     width: 0,
     height: 0,
@@ -29,44 +34,47 @@ const PdfViewer: React.FC = () => {
     height: number;
   }>({ width: 0, height: 0 });
 
-  console.log('pageDimension', pageDimensions);
-  console.log('originalViewport', originalViewport);
   const [zoom, setZoom] = useState(1.0);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const handleDrop = useCallback((acceptedFiles: FileWithPath[]) => {
     if (acceptedFiles.length > 0) {
+      setError(undefined);
       setPdfFile(acceptedFiles[0]);
     }
   }, []);
 
   const onDocumentLoadSuccess = useCallback(
     ({ numPages }: { numPages: number }) => {
-      console.log(`Document loaded with ${numPages} pages`);
+      setIsLoading(false);
+      setError(undefined);
     },
     []
   );
 
+  const onDocumentLoadError = useCallback((error: Error) => {
+    setIsLoading(false);
+    setError('Failed to load PDF. Please try again with a different file.');
+    console.error('PDF load error:', error);
+  }, []);
+
   const onPageRenderSuccess = useCallback(
     async (page: pdfjs.PDFPageProxy) => {
-      // Get the original (unscaled) viewport
       const unscaledViewport = page.getViewport({ scale: 1 });
       setOriginalViewport({
         width: unscaledViewport.width,
         height: unscaledViewport.height
       });
 
-      // Use original viewport dimensions (A4 size) for scaling
       setPageDimensions({
         width: unscaledViewport.width,
         height: unscaledViewport.height,
         scale: zoom
       });
     },
-    [zoom, containerRef]
+    [zoom]
   );
 
-  // Remove handleResize since we're using fixed A4 dimensions
   useWindowResize(() => {});
 
   useEffect(() => {
@@ -86,6 +94,11 @@ const PdfViewer: React.FC = () => {
     setZoom((prevZoom) => Math.max(prevZoom - 0.25, 0.5));
   }, []);
 
+  const handleRetry = useCallback(() => {
+    setError(undefined);
+    setPdfFile(null);
+  }, []);
+
   const zoomControls = useMemo(
     () => (
       <ZoomControls
@@ -98,7 +111,7 @@ const PdfViewer: React.FC = () => {
   );
 
   return (
-    <div>
+    <Box sx={{ position: 'relative', height: '100%' }}>
       {!pdfFile ? (
         <FileDropzone
           onDrop={handleDrop}
@@ -107,9 +120,9 @@ const PdfViewer: React.FC = () => {
       ) : (
         <>
           {zoomControls}
-          <div
+          <Box
             ref={containerRef}
-            style={{
+            sx={{
               position: 'relative',
               width: '100%',
               maxWidth: '100%',
@@ -118,14 +131,20 @@ const PdfViewer: React.FC = () => {
               border: '1px solid #ccc'
             }}
           >
-            <div
-              style={{
+            <Box
+              sx={{
                 width: pageDimensions.width * zoom,
                 height: pageDimensions.height * zoom,
                 position: 'relative'
               }}
             >
-              <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
+              <Document
+                file={pdfFile}
+                onLoadSuccess={onDocumentLoadSuccess}
+                onLoadError={onDocumentLoadError}
+                loading={<LoadingOverlay />}
+                error={<ErrorState message={error} onRetry={handleRetry} />}
+              >
                 <Page
                   pageNumber={1}
                   width={pageDimensions.width * zoom}
@@ -135,11 +154,12 @@ const PdfViewer: React.FC = () => {
                 />
               </Document>
               <PdfCanvasLayer pageDimensions={pageDimensions} zoom={zoom} />
-            </div>
-          </div>
+            </Box>
+          </Box>
         </>
       )}
-    </div>
+      {isLoading && <LoadingOverlay />}
+    </Box>
   );
 };
 

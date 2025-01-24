@@ -4,10 +4,10 @@ import { useTemplate } from '../../context/TemplateContext';
 import Rectangle from './rectangle';
 import {
   PageDimensions,
-  PdfTransformationMatrix,
   RectProps
 } from 'features/invoice-extractor/interfaces';
 import Konva from 'konva';
+import { CoordinateTransformer } from 'features/invoice-extractor/utils/coordinate-transform';
 
 type Props = {
   pageDimensions: PageDimensions;
@@ -44,34 +44,27 @@ const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
         return; // Skip update if any required property is missing
       }
 
-      // Convert RectProps back to tfMatrix
-      // Create proper PDF transformation matrix
-      const x = newAttrs.x / zoom;
-      const y = newAttrs.y / zoom;
-      const width = newAttrs.width / zoom;
-      const height = newAttrs.height / zoom;
+      // Convert screen coordinates to PDF coordinates
+      const pdfCoords = CoordinateTransformer.screenToPdf(
+        {
+          x: newAttrs.x,
+          y: newAttrs.y,
+          width: newAttrs.width,
+          height: newAttrs.height
+        },
+        { zoom }
+      );
 
-      console.log('Rectangle coordinates:', {
-        screen: newAttrs,
-        pdf: { x, y, width, height },
-        zoom
-      });
+      // Create transformation matrix from PDF coordinates
+      const updatedTfMatrix =
+        CoordinateTransformer.createTransformMatrix(pdfCoords);
 
-      const updatedTfMatrix: PdfTransformationMatrix = [
-        1.0, // scaleX - unit scale
-        0, // skewY
-        0, // skewX
-        1.0, // scaleY - unit scale
-        x, // x position
-        y // y position
-      ];
-
-      // Store width and height in the extraction field
+      // Update the extraction field
       updateExtractionField({
         id,
         tfMatrix: updatedTfMatrix,
-        width,
-        height
+        width: pdfCoords.width,
+        height: pdfCoords.height
       });
     },
     [zoom, updateExtractionField]
@@ -89,16 +82,22 @@ const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
     >
       <Layer>
         {template.extractionFields.map((field) => {
-          const [, , , , x, y] = field.tfMatrix;
-          const width = field.width || 0;
-          const height = field.height || 0;
+          // Convert PDF coordinates to screen coordinates
+          const pdfCoords = CoordinateTransformer.getCoordinatesFromMatrix(
+            field.tfMatrix,
+            field.width || 0,
+            field.height || 0
+          );
+          const screenCoords = CoordinateTransformer.pdfToScreen(pdfCoords, {
+            zoom
+          });
 
           return (
             <React.Fragment key={field.id}>
               <Text
                 text={field.name}
-                x={x * zoom}
-                y={y * zoom - 12 * zoom}
+                x={screenCoords.x}
+                y={screenCoords.y - 12 * zoom}
                 fontSize={12 * zoom}
                 fill="black"
                 aria-label={`Field name: ${field.name}`}
@@ -107,10 +106,10 @@ const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
                 shapeProps={{
                   id: field.id,
                   name: field.name,
-                  x: x * zoom,
-                  y: y * zoom,
-                  width: width * zoom,
-                  height: height * zoom,
+                  x: screenCoords.x,
+                  y: screenCoords.y,
+                  width: screenCoords.width,
+                  height: screenCoords.height,
                   fill: 'rgba(128, 128, 128, 0.8)'
                 }}
                 isSelected={field.id === selectedId}

@@ -1,15 +1,10 @@
-import React, {
-  createContext,
-  useState,
-  useContext,
-  ReactNode,
-  useEffect
-} from 'react';
+import React, { createContext, useState, useContext, ReactNode } from 'react';
 import {
   ExtractionField,
   InvoiceExtractTemplate
 } from 'features/invoice-extractor/interfaces';
 import { faker } from '@faker-js/faker';
+import { useTemplateStorage } from 'features/invoice-extractor/hooks/useTemplateStorage';
 
 interface TemplateContextProps {
   template: InvoiceExtractTemplate;
@@ -42,85 +37,8 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
     }
   );
 
-  // Load template from localStorage on mount, but only if no initialTemplate was provided
-  useEffect(() => {
-    if (typeof window !== 'undefined' && !initialTemplate) {
-      const savedTemplate = localStorage.getItem('current-template');
-      if (savedTemplate) {
-        try {
-          const parsed = JSON.parse(savedTemplate);
-          // Migrate existing fields to include width and height if they don't have them
-          if (parsed.extractionFields) {
-            parsed.extractionFields = parsed.extractionFields.map(
-              (field: ExtractionField) => ({
-                ...field,
-                width: field.width || 50, // Default width if not present
-                height: field.height || 50 // Default height if not present
-              })
-            );
-          }
-          setTemplate(parsed);
-
-          // Also add to templates list if not already present
-          const storedTemplates = localStorage.getItem('templates');
-          if (storedTemplates) {
-            const templates = JSON.parse(storedTemplates);
-            // Migrate all stored templates
-            const migratedTemplates = templates.map(
-              (t: InvoiceExtractTemplate) => ({
-                ...t,
-                extractionFields: t.extractionFields.map(
-                  (field: ExtractionField) => ({
-                    ...field,
-                    width: field.width || 50,
-                    height: field.height || 50
-                  })
-                )
-              })
-            );
-
-            // Add current template if not present
-            if (
-              !migratedTemplates.some(
-                (t: InvoiceExtractTemplate) => t.name === parsed.name
-              )
-            ) {
-              migratedTemplates.push(parsed);
-            }
-
-            localStorage.setItem(
-              'templates',
-              JSON.stringify(migratedTemplates)
-            );
-          } else {
-            localStorage.setItem('templates', JSON.stringify([parsed]));
-          }
-        } catch (error) {
-          console.error('Error parsing saved template:', error);
-        }
-      }
-    }
-  }, []);
-
-  // Save current template to localStorage whenever it changes
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('current-template', JSON.stringify(template));
-
-      // Update template in templates list if it exists
-      const storedTemplates = localStorage.getItem('templates');
-      if (storedTemplates) {
-        const templates = JSON.parse(storedTemplates);
-        const index = templates.findIndex(
-          (t: InvoiceExtractTemplate) => t.name === template.name
-        );
-        if (index >= 0) {
-          templates[index] = template;
-          localStorage.setItem('templates', JSON.stringify(templates));
-        }
-      }
-    }
-  }, [template]);
+  // Use the template storage hook
+  useTemplateStorage({ template, setTemplate, initialTemplate });
 
   const addExtractionField = () => {
     const newField: ExtractionField = {
