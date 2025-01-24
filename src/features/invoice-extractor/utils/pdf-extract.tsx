@@ -41,18 +41,6 @@ export const getTextContentFromPDF = async (
       }
     };
 
-    console.log('PDF Page Dimensions:', extendedTextContent.viewport);
-    console.log(
-      'All Text Items:',
-      extendedTextContent.items.map((item: any) => ({
-        text: item.str,
-        transform: item.transform,
-        width: item.width,
-        height: item.height,
-        fontName: item.fontName
-      }))
-    );
-
     return extendedTextContent;
   } catch (error) {
     console.error('Error extracting text content from PDF:', error);
@@ -132,93 +120,16 @@ export const getTextFromAreaTemplate = async (
   const yStart = viewport.height - (y + rectHeight); // Lower bound
   const yEnd = viewport.height - y; // Upper bound
 
-  console.log(
-    'Text items before filtering:',
-    textItems.map((item) => ({
-      text: item.str,
-      x: item.transform[TransformIndex.X],
-      y: item.transform[TransformIndex.Y]
-    }))
-  );
-
-  console.log('Coordinate conversion:', {
-    canvas: { x, y, width: rectWidth, height: rectHeight },
-    pdf: {
-      x: [xStart, xEnd],
-      y: [yStart, yEnd],
-      viewportHeight: viewport.height
-    }
-  });
-
-  const TOLERANCE = 1; // 1 point tolerance for slight positioning variations
-
-  const isInRange = (
-    item: TextItem,
-    start: number,
-    end: number,
-    index: TransformIndex
-  ): boolean => {
-    const itemPos = item.transform[index];
-    const itemSize =
-      index === TransformIndex.X ? item.width || 0 : item.height || 0;
-
-    const overlap =
-      (itemPos >= start - TOLERANCE && itemPos <= end + TOLERANCE) || // Item starts within range
-      (itemPos + itemSize >= start - TOLERANCE &&
-        itemPos + itemSize <= end + TOLERANCE) || // Item ends within range
-      (itemPos <= start && itemPos + itemSize >= end); // Item spans the entire range
-
-    // Detailed overlap analysis
-    const analysis = {
-      text: item.str,
-      position: {
-        itemPos,
-        itemSize,
-        start,
-        end
-      },
-      scale: item.transform[0],
-      font: item.fontName,
-      overlap,
-      comparison: {
-        startCheck: itemPos >= start - TOLERANCE,
-        endCheck: itemPos <= end + TOLERANCE,
-        sizeCheck:
-          itemPos + itemSize >= start - TOLERANCE &&
-          itemPos + itemSize <= end + TOLERANCE,
-        spanCheck: itemPos <= start && itemPos + itemSize >= end
-      }
-    };
-
-    if (index === TransformIndex.X) {
-      console.log('X-axis overlap analysis:', analysis);
-    } else {
-      console.log('Y-axis overlap analysis:', analysis);
-    }
-
-    return overlap;
-  };
-
   // Filter text items that overlap with the selection area
   const selectedItems = textItems.filter((item) => {
     const itemX = item.transform[TransformIndex.X];
     const itemY = item.transform[TransformIndex.Y];
-    const itemWidth = item.width || 0;
-    const itemHeight = item.height || 0;
 
     // Check X overlap - text position should be within rectangle bounds
     const xOverlap = itemX >= xStart && itemX <= xEnd;
 
     // Check Y overlap - text position should be between yStart and yEnd
     const yOverlap = itemY >= yStart && itemY <= yEnd;
-
-    console.log('Item overlap check:', {
-      text: item.str,
-      position: {
-        x: { item: itemX, rect: [xStart, xEnd], overlap: xOverlap },
-        y: { item: itemY, rect: [yStart, yEnd], overlap: yOverlap }
-      }
-    });
 
     return xOverlap && yOverlap;
   });

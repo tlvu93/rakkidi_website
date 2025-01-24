@@ -12,12 +12,12 @@ import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Footer from '@shared/components/footer/footer';
 import DrawerLogo from '../header/drawer-logo';
-import { Save, StayPrimaryLandscape } from '@mui/icons-material';
 import { layoutDimension } from 'config/ui-config';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 
@@ -99,18 +99,18 @@ const Sidebar = ({ drawerOpen, toggleDrawer }: SidebarProps) => {
       </Toolbar>
       {sidebarLinks.map((sidebarlink) => (
         <List key={sidebarlink.name}>
-          <ListItem
-            button
-            key={sidebarlink.name}
-            onClick={() => router.push(sidebarlink.route)}
-            sx={{
-              color: 'primary.contrastText'
-            }}
-          >
-            <ListItemIcon sx={{ color: 'primary.contrastText' }}>
-              {sidebarlink.icon}
-            </ListItemIcon>
-            <ListItemText primary={sidebarlink.name} />
+          <ListItem disablePadding key={sidebarlink.name}>
+            <ListItemButton
+              onClick={() => router.push(sidebarlink.route)}
+              sx={{
+                color: 'primary.contrastText'
+              }}
+            >
+              <ListItemIcon sx={{ color: 'primary.contrastText' }}>
+                {sidebarlink.icon}
+              </ListItemIcon>
+              <ListItemText primary={sidebarlink.name} />
+            </ListItemButton>
           </ListItem>
         </List>
       ))}

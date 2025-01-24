@@ -38,46 +38,16 @@ export const extractTextFromArea = (
   // Invert the Y-coordinate to match the PDF coordinate system
   const invertedRectY = VIEWPORT.height - rectY;
 
-  console.log('Viewport:', VIEWPORT);
-  console.log('Transformation Matrix:', tfMatrix);
-  console.log('Original Y:', rectY, 'Inverted Y:', invertedRectY);
-
   // Filter text items that fall within the specified area
   const extractedText = textContent.items
     .filter((textToken) => {
       const textX = textToken.x; // X-coordinate of the text item
       const textY = VIEWPORT.height - textToken.y; // Invert the Y-coordinate of the text item
 
-      console.log(
-        'Text Token:',
-        textToken.text,
-        'X:',
-        textX,
-        'Inverted Y:',
-        textY
-      );
-
       // Check if the text item is within the field area
       const isWithinX = textX >= rectX && textX <= rectX + width;
       const isWithinY =
         textY >= invertedRectY - height && textY <= invertedRectY;
-
-      console.log(
-        'X Bounds:',
-        rectX,
-        'to',
-        rectX + width,
-        'Is Within X:',
-        isWithinX
-      );
-      console.log(
-        'Y Bounds:',
-        invertedRectY - height,
-        'to',
-        invertedRectY,
-        'Is Within Y:',
-        isWithinY
-      );
 
       return isWithinX && isWithinY;
     })
