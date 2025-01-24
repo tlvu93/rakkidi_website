@@ -40,6 +40,8 @@ export interface ExtractionField {
   page: number | null;
   name: string;
   tfMatrix: PdfTransformationMatrix;
+  width?: number;
+  height?: number;
 }
 
 // Interface for the overall invoice extraction template

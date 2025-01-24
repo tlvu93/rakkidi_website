@@ -34,12 +34,22 @@ const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
 
   const handleChange = useCallback(
     (id: string, newAttrs: Partial<RectProps>) => {
+      // Ensure all required properties are present
+      if (
+        typeof newAttrs.x !== 'number' ||
+        typeof newAttrs.y !== 'number' ||
+        typeof newAttrs.width !== 'number' ||
+        typeof newAttrs.height !== 'number'
+      ) {
+        return; // Skip update if any required property is missing
+      }
+
       // Convert RectProps back to tfMatrix
       // Create proper PDF transformation matrix
-      const x = newAttrs.x! / zoom;
-      const y = newAttrs.y! / zoom;
-      const width = newAttrs.width! / zoom;
-      const height = newAttrs.height! / zoom;
+      const x = newAttrs.x / zoom;
+      const y = newAttrs.y / zoom;
+      const width = newAttrs.width / zoom;
+      const height = newAttrs.height / zoom;
 
       console.log('Rectangle coordinates:', {
         screen: newAttrs,
