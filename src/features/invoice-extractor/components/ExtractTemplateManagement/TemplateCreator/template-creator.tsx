@@ -123,7 +123,7 @@ const TemplateCreatorInner = ({
 
 const TemplateCreator = (props: TemplateCreatorProps) => {
   return (
-    <TemplateProvider>
+    <TemplateProvider initialTemplate={props.selectedTemplate}>
       <TemplateCreatorInner {...props} />
     </TemplateProvider>
   );
@@ -151,12 +151,14 @@ interface TemplateCreatorModalProps {
   open: boolean;
   close: () => void;
   onSubmit: (form: InvoiceExtractTemplate) => void;
+  selectedTemplate: InvoiceExtractTemplate | null;
 }
 
 export const TemplateCreatorModal = ({
   open,
   close,
-  onSubmit
+  onSubmit,
+  selectedTemplate
 }: TemplateCreatorModalProps) => {
   return (
     <Modal
@@ -185,7 +187,7 @@ export const TemplateCreatorModal = ({
         <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
           <TemplateCreator
             onSubmit={onSubmit}
-            selectedTemplate={null}
+            selectedTemplate={selectedTemplate}
             onCancel={close}
           />
         </Box>

@@ -55,9 +55,7 @@ export default function PropertiesTable() {
         field: 'name',
         headerName: 'Name',
         width: 100,
-        renderCell: (params: CustomRenderCellParams) => (
-          <div>{params.value}</div>
-        )
+        editable: true
       },
       {
         field: 'page',

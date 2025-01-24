@@ -1,5 +1,11 @@
 import React, { useCallback } from 'react';
-import { AddCircle, ImportExport, Save, Delete } from '@mui/icons-material';
+import {
+  AddCircle,
+  ImportExport,
+  Save,
+  Delete,
+  Edit
+} from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -22,6 +28,8 @@ import { useTemplateManagement } from './context/template-management-context';
 
 const ExtractTemplateManagement = () => {
   const { opened, open, close } = useDisclosure();
+  const [templateToEdit, setTemplateToEdit] =
+    React.useState<InvoiceExtractTemplate | null>(null);
   const {
     templates,
     selectedTemplate,
@@ -44,26 +52,34 @@ const ExtractTemplateManagement = () => {
     }
   }, [selectedTemplate, setTemplate]);
 
-  const handleAddTemplate = useCallback(
+  const handleTemplateSubmit = useCallback(
     (form: InvoiceExtractTemplate) => {
       try {
-        console.log('handleAddTemplate called with:', form);
+        if (templateToEdit) {
+          // If editing, delete old template and add updated one
+          deleteTemplate(templateToEdit.name);
+        }
         addTemplate(form);
+        setTemplateToEdit(null);
         close();
       } catch (error) {
-        console.error('Failed to add template:', error);
+        console.error('Failed to handle template:', error);
         // Consider adding a user-friendly error message here
       }
     },
-    [addTemplate, close]
+    [addTemplate, close, deleteTemplate, templateToEdit]
   );
 
   return (
     <>
       <TemplateCreatorModal
         open={opened}
-        close={close}
-        onSubmit={handleAddTemplate}
+        close={() => {
+          setTemplateToEdit(null);
+          close();
+        }}
+        onSubmit={handleTemplateSubmit}
+        selectedTemplate={templateToEdit}
       />
 
       <Grid container spacing={5}>
@@ -118,28 +134,43 @@ const ExtractTemplateManagement = () => {
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        '& .delete-icon': {
+                        '& .action-icons': {
                           opacity: isSelected ? 0 : 1,
                           visibility: isSelected ? 'hidden' : 'visible'
                         }
                       }}
                     >
                       <span>{template.name}</span>
-                      <Delete
-                        className="delete-icon"
-                        sx={{
-                          ml: 2,
-                          fontSize: '1.2rem',
-                          color: 'error.main',
-                          '&:hover': {
-                            color: 'error.dark'
-                          }
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          deleteTemplate(template.name);
-                        }}
-                      />
+                      <Box className="action-icons">
+                        <Edit
+                          sx={{
+                            mr: 1,
+                            fontSize: '1.2rem',
+                            color: 'primary.main',
+                            '&:hover': {
+                              color: 'primary.dark'
+                            }
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setTemplateToEdit(template);
+                            open();
+                          }}
+                        />
+                        <Delete
+                          sx={{
+                            fontSize: '1.2rem',
+                            color: 'error.main',
+                            '&:hover': {
+                              color: 'error.dark'
+                            }
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteTemplate(template.name);
+                          }}
+                        />
+                      </Box>
                     </MenuItem>
                   );
                 })

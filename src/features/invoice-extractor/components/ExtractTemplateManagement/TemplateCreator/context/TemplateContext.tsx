@@ -25,18 +25,26 @@ const TemplateContext = createContext<TemplateContextProps | undefined>(
   undefined
 );
 
-export const TemplateProvider: React.FC<{ children: ReactNode }> = ({
-  children
-}) => {
-  const [template, setTemplate] = useState<InvoiceExtractTemplate>({
-    name: 'New Template',
-    description: '',
-    extractionFields: []
-  });
+interface TemplateProviderProps {
+  children: ReactNode;
+  initialTemplate: InvoiceExtractTemplate | null;
+}
 
-  // Load template from localStorage on mount
+export const TemplateProvider: React.FC<TemplateProviderProps> = ({
+  children,
+  initialTemplate
+}) => {
+  const [template, setTemplate] = useState<InvoiceExtractTemplate>(
+    initialTemplate ?? {
+      name: 'New Template',
+      description: '',
+      extractionFields: []
+    }
+  );
+
+  // Load template from localStorage on mount, but only if no initialTemplate was provided
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && !initialTemplate) {
       const savedTemplate = localStorage.getItem('current-template');
       if (savedTemplate) {
         try {
