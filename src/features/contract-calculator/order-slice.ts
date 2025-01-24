@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppState } from 'store';
+
 import { Order } from '@shared/interfaces/contract-calculator';
+import { AppState } from 'store';
 
 export interface OrderState {
   list: Order[];

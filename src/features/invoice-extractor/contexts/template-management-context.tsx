@@ -7,6 +7,7 @@ import React, {
   useCallback,
   useMemo
 } from 'react';
+
 import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
 
 export interface TemplateManagementContextProps {

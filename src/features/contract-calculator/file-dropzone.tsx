@@ -1,13 +1,14 @@
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import { Box, Card, Container, Typography } from '@mui/material';
 import { useCallback } from 'react';
 import { FileWithPath, useDropzone } from 'react-dropzone';
 
-import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import { Order } from '@shared/interfaces/contract-calculator';
+import { useAppDispatch } from 'hooks';
+
 import { addOrder } from './order-slice';
 import { getDimension } from './utility/getDimension';
 
-import { useAppDispatch } from 'hooks';
 
 /**
  * This Component renders a Field, in which files can be dropped
@@ -18,11 +19,11 @@ const FileDropzone = () => {
 
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[]) => {
-      let promises = acceptedFiles.map(async (file) => {
+      const promises = acceptedFiles.map(async (file) => {
         return getDimension(file);
       });
       // Filter out all errors
-      let resolvedPromises = Promise.all(
+      const resolvedPromises = Promise.all(
         promises.map((p) => p.catch((e) => 'FAILED'))
       ).then((values) => values.filter((v) => v !== 'FAILED'));
 

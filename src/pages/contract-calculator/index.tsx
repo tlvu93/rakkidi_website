@@ -1,13 +1,13 @@
 import { Box, Typography } from '@mui/material';
-import { useAppSelector } from 'hooks';
+import React from 'react';
+
+import AppLayout from '@shared/layouts/app-layout';
+import CustomOrder from 'features/contract-calculator/custom-order';
 import FileDropzone from 'features/contract-calculator/file-dropzone';
 import OrderList from 'features/contract-calculator/order-item-list';
 import { selectOrders } from 'features/contract-calculator/order-slice';
-
 import PriceList from 'features/contract-calculator/price-list';
-import AppLayout from '@shared/layouts/app-layout';
-import React from 'react';
-import CustomOrder from 'features/contract-calculator/custom-order';
+import { useAppSelector } from 'hooks';
 
 const ContractCalculator = () => {
   const orders = useAppSelector(selectOrders);

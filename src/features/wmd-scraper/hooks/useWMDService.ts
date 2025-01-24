@@ -94,7 +94,7 @@ const useWMDService = () => {
         }
       );
 
-      let filename = 'invoices.zip';
+      const filename = 'invoices.zip';
       const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
 
       // Create a temporary link and trigger the download

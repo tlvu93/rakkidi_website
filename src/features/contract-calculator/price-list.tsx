@@ -1,3 +1,5 @@
+import DeleteIcon from '@mui/icons-material/Delete';
+import InfoIcon from '@mui/icons-material/Info';
 import {
   Box,
   Button,
@@ -10,15 +12,16 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import { useAppDispatch, useAppSelector } from 'hooks';
-import { Order } from '@shared/interfaces/contract-calculator';
-import { clearOrder, selectOrders } from './order-slice';
-import InfoIcon from '@mui/icons-material/Info';
 import ControlledTextField from '@shared/components/formControl/ControlledTextField';
+import { Order } from '@shared/interfaces/contract-calculator';
+import { useAppDispatch, useAppSelector } from 'hooks';
+
+import { clearOrder, selectOrders } from './order-slice';
+
+
 
 const style = {
-  position: 'absolute' as 'absolute',
+  position: 'absolute' as const,
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',

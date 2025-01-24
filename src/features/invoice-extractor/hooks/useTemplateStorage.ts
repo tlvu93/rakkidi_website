@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+
 import { InvoiceExtractTemplate, ExtractionField } from '../interfaces';
 
 const DEFAULT_FIELD_DIMENSIONS = {

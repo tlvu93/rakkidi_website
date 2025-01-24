@@ -1,14 +1,15 @@
-import { DocumentInitParameters } from 'react-pdf/node_modules/pdfjs-dist/types/src/display/api';
 
 import { TextContent, TextItem } from 'pdfjs-dist/types/src/display/api';
-
 import { pdfjs } from 'react-pdf';
+import { DocumentInitParameters } from 'react-pdf/node_modules/pdfjs-dist/types/src/display/api';
+
 import {
   PdfTransformationMatrix,
   TransformIndex,
   ExtractionField,
   ExtractionFieldType
 } from 'features/invoice-extractor/interfaces';
+
 import { visualizeCoordinates, logCoordinateAnalysis } from './debug-helpers';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;

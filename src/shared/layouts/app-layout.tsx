@@ -1,13 +1,13 @@
-import { ToggleDrawer } from '@shared/interfaces/ui';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-
 import { Box, useTheme, useMediaQuery } from '@mui/material';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { ToastContainer } from 'react-toastify';
 
 import Header from '@shared/components/header/header';
 import Sidebar from '@shared/components/sidebar/sidebar';
+import { ToggleDrawer } from '@shared/interfaces/ui';
 import { ColorModeContext } from '@shared/styles/theme/theme';
 import { layoutDimension } from 'config/ui-config';
-import { ToastContainer } from 'react-toastify';
+
 
 interface AppLayoutProps {
   children: React.ReactNode;

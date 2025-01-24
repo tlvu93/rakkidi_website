@@ -1,10 +1,12 @@
+import LinkIcon from '@mui/icons-material/Link';
+import PublicIcon from '@mui/icons-material/Public';
 import { Box } from '@mui/material';
 import React from 'react';
-import PublicIcon from '@mui/icons-material/Public';
-import LinkIcon from '@mui/icons-material/Link';
+
 import FigmaSVG from '@assets/figma_logo.svg';
 import GithubSVG from '@assets/github-mark.svg';
 import { WeblinkData } from 'features/dashboard/interfaces';
+
 import { ProjectCardProps } from '../interfaces';
 import {
   iconContainerStyle,

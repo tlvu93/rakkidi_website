@@ -1,13 +1,17 @@
-import * as React from 'react';
-import type { AppProps } from 'next/app';
-import { Provider } from 'react-redux';
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import type { AppProps } from 'next/app';
+import * as React from 'react';
+import { Provider } from 'react-redux';
+
 import createEmotionCache from '../createEmotionCache';
 
 import '@shared/styles/globals.css';
 import { wrapper } from 'store';
+
 import Head from 'next/head';
+
 import useCustomTheme, { ColorModeContext } from '@shared/styles/theme/theme';
+
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';

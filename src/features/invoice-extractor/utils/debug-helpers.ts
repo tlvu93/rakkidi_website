@@ -1,4 +1,5 @@
 import { TextContent, TextItem } from 'pdfjs-dist/types/src/display/api';
+
 import { PdfTransformationMatrix } from 'features/invoice-extractor/interfaces';
 
 export interface DebugVisualization {

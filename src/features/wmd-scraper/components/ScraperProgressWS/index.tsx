@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { Box, Typography } from '@mui/material';
 import LinearProgress, {
   LinearProgressProps
 } from '@mui/material/LinearProgress';
-import { Box, Typography } from '@mui/material';
-import useWebSocket from 'react-use-websocket';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
+import useWebSocket from 'react-use-websocket';
 
 export type ProgressStatus = 'idle' | 'scraping' | 'zipping' | 'finished';
 

@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import React, {
   useState,
   useEffect,
@@ -5,18 +6,18 @@ import React, {
   useCallback,
   useMemo
 } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
 import { FileWithPath } from 'react-dropzone';
-import { Box } from '@mui/material';
+import { Document, Page, pdfjs } from 'react-pdf';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
-import PdfCanvasLayer from '../PdfCanvasLayer/pdf-canvas-layer';
 import FileDropzone from 'features/invoice-extractor/components/FileDropzone/file-dropzone';
 
-import ZoomControls from './ZoomControls';
-import { LoadingOverlay } from './LoadingOverlay';
+import PdfCanvasLayer from '../PdfCanvasLayer/pdf-canvas-layer';
+
 import { ErrorState } from './ErrorState';
+import { LoadingOverlay } from './LoadingOverlay';
 import useWindowResize from './useWindowResize';
+import ZoomControls from './ZoomControls';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 

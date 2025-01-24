@@ -1,6 +1,6 @@
-import React from 'react';
-import { ButtonGroup, Button, Box } from '@mui/material';
 import { ZoomIn, ZoomOut } from '@mui/icons-material';
+import { ButtonGroup, Button, Box } from '@mui/material';
+import React from 'react';
 
 interface ZoomControlsProps {
   onZoomIn: () => void;

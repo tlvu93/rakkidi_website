@@ -1,4 +1,5 @@
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+
 import { GET_PROJECTS } from './queries/queries';
 
 const client = new ApolloClient({

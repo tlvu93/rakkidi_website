@@ -1,12 +1,13 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { useDropzone, FileWithPath, Accept, FileError } from 'react-dropzone';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import {
   Container,
   CircularProgress,
   Typography,
   useTheme
 } from '@mui/material';
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useDropzone, FileWithPath, Accept, FileError } from 'react-dropzone';
+
 import { getStyles } from 'features/invoice-extractor/utils/styles';
 
 interface FileDropzoneProps {

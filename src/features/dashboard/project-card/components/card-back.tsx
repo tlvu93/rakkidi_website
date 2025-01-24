@@ -1,8 +1,10 @@
 import { Box, Card, Chip, Typography } from '@mui/material';
-import { Weblinks } from './weblinks';
-import { cardStyle } from '../style/style';
+
 import { ProjectCardProps } from '../interfaces';
+import { cardStyle } from '../style/style';
+
 import { CardSection, ImageContainer } from './shared/card-section';
+import { Weblinks } from './weblinks';
 
 const CardBack = ({ data }: ProjectCardProps) => {
   return (

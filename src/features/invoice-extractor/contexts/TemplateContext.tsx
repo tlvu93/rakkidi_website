@@ -1,11 +1,12 @@
+import { faker } from '@faker-js/faker';
 import React, { createContext, useState, useContext, ReactNode } from 'react';
+
+import { useTemplateStorage } from 'features/invoice-extractor/hooks/useTemplateStorage';
 import {
   ExtractionField,
   ExtractionFieldType,
   InvoiceExtractTemplate
 } from 'features/invoice-extractor/interfaces';
-import { faker } from '@faker-js/faker';
-import { useTemplateStorage } from 'features/invoice-extractor/hooks/useTemplateStorage';
 
 export interface TemplateContextProps {
   template: InvoiceExtractTemplate;

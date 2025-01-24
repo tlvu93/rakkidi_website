@@ -1,6 +1,8 @@
 import { Box } from '@mui/material';
 import { FC, ReactElement } from 'react';
+
 import { useFlip } from '@shared/hooks';
+
 import CardBack from './components/card-back';
 import CardFront from './components/card-front';
 import { ProjectCardProps } from './interfaces';

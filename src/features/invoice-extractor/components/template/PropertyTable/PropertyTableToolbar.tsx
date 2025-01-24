@@ -1,15 +1,15 @@
-import React, { useRef, useState } from 'react';
-import { GridToolbarContainer } from '@mui/x-data-grid';
-import { Button, Stack, Menu, MenuItem } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import UploadIcon from '@mui/icons-material/Upload';
-import DownloadIcon from '@mui/icons-material/Download';
 import CropIcon from '@mui/icons-material/Crop';
+import DownloadIcon from '@mui/icons-material/Download';
 import SearchIcon from '@mui/icons-material/Search';
-import { useTemplate } from 'features/invoice-extractor';
-import { ExtractionFieldType } from 'features/invoice-extractor/interfaces';
+import UploadIcon from '@mui/icons-material/Upload';
+import { Button, Stack, Menu, MenuItem } from '@mui/material';
+import { GridToolbarContainer } from '@mui/x-data-grid';
+import React, { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
+
+import { useTemplate } from 'features/invoice-extractor';
+import { ExtractionFieldType , InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
 
 const PropertyTableToolbar = () => {
   const { getValues } = useFormContext<InvoiceExtractTemplate>();

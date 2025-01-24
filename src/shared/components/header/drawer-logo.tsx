@@ -1,6 +1,8 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import { Box, IconButton } from '@mui/material';
+
 import { ToggleDrawer } from '@shared/interfaces/ui';
+
 import LogoHome from '../logo-home/logo-home';
 
 type Props = {

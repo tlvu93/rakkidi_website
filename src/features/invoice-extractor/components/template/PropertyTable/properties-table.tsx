@@ -1,6 +1,5 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import Box from '@mui/material/Box';
 import {
   DataGrid,
   GridColDef,
@@ -8,14 +7,16 @@ import {
   GridSlots,
   GridRenderCellParams
 } from '@mui/x-data-grid';
+import * as React from 'react';
+import { useCallback, useMemo } from 'react';
 
-import Toolbar from './PropertyTableToolbar';
+import { useTemplate } from 'features/invoice-extractor';
 import {
   ExtractionField,
   ExtractionFieldType
 } from 'features/invoice-extractor/interfaces';
-import { useCallback, useMemo } from 'react';
-import { useTemplate } from 'features/invoice-extractor';
+
+import Toolbar from './PropertyTableToolbar';
 
 interface FieldRow {
   id: string;

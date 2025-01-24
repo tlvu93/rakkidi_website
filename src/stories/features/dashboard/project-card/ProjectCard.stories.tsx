@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import ProjectCard from '../../../../features/dashboard/project-card/project-card';
+
 import { ProjectCardData } from '../../../../features/dashboard/interfaces';
+import ProjectCard from '../../../../features/dashboard/project-card/project-card';
 
 const meta = {
   title: 'Features/Dashboard/ProjectCard',

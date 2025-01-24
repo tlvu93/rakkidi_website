@@ -1,9 +1,11 @@
 import { Card } from '@mui/material';
 import Image from 'next/image';
+
 import { ProjectCardProps } from '../interfaces';
 import { cardStyle } from '../style/style';
-import { CardSection, ImageContainer } from './shared/card-section';
+
 import { CardFooter } from './shared/card-footer';
+import { CardSection, ImageContainer } from './shared/card-section';
 
 const CardFront = ({ data }: ProjectCardProps) => {
   return (

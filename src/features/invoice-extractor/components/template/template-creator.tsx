@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Container,
   Grid,
@@ -11,17 +11,19 @@ import {
   IconButton,
   CircularProgress
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import React, { Suspense } from 'react';
+import { FormProvider } from 'react-hook-form';
+
 import { ErrorBoundary } from 'features/invoice-extractor/components/ErrorBoundary/error-boundary';
-import PropertiesTable from './PropertyTable/properties-table';
-import PdfViewer from './PdfViewer/pdf-viewer';
 import {
   TemplateProvider,
   useTemplate
 } from 'features/invoice-extractor/contexts/TemplateContext';
-import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
 import { useTemplateForm } from 'features/invoice-extractor/hooks/useTemplateForm';
-import { FormProvider } from 'react-hook-form';
+import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
+
+import PdfViewer from './PdfViewer/pdf-viewer';
+import PropertiesTable from './PropertyTable/properties-table';
 import * as styles from './styles/template-creator.styles';
 
 interface TemplateCreatorProps {

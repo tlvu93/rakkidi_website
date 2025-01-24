@@ -1,6 +1,8 @@
 import React from 'react';
-import PropertiesTable from './properties-table';
+
 import { TemplateProvider } from '../../context/TemplateContext';
+
+import PropertiesTable from './properties-table';
 
 export default {
   component: PropertiesTable,

@@ -1,5 +1,5 @@
-import { FileWithPath } from 'react-dropzone';
 import { Typography, List, ListItem, ListItemText, Box } from '@mui/material';
+import { FileWithPath } from 'react-dropzone';
 
 type AcceptedFilesProps = {
   acceptedFiles: FileWithPath[];

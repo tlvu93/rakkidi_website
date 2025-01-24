@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { GET_PROJECTS } from '../queries/queries';
-import client from '../apollo-client';
+
 import {
   AllProjectResponse,
   ProjectGroup,
   ProjectCardData,
   ProjectCategory
 } from 'features/dashboard/interfaces';
+
+import client from '../apollo-client';
+import { GET_PROJECTS } from '../queries/queries';
 
 const getProjects = async () => {
   const { data } = await client.query({

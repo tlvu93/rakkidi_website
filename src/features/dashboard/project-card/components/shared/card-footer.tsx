@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material';
+
 import { Tags } from 'features/dashboard/interfaces';
 
 interface CardFooterProps {

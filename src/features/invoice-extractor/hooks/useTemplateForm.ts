@@ -1,4 +1,5 @@
 import { useForm, FieldErrors } from 'react-hook-form';
+
 import { InvoiceExtractTemplate, ExtractionField } from '../interfaces';
 
 const defaultTemplate: InvoiceExtractTemplate = {

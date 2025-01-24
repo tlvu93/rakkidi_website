@@ -1,4 +1,5 @@
 import type { NextPage } from 'next';
+
 import AppLayout from '@shared/layouts/app-layout';
 import {
   AllProjectResponse,

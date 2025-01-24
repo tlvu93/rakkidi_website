@@ -1,4 +1,3 @@
-import * as React from 'react';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
@@ -13,6 +12,8 @@ import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import * as React from 'react';
+
 import Copyright from '@shared/components/copyright/copyright';
 
 const theme = createTheme();

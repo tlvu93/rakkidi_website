@@ -1,4 +1,5 @@
 import { ArrowForward, ArrowBack } from '@mui/icons-material';
+
 import { ArrowProps } from '../interfaces';
 
 export const CustomArrow: React.FC<

@@ -1,8 +1,8 @@
+import { KonvaEventObject } from 'konva/lib/Node';
+import { Rect as KonvaRect } from 'konva/lib/shapes/Rect';
+import { Transformer as KonvaTransformer } from 'konva/lib/shapes/Transformer';
 import React, { useEffect, useRef } from 'react';
 import { Rect, Transformer } from 'react-konva';
-import { KonvaEventObject } from 'konva/lib/Node';
-import { Transformer as KonvaTransformer } from 'konva/lib/shapes/Transformer';
-import { Rect as KonvaRect } from 'konva/lib/shapes/Rect';
 
 interface RectangleProps {
   shapeProps: {

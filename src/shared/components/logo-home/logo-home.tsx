@@ -1,7 +1,7 @@
+import { IconButton, useTheme } from '@mui/material';
 import { useRouter } from 'next/router';
 
 import Logo from '@assets/logo_rakkidi_vert.svg';
-import { IconButton, useTheme } from '@mui/material';
 
 const LogoHome = () => {
   const router = useRouter();

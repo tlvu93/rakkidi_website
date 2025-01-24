@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { faker } from '@faker-js/faker';
+import { z } from 'zod';
 
 /**
  * Represents an order in the contract calculator

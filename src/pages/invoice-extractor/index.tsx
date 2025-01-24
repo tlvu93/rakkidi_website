@@ -1,7 +1,8 @@
-import AppLayout from '@shared/layouts/app-layout';
-import dynamic from 'next/dynamic';
 import { Box, Typography, Paper, Container, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import dynamic from 'next/dynamic';
+
+import AppLayout from '@shared/layouts/app-layout';
 import {
   TemplateManagementProvider,
   useTemplateManagement,

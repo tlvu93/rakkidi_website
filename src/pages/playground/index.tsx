@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import { extractTextFromArea } from './extract-utils';
 
 // Sample tokenized text from a PDF

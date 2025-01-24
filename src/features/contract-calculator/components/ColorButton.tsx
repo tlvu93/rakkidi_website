@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { ButtonProps, styled, Button } from '@mui/material';
 
 const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({

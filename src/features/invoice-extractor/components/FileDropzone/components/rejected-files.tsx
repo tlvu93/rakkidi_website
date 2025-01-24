@@ -1,5 +1,5 @@
-import { FileRejection } from 'react-dropzone';
 import { Typography, List, ListItem, ListItemText, Box } from '@mui/material';
+import { FileRejection } from 'react-dropzone';
 
 type RejectedFilesProps = {
   fileRejections: FileRejection[];

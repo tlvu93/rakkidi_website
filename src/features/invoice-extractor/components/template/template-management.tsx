@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
   Button,
@@ -8,10 +8,12 @@ import {
   ListItemText,
   IconButton
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import React, { useState } from 'react';
+
 import { useTemplateManagement } from '../../contexts/template-management-context';
-import { TemplateCreatorModal } from './template-creator';
 import { InvoiceExtractTemplate } from '../../interfaces';
+
+import { TemplateCreatorModal } from './template-creator';
 
 const TemplateManagement = () => {
   const {

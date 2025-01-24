@@ -1,18 +1,18 @@
-import { Box, Card, Typography } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import { zodResolver } from '@hookform/resolvers/zod';
-import ControlledTextField from '@shared/components/formControl/ControlledTextField';
+import AddIcon from '@mui/icons-material/Add';
+import { Box, Card, Typography } from '@mui/material';
 import React from 'react';
-import { Order, OrderSchema } from '@shared/interfaces/contract-calculator';
-import ColorButton from './components/ColorButton';
-import { useAppDispatch } from 'hooks';
-import { addOrder } from './order-slice';
-
 import { useForm } from 'react-hook-form';
 
-type Props = {};
+import ControlledTextField from '@shared/components/formControl/ControlledTextField';
+import { Order, OrderSchema } from '@shared/interfaces/contract-calculator';
+import { useAppDispatch } from 'hooks';
 
-const CustomOrder = (props: Props) => {
+import ColorButton from './components/ColorButton';
+import { addOrder } from './order-slice';
+
+
+const CustomOrder = () => {
   const dispatch = useAppDispatch();
 
   const { control, handleSubmit } = useForm<Order>({

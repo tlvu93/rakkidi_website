@@ -7,8 +7,10 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
-import { useAppDispatch } from 'hooks';
+
 import { Order } from '@shared/interfaces/contract-calculator';
+import { useAppDispatch } from 'hooks';
+
 import { removeOrder } from './order-slice';
 
 interface OrderItemProps {

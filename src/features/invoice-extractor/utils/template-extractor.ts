@@ -1,6 +1,8 @@
 import { TextContent } from 'pdfjs-dist/types/src/display/api';
-import { getTextFromTemplate } from './pdf-extract';
+
 import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
+
+import { getTextFromTemplate } from './pdf-extract';
 
 export const extractFieldsFromTemplate = async (
   text: TextContent,

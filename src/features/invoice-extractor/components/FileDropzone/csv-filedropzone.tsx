@@ -1,5 +1,3 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { FileWithPath } from 'react-dropzone';
 import {
   Container,
   Typography,
@@ -11,10 +9,9 @@ import {
   TableRow,
   Paper
 } from '@mui/material';
+import React, { useState, useCallback, useMemo } from 'react';
 import { CSVLink } from 'react-csv';
-
-import AcceptedFiles from './components/accepted-files';
-import RejectedFiles from './components/rejected-files';
+import { FileWithPath } from 'react-dropzone';
 
 import {
   type TemplateCsvData,
@@ -22,6 +19,9 @@ import {
   extractFieldsFromTemplate,
   useTemplateManagement
 } from '../..';
+
+import AcceptedFiles from './components/accepted-files';
+import RejectedFiles from './components/rejected-files';
 import FileDropzone from './file-dropzone';
 
 const CSVFiledropzone = () => {
