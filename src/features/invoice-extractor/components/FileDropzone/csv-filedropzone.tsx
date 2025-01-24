@@ -1,6 +1,16 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { FileWithPath } from 'react-dropzone';
-import { Container, Typography } from '@mui/material';
+import {
+  Container,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper
+} from '@mui/material';
 import { CSVLink } from 'react-csv';
 
 import AcceptedFiles from './components/accepted-files';
@@ -82,20 +92,42 @@ const CSVFiledropzone = () => {
         </Typography>
       )}
       {selectedTemplate && csvData.length > 0 && (
-        <CSVLink
-          data={csvData}
-          headers={headers}
-          filename="extracted_data.csv"
-          style={{
-            textDecoration: 'underline',
-            color: 'cornflowerblue',
-            cursor: 'pointer',
-            marginTop: '20px',
-            display: 'inline-block'
-          }}
-        >
-          Download CSV
-        </CSVLink>
+        <>
+          <TableContainer component={Paper} sx={{ mt: 2, mb: 2 }}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  {headers.map((header) => (
+                    <TableCell key={header.key}>{header.label}</TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {csvData.map((row, index) => (
+                  <TableRow key={index}>
+                    {headers.map((header) => (
+                      <TableCell key={header.key}>{row[header.key]}</TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <CSVLink
+            data={csvData}
+            headers={headers}
+            filename="extracted_data.csv"
+            style={{
+              textDecoration: 'underline',
+              color: 'cornflowerblue',
+              cursor: 'pointer',
+              marginTop: '20px',
+              display: 'inline-block'
+            }}
+          >
+            Download CSV
+          </CSVLink>
+        </>
       )}
     </Container>
   );

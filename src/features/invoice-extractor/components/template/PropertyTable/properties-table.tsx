@@ -60,14 +60,14 @@ export default function PropertiesTable() {
       {
         field: 'name',
         headerName: 'Name',
-        width: 100,
+
         editable: true
       },
       {
         field: 'page',
         headerName: 'Page',
         type: 'number',
-        width: 100,
+
         align: 'left',
         headerAlign: 'left',
         renderCell: (params: CustomRenderCellParams) => params.value
@@ -108,6 +108,15 @@ export default function PropertiesTable() {
         },
         '& .MuiDataGrid-footerContainer': {
           justifyContent: 'center'
+        },
+        '& .MuiDataGrid-cell': {
+          padding: '0 16px'
+        },
+        '& .MuiDataGrid-cell:focus': {
+          outline: 'none'
+        },
+        '& .MuiDataGrid-cell.Mui-selected': {
+          padding: '0 16px'
         }
       }}
     >

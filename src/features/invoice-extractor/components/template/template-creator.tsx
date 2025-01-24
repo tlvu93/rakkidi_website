@@ -76,12 +76,12 @@ const TemplateCreatorInner = ({
           Records and PDF Preview
         </Typography>
         <Grid container spacing={4} sx={styles.gridContainerStyle}>
-          <Grid item xs={12} md={9}>
+          <Grid item xs={12} md={8}>
             <Paper sx={styles.pdfPreviewStyle}>
               <PdfViewer />
             </Paper>
           </Grid>
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} md={4}>
             <Paper sx={styles.propertiesTableStyle}>
               <PropertiesTable />
             </Paper>
@@ -149,17 +149,47 @@ export const TemplateCreatorModal = ({
         }
       }}
     >
-      <Paper sx={styles.modalStyle}>
-        <Box display="flex" justifyContent="flex-end">
+      <Paper
+        sx={{
+          ...styles.modalStyle,
+          display: 'flex',
+          flexDirection: 'column',
+          maxHeight: '90vh'
+        }}
+      >
+        <Box
+          sx={{
+            position: 'sticky',
+            top: 0,
+            zIndex: 1,
+            backgroundColor: 'background.paper',
+            borderTopLeftRadius: 4,
+            borderTopRightRadius: 4,
+            borderBottom: 1,
+            borderColor: 'divider'
+          }}
+        >
           <IconButton
             aria-label="close"
             onClick={close}
-            sx={styles.closeButtonStyle}
+            sx={{
+              ...styles.closeButtonStyle,
+              position: 'absolute',
+              right: 8,
+              top: 8
+            }}
           >
             <CloseIcon />
           </IconButton>
         </Box>
-        <Box sx={{ flexGrow: 1, overflow: 'auto', minHeight: 400 }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            overflow: 'auto',
+            minHeight: 400,
+            mt: 6 // Add margin top to account for the sticky header
+          }}
+        >
           <TemplateCreator
             onSubmit={onSubmit}
             selectedTemplate={selectedTemplate}

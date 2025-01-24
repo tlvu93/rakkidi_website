@@ -14,6 +14,8 @@ export interface TemplateContextProps {
   updateExtractionFields: (fields: ExtractionField[]) => void;
   updateTemplate: (newTemplate: Partial<InvoiceExtractTemplate>) => void;
   canAddExtractionField: boolean;
+  exportTemplate: () => void;
+  importTemplate: (file: File) => Promise<void>;
 }
 
 const TemplateContext = createContext<TemplateContextProps | undefined>(
@@ -99,6 +101,38 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
   const canAddExtractionField =
     template.extractionFields.length < MAX_EXTRACTION_FIELDS;
 
+  const exportTemplate = () => {
+    const jsonString = JSON.stringify(template, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${template.name.replace(/\s+/g, '_')}_template.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const importTemplate = async (file: File) => {
+    try {
+      const text = await file.text();
+      const importedTemplate = JSON.parse(text) as InvoiceExtractTemplate;
+
+      // Validate the imported template structure
+      if (
+        !importedTemplate.name ||
+        !Array.isArray(importedTemplate.extractionFields)
+      ) {
+        throw new Error('Invalid template format');
+      }
+
+      setTemplate(importedTemplate);
+    } catch (error) {
+      throw new Error('Failed to import template: ' + (error as Error).message);
+    }
+  };
+
   return (
     <TemplateContext.Provider
       value={{
@@ -108,7 +142,9 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
         updateExtractionField,
         updateExtractionFields,
         updateTemplate,
-        canAddExtractionField
+        canAddExtractionField,
+        exportTemplate,
+        importTemplate
       }}
     >
       {children}
