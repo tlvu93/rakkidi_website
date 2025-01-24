@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import {
   AddCircle,
   ImportExport,
@@ -51,6 +51,62 @@ const ExtractTemplateManagement = () => {
       setTemplate(selectedTemplate);
     }
   }, [selectedTemplate, setTemplate]);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleExport = useCallback(() => {
+    const templatesJson = JSON.stringify(templates, null, 2);
+    const blob = new Blob([templatesJson], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'invoice-templates.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, [templates]);
+
+  const handleImport = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const importedTemplates = JSON.parse(e.target?.result as string);
+          // Validate imported templates
+          if (
+            Array.isArray(importedTemplates) &&
+            importedTemplates.every(
+              (template) =>
+                template.name &&
+                template.description &&
+                Array.isArray(template.extractionFields)
+            )
+          ) {
+            // Add each imported template
+            importedTemplates.forEach((template) => {
+              addTemplate(template);
+            });
+          } else {
+            console.error('Invalid template format');
+            alert('Invalid template format');
+          }
+        } catch (error) {
+          console.error('Failed to parse template file:', error);
+          alert('Failed to parse template file');
+        }
+        // Clear the input
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      };
+      reader.readAsText(file);
+    },
+    [addTemplate]
+  );
 
   const handleTemplateSubmit = useCallback(
     (form: InvoiceExtractTemplate) => {
@@ -181,14 +237,26 @@ const ExtractTemplateManagement = () => {
 
         <Grid item xs={12} container justifyContent="space-between">
           <Box>
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              accept=".json"
+              onChange={handleImport}
+            />
             <Button
               variant="outlined"
               startIcon={<ImportExport />}
               sx={{ mr: 1 }}
+              onClick={() => fileInputRef.current?.click()}
             >
               Import
             </Button>
-            <Button variant="outlined" startIcon={<Save />}>
+            <Button
+              variant="outlined"
+              startIcon={<Save />}
+              onClick={handleExport}
+            >
               Export
             </Button>
           </Box>
