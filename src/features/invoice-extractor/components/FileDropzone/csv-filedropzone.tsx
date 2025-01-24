@@ -6,10 +6,12 @@ import { CSVLink } from 'react-csv';
 import AcceptedFiles from './components/accepted-files';
 import RejectedFiles from './components/rejected-files';
 
-import { TemplateCsvData } from 'features/invoice-extractor/interfaces/template-csv-data';
-import { getTextTokenFromPdfFile } from '../ExtractTemplateManagement/utils/pdf-extract';
-import { extractFieldsFromTemplate } from '../ExtractTemplateManagement/utils/template-extractor';
-import { useTemplateManagement } from '../ExtractTemplateManagement/context/template-management-context';
+import {
+  type TemplateCsvData,
+  getTextTokenFromPdfFile,
+  extractFieldsFromTemplate,
+  useTemplateManagement
+} from '../..';
 import FileDropzone from './file-dropzone';
 
 const CSVFiledropzone = () => {

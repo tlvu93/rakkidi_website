@@ -7,13 +7,13 @@ const defaultTemplate: InvoiceExtractTemplate = {
   extractionFields: []
 };
 
-interface UseTemplateFormProps {
+export interface UseTemplateFormProps {
   selectedTemplate: InvoiceExtractTemplate | null;
   onSubmit: (template: InvoiceExtractTemplate) => void;
   currentFields: ExtractionField[];
 }
 
-interface UseTemplateFormReturn {
+export interface UseTemplateFormReturn {
   register: ReturnType<typeof useForm<InvoiceExtractTemplate>>['register'];
   handleSubmit: (e: React.FormEvent) => void;
   errors: FieldErrors<InvoiceExtractTemplate>;

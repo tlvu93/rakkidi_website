@@ -1,32 +1,12 @@
 import AppLayout from '@shared/layouts/app-layout';
 import dynamic from 'next/dynamic';
-import {
-  Box,
-  Typography,
-  Paper,
-  Container,
-  Divider,
-  Grid,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem
-} from '@mui/material';
+import { Box, Typography, Paper, Container, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
-
 import {
   TemplateManagementProvider,
-  useTemplateManagement
-} from 'features/invoice-extractor/components/ExtractTemplateManagement/context/template-management-context';
-
-const DynamicExtractTemplateManagement = dynamic(
-  () =>
-    import(
-      'features/invoice-extractor/components/ExtractTemplateManagement/template-management'
-    ),
-  { ssr: false }
-);
+  useTemplateManagement,
+  TemplateManagement
+} from 'features/invoice-extractor';
 
 const DynamicFileDropzone = dynamic(
   () =>
@@ -57,7 +37,7 @@ const InvoiceExtractorContent = () => {
       </Typography>
 
       <StyledPaper>
-        <DynamicExtractTemplateManagement />
+        <TemplateManagement />
       </StyledPaper>
 
       {selectedTemplate && (

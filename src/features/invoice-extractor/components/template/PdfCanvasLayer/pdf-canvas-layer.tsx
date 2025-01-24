@@ -1,6 +1,6 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { Layer, Stage, Text } from 'react-konva';
-import { useTemplate } from '../../context/TemplateContext';
+
 import Rectangle from './rectangle';
 import {
   PageDimensions,
@@ -8,6 +8,7 @@ import {
 } from 'features/invoice-extractor/interfaces';
 import Konva from 'konva';
 import { CoordinateTransformer } from 'features/invoice-extractor/utils/coordinate-transform';
+import { useTemplate } from 'features/invoice-extractor';
 
 type Props = {
   pageDimensions: PageDimensions;

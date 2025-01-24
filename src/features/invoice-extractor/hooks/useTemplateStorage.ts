@@ -6,7 +6,7 @@ const DEFAULT_FIELD_DIMENSIONS = {
   height: 50
 };
 
-interface UseTemplateStorageProps {
+export interface UseTemplateStorageProps {
   template: InvoiceExtractTemplate;
   setTemplate: (template: InvoiceExtractTemplate) => void;
   initialTemplate: InvoiceExtractTemplate | null;

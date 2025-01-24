@@ -8,10 +8,11 @@ import {
   GridSlots,
   GridRenderCellParams
 } from '@mui/x-data-grid';
-import { useTemplate } from '../../context/TemplateContext';
+
 import Toolbar from './PropertyTableToolbar';
 import { ExtractionField } from 'features/invoice-extractor/interfaces';
 import { useCallback, useMemo } from 'react';
+import { useTemplate } from 'features/invoice-extractor';
 
 interface FieldRow {
   id: string;

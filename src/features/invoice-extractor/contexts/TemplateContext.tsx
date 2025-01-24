@@ -6,7 +6,7 @@ import {
 import { faker } from '@faker-js/faker';
 import { useTemplateStorage } from 'features/invoice-extractor/hooks/useTemplateStorage';
 
-interface TemplateContextProps {
+export interface TemplateContextProps {
   template: InvoiceExtractTemplate;
   addExtractionField: () => void;
   deleteExtractionField: (id: string) => void;

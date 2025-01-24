@@ -7,7 +7,7 @@ import {
   useTheme
 } from '@mui/material';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import { getStyles } from './utils/styles';
+import { getStyles } from 'features/invoice-extractor/utils/styles';
 
 interface FileDropzoneProps {
   onDrop: (acceptedFiles: FileWithPath[]) => void;
@@ -53,7 +53,12 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
     minSize,
     onDropRejected: (fileRejections) => {
       if (onDropRejected) {
-        onDropRejected(fileRejections);
+        onDropRejected(
+          fileRejections.map(({ file, errors }) => ({
+            file,
+            errors: [...errors]
+          }))
+        );
       }
       setLoading(false);
     },

@@ -9,13 +9,14 @@ import React, {
 } from 'react';
 import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
 
-interface TemplateManagementContextProps {
+export interface TemplateManagementContextProps {
   templates: InvoiceExtractTemplate[];
   selectedTemplate: InvoiceExtractTemplate | null;
   setTemplate: (template: InvoiceExtractTemplate) => void;
   addTemplate: (template: InvoiceExtractTemplate) => void;
-  deleteTemplate: (templateName: string) => void;
-  selectTemplate: (templateName: string) => void;
+  deleteTemplate: (template: InvoiceExtractTemplate) => void;
+  selectTemplate: (template: InvoiceExtractTemplate) => void;
+  updateTemplate: (template: InvoiceExtractTemplate) => void;
 }
 
 const TemplateManagementContext = createContext<
@@ -50,35 +51,43 @@ export const TemplateManagementProvider: React.FC<{ children: ReactNode }> = ({
     setSelectedTemplate(template);
   }, []);
 
-  const selectTemplate = useCallback(
-    (templateName: string) => {
-      setSelectedTemplate(
-        templates.find((template) => template.name === templateName) || null
-      );
-    },
-    [templates]
-  );
+  const selectTemplate = useCallback((template: InvoiceExtractTemplate) => {
+    setSelectedTemplate(template);
+  }, []);
 
   const deleteTemplate = useCallback(
-    (templateName: string) => {
+    (template: InvoiceExtractTemplate) => {
       setTemplates((prevTemplates) =>
-        prevTemplates.filter((template) => template.name !== templateName)
+        prevTemplates.filter((t) => t.name !== template.name)
       );
-      if (selectedTemplate?.name === templateName) {
+      if (selectedTemplate?.name === template.name) {
         setSelectedTemplate(null);
       }
     },
     [selectedTemplate]
   );
 
-  const contextValue = useMemo(
+  const updateTemplate = useCallback(
+    (template: InvoiceExtractTemplate) => {
+      setTemplates((prevTemplates) =>
+        prevTemplates.map((t) => (t.name === template.name ? template : t))
+      );
+      if (selectedTemplate?.name === template.name) {
+        setSelectedTemplate(template);
+      }
+    },
+    [selectedTemplate]
+  );
+
+  const value = useMemo(
     () => ({
       templates,
       selectedTemplate,
       setTemplate,
       addTemplate,
       deleteTemplate,
-      selectTemplate
+      selectTemplate,
+      updateTemplate
     }),
     [
       templates,
@@ -86,12 +95,13 @@ export const TemplateManagementProvider: React.FC<{ children: ReactNode }> = ({
       setTemplate,
       addTemplate,
       deleteTemplate,
-      selectTemplate
+      selectTemplate,
+      updateTemplate
     ]
   );
 
   return (
-    <TemplateManagementContext.Provider value={contextValue}>
+    <TemplateManagementContext.Provider value={value}>
       {children}
     </TemplateManagementContext.Provider>
   );

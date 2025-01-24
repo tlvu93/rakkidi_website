@@ -12,10 +12,11 @@ import { Box } from '@mui/material';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import PdfCanvasLayer from '../PdfCanvasLayer/pdf-canvas-layer';
 import FileDropzone from 'features/invoice-extractor/components/FileDropzone/file-dropzone';
-import useWindowResize from './useWindowResize';
+
 import ZoomControls from './ZoomControls';
 import { LoadingOverlay } from './LoadingOverlay';
 import { ErrorState } from './ErrorState';
+import useWindowResize from './useWindowResize';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
