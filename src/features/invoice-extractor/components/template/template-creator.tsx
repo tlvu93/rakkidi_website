@@ -42,60 +42,86 @@ const TemplateCreatorInner = ({
   });
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={styles.formStyle}>
-      <Container maxWidth="xl" sx={styles.containerStyle}>
-        <Typography variant="h3" sx={styles.templateDetailsStyle}>
-          Template Creator
-        </Typography>
-        <Typography variant="h5" sx={styles.templateFieldsStyle}>
-          Template Details
-        </Typography>
-        <Grid container spacing={2} pb={4}>
-          <Grid item xs={12} md={6}>
-            <TextField
-              {...register('name', { required: 'Template name is required' })}
-              label="Template Name"
-              fullWidth
-              error={!!errors.name}
-              helperText={errors.name?.message}
-            />
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        ...styles.formStyle,
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%'
+      }}
+    >
+      <Box sx={{ flex: 1, overflow: 'auto' }}>
+        <Container maxWidth="xl" sx={styles.containerStyle}>
+          <Typography variant="h3" sx={styles.templateDetailsStyle}>
+            Template Creator
+          </Typography>
+          <Typography variant="h5" sx={styles.templateFieldsStyle}>
+            Template Details
+          </Typography>
+          <Grid container spacing={2} pb={4}>
+            <Grid item xs={12} md={6}>
+              <TextField
+                {...register('name', { required: 'Template name is required' })}
+                label="Template Name"
+                fullWidth
+                error={!!errors.name}
+                helperText={errors.name?.message}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                {...register('description', {
+                  required: 'Template description is required'
+                })}
+                label="Template Description"
+                fullWidth
+                error={!!errors.description}
+                helperText={errors.description?.message}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              {...register('description', {
-                required: 'Template description is required'
-              })}
-              label="Template Description"
-              fullWidth
-              error={!!errors.description}
-              helperText={errors.description?.message}
-            />
+          <Typography variant="h5" pb={2}>
+            Records and PDF Preview
+          </Typography>
+          <Grid container spacing={4} sx={styles.gridContainerStyle}>
+            <Grid item xs={12} md={8}>
+              <Paper sx={styles.pdfPreviewStyle}>
+                <PdfViewer />
+              </Paper>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Paper sx={styles.propertiesTableStyle}>
+                <PropertiesTable />
+              </Paper>
+            </Grid>
           </Grid>
-        </Grid>
-        <Typography variant="h5" pb={2}>
-          Records and PDF Preview
-        </Typography>
-        <Grid container spacing={4} sx={styles.gridContainerStyle}>
-          <Grid item xs={12} md={8}>
-            <Paper sx={styles.pdfPreviewStyle}>
-              <PdfViewer />
-            </Paper>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Paper sx={styles.propertiesTableStyle}>
-              <PropertiesTable />
-            </Paper>
-          </Grid>
-        </Grid>
-        <Box sx={styles.actionButtonsStyle}>
-          <Button variant="outlined" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button variant="contained" type="submit">
-            Save Template
-          </Button>
-        </Box>
-      </Container>
+        </Container>
+      </Box>
+      <Box
+        sx={{
+          borderTop: 1,
+          borderColor: 'divider',
+          py: 2.5,
+          // pt: 1.5,
+          position: 'sticky',
+          // bottom: 0,
+          // height: 0, // 36px (button height) + 16px (padding)
+          zIndex: 1,
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: 2,
+          alignItems: 'center'
+        }}
+      >
+        <Button variant="outlined" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button variant="contained" type="submit">
+          Save Template
+        </Button>
+      </Box>
     </Box>
   );
 };

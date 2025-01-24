@@ -114,10 +114,19 @@ const PdfViewer: React.FC = () => {
   return (
     <Box sx={{ position: 'relative', height: '100%' }}>
       {!pdfFile ? (
-        <FileDropzone
-          onDrop={handleDrop}
-          accept={{ 'application/pdf': ['.pdf'] }}
-        />
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '500px'
+          }}
+        >
+          <FileDropzone
+            onDrop={handleDrop}
+            accept={{ 'application/pdf': ['.pdf'] }}
+          />
+        </Box>
       ) : (
         <>
           {zoomControls}

@@ -5,14 +5,14 @@ export const modalStyle: SxProps<Theme> = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '60%',
+  width: '70%',
   height: '90%',
   overflow: 'auto',
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  border: '2px solid gray',
   borderRadius: 2,
   boxShadow: 24,
-  py: 4,
+
   px: 2,
   display: 'flex',
   flexDirection: 'column'
