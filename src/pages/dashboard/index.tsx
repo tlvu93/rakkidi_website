@@ -23,7 +23,9 @@ const Dashboard: NextPage<DashboardProps> = ({ pageProps }) => {
   );
 };
 
-export async function getStaticProps() {
+export async function getStaticProps(): Promise<{
+  props: { groupedProjects: IProjectGroup };
+}> {
   const { data }: { data: AllProjectResponse } = await client.query({
     query: GET_PROJECTS
   });

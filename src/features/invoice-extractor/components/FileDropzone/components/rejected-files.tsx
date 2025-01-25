@@ -5,7 +5,9 @@ type RejectedFilesProps = {
   fileRejections: FileRejection[];
 };
 
-const RejectedFiles = ({ fileRejections }: RejectedFilesProps) => {
+const RejectedFiles: React.FC<RejectedFilesProps> = ({
+  fileRejections
+}): React.ReactElement => {
   return (
     <Box mt={2}>
       <Typography variant="h6">Rejected files</Typography>

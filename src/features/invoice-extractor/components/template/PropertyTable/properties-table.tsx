@@ -30,7 +30,7 @@ interface FieldRow {
 
 type CustomRenderCellParams = GridRenderCellParams<FieldRow, string | number>;
 
-export default function PropertiesTable() {
+export default function PropertiesTable(): React.ReactElement {
   const { template, deleteExtractionField, updateExtractionField } =
     useTemplate();
 
@@ -51,14 +51,14 @@ export default function PropertiesTable() {
   );
 
   const handleDeleteClick = useCallback(
-    (id: string) => {
+    (id: string): void => {
       deleteExtractionField(id);
     },
     [deleteExtractionField]
   );
 
   const handleUpdateRow = useCallback(
-    (data: FieldRow) => {
+    (data: FieldRow): FieldRow => {
       const updateData: Partial<ExtractionField> = {
         id: data.id,
         name: data.name,
@@ -91,7 +91,7 @@ export default function PropertiesTable() {
         field: 'type',
         headerName: 'Type',
         width: 100,
-        renderCell: (params: CustomRenderCellParams) =>
+        renderCell: (params: CustomRenderCellParams): string =>
           params.value === ExtractionFieldType.Rectangle
             ? 'Rectangle'
             : 'Keyword'
@@ -103,15 +103,18 @@ export default function PropertiesTable() {
         width: 70,
         align: 'left',
         headerAlign: 'left',
-        renderCell: (params: CustomRenderCellParams) => params.value
+        renderCell: (params: CustomRenderCellParams): string | number =>
+          params.value ?? 1
       },
       {
         field: 'keyword',
         headerName: 'Keyword',
         width: 120,
         editable: true,
-        renderCell: (params: CustomRenderCellParams) =>
-          params.row.type === ExtractionFieldType.Keyword ? params.value : '-'
+        renderCell: (params: CustomRenderCellParams): string =>
+          params.row.type === ExtractionFieldType.Keyword
+            ? (params.value as string)
+            : '-'
       },
       {
         field: 'searchDirection',
@@ -120,8 +123,10 @@ export default function PropertiesTable() {
         editable: true,
         type: 'singleSelect',
         valueOptions: ['right', 'below'],
-        renderCell: (params: CustomRenderCellParams) =>
-          params.row.type === ExtractionFieldType.Keyword ? params.value : '-'
+        renderCell: (params: CustomRenderCellParams): string =>
+          params.row.type === ExtractionFieldType.Keyword
+            ? (params.value as string)
+            : '-'
       },
       {
         field: 'maxDistance',
@@ -129,8 +134,10 @@ export default function PropertiesTable() {
         type: 'number',
         width: 100,
         editable: true,
-        renderCell: (params: CustomRenderCellParams) =>
-          params.row.type === ExtractionFieldType.Keyword ? params.value : '-'
+        renderCell: (params: CustomRenderCellParams): string | number =>
+          params.row.type === ExtractionFieldType.Keyword
+            ? params.value ?? 0
+            : '-'
       },
       {
         field: 'actions',
@@ -139,7 +146,9 @@ export default function PropertiesTable() {
         cellClassName: 'actions',
         headerAlign: 'right',
         flex: 1,
-        renderCell: (params: GridRenderCellParams<FieldRow>) => (
+        renderCell: (
+          params: GridRenderCellParams<FieldRow>
+        ): React.ReactElement => (
           <Box display="flex" justifyContent="flex-end" width="100%">
             <GridActionsCellItem
               key={`delete-${params.id}`}

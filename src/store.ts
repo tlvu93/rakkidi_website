@@ -3,7 +3,7 @@ import { createWrapper } from 'next-redux-wrapper';
 
 import { orderSlice } from 'features/contract-calculator/order-slice';
 
-const makeStore = () =>
+const makeStore = (): ReturnType<typeof configureStore> =>
   configureStore({
     reducer: {
       [orderSlice.name]: orderSlice.reducer

@@ -7,6 +7,7 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
+import { ReactElement } from 'react';
 
 import { Order } from '@shared/interfaces/contract-calculator';
 import { useAppDispatch } from 'hooks';
@@ -17,14 +18,14 @@ interface OrderItemProps {
   order: Order;
 }
 
-const OrderItem = ({ order }: OrderItemProps) => {
+const OrderItem = ({ order }: OrderItemProps): ReactElement => {
   const dispatch = useAppDispatch();
 
   const getPrice = (
     width_in_mm: number,
     height_in_mm: number,
     pricePerSquareMeterInEuro = 40
-  ) => {
+  ): string => {
     const height_in_m = height_in_mm / 1000;
     const width_in_m = width_in_mm / 1000;
 

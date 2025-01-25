@@ -24,12 +24,17 @@ import AcceptedFiles from './components/accepted-files';
 import RejectedFiles from './components/rejected-files';
 import FileDropzone from './file-dropzone';
 
-const CSVFiledropzone = () => {
+const CSVFiledropzone: React.FC = () => {
   const { selectedTemplate } = useTemplateManagement();
   const [csvData, setCsvData] = useState<TemplateCsvData[]>([]);
   const [acceptedFiles, setAcceptedFiles] = useState<FileWithPath[]>([]);
+  type FileRejectionError = {
+    code: string;
+    message: string;
+  };
+
   const [fileRejections, setFileRejections] = useState<
-    Array<{ file: FileWithPath; errors: any[] }>
+    Array<{ file: FileWithPath; errors: FileRejectionError[] }>
   >([]);
 
   const headers = useMemo(() => {
@@ -69,7 +74,12 @@ const CSVFiledropzone = () => {
   );
 
   const handleRejected = useCallback(
-    (fileRejections: Array<{ file: FileWithPath; errors: any[] }>) => {
+    (
+      fileRejections: Array<{
+        file: FileWithPath;
+        errors: FileRejectionError[];
+      }>
+    ) => {
       setFileRejections(fileRejections);
     },
     []

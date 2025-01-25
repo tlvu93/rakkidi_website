@@ -1,4 +1,6 @@
-import { TemplateProvider } from '../../context/TemplateContext';
+import React from 'react';
+
+import { TemplateProvider } from 'features/invoice-extractor/contexts';
 
 import PDFViewer from './pdf-viewer';
 
@@ -10,8 +12,8 @@ export default {
 
 export const Default = {
   decorators: [
-    (Story: React.ComponentType) => (
-      <TemplateProvider>
+    (Story: React.ComponentType): React.ReactElement => (
+      <TemplateProvider initialTemplate={null}>
         <Story />
       </TemplateProvider>
     )

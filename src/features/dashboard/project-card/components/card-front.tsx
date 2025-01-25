@@ -7,7 +7,9 @@ import { cardStyle } from '../style/style';
 import { CardFooter } from './shared/card-footer';
 import { CardSection, ImageContainer } from './shared/card-section';
 
-const CardFront = ({ data }: ProjectCardProps) => {
+const CardFront: React.FC<ProjectCardProps> = ({
+  data
+}): React.ReactElement => {
   return (
     <Card sx={cardStyle}>
       <ImageContainer>

@@ -29,6 +29,7 @@ export const orderSlice = createSlice({
 
 export const { addOrder, removeOrder, clearOrder } = orderSlice.actions;
 
-export const selectOrders = (state: AppState) => state.order.list;
+export const selectOrders = (state: AppState): Order[] =>
+  (state as { [key: string]: OrderState })[orderSlice.name].list;
 
 export default orderSlice.reducer;

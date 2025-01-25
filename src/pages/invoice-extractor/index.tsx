@@ -1,4 +1,4 @@
-import { Box, Typography, Paper, Container, Divider } from '@mui/material';
+import { Typography, Paper, Container, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 
@@ -24,7 +24,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   boxShadow: theme.shadows[2]
 }));
 
-const InvoiceExtractorContent = () => {
+const InvoiceExtractorContent = (): React.ReactElement => {
   const { selectedTemplate } = useTemplateManagement();
 
   return (
@@ -57,7 +57,7 @@ const InvoiceExtractorContent = () => {
   );
 };
 
-const InvoiceExtractor = () => {
+const InvoiceExtractor = (): React.ReactElement => {
   return (
     <AppLayout>
       <TemplateManagementProvider>

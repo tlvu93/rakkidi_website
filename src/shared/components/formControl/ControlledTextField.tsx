@@ -13,7 +13,7 @@ const ControlledTextField = <T extends FieldValues>({
   control,
   label,
   ...textFieldProps
-}: FormInputProps<T>) => {
+}: FormInputProps<T>): React.ReactElement => {
   return (
     <Controller
       name={name as Path<T>}

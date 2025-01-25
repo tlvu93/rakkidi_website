@@ -46,7 +46,7 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
 
   const addExtractionField = (
     type: ExtractionFieldType = ExtractionFieldType.Rectangle
-  ) => {
+  ): void => {
     const baseField = {
       id: faker.string.uuid(),
       name: `Field ${template.extractionFields.length + 1}`,
@@ -75,7 +75,7 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
     }));
   };
 
-  const deleteExtractionField = (id: string) => {
+  const deleteExtractionField = (id: string): void => {
     setTemplate((prevTemplate) => ({
       ...prevTemplate,
       extractionFields: prevTemplate.extractionFields.filter(
@@ -84,14 +84,16 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
     }));
   };
 
-  const updateExtractionFields = (updatedFields: ExtractionField[]) => {
+  const updateExtractionFields = (updatedFields: ExtractionField[]): void => {
     setTemplate((prevTemplate) => ({
       ...prevTemplate,
       extractionFields: updatedFields
     }));
   };
 
-  const updateExtractionField = (updateField: Partial<ExtractionField>) => {
+  const updateExtractionField = (
+    updateField: Partial<ExtractionField>
+  ): void => {
     if (!updateField.id) {
       console.error('Update must contain an id');
       return;
@@ -104,7 +106,9 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
     }));
   };
 
-  const updateTemplate = (newTemplate: Partial<InvoiceExtractTemplate>) => {
+  const updateTemplate = (
+    newTemplate: Partial<InvoiceExtractTemplate>
+  ): void => {
     setTemplate((prevTemplate) => ({
       ...prevTemplate,
       ...newTemplate
@@ -118,7 +122,7 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
   const canAddExtractionField =
     template.extractionFields.length < MAX_EXTRACTION_FIELDS;
 
-  const exportTemplate = (formName?: string) => {
+  const exportTemplate = (formName?: string): void => {
     // Use form name if provided, otherwise use template name
     const name = formName?.trim() || template.name.trim();
 
@@ -148,7 +152,10 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
     URL.revokeObjectURL(url);
   };
 
-  const importTemplate = async (file: File, newName?: string) => {
+  const importTemplate = async (
+    file: File,
+    newName?: string
+  ): Promise<void> => {
     try {
       const text = await file.text();
       const importedTemplate = JSON.parse(text) as InvoiceExtractTemplate;

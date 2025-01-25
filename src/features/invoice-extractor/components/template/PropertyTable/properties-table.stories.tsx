@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TemplateProvider } from '../../context/TemplateContext';
+import { TemplateProvider } from 'features/invoice-extractor/contexts';
 
 import PropertiesTable from './properties-table';
 
@@ -13,8 +13,8 @@ export default {
 export const Default = {
   args: {},
   decorators: [
-    (Story: React.ComponentType) => (
-      <TemplateProvider>
+    (Story: React.ComponentType): React.ReactElement => (
+      <TemplateProvider initialTemplate={null}>
         <Story />
       </TemplateProvider>
     )

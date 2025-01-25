@@ -36,7 +36,7 @@ const TemplateCreatorInner = ({
   selectedTemplate,
   onSubmit,
   onCancel
-}: TemplateCreatorProps) => {
+}: TemplateCreatorProps): React.ReactElement => {
   const { template } = useTemplate();
   const formMethods = useTemplateForm({
     selectedTemplate,
@@ -44,7 +44,7 @@ const TemplateCreatorInner = ({
     currentFields: template.extractionFields
   });
 
-  const onSubmitHandler = formMethods.handleSubmit((data) => {
+  const onSubmitHandler = formMethods.handleSubmit((data): void => {
     onSubmit({
       ...data,
       extractionFields: template.extractionFields
@@ -140,7 +140,7 @@ const TemplateCreatorInner = ({
   );
 };
 
-const LoadingFallback = () => (
+const LoadingFallback = (): React.ReactElement => (
   <Box
     sx={{
       display: 'flex',
@@ -153,7 +153,7 @@ const LoadingFallback = () => (
   </Box>
 );
 
-const TemplateCreator = (props: TemplateCreatorProps) => {
+const TemplateCreator = (props: TemplateCreatorProps): React.ReactElement => {
   return (
     <ErrorBoundary>
       <Suspense fallback={<LoadingFallback />}>
@@ -179,11 +179,11 @@ export const TemplateCreatorModal = ({
   close,
   onSubmit,
   selectedTemplate
-}: TemplateCreatorModalProps) => {
+}: TemplateCreatorModalProps): React.ReactElement => {
   return (
     <Modal
       open={open}
-      onClose={(event, reason) => {
+      onClose={(_, reason) => {
         if (reason !== 'backdropClick') {
           close();
         }

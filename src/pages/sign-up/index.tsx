@@ -1,4 +1,3 @@
-
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -18,10 +17,9 @@ import Copyright from '@shared/components/copyright/copyright';
 
 const theme = createTheme();
 
-const SignUp = () => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+const SignUp = (): React.ReactElement => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
   };
 
   return (

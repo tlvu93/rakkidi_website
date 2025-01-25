@@ -1,6 +1,7 @@
 import { ZoomIn, ZoomOut } from '@mui/icons-material';
 import { ButtonGroup, Button, Box } from '@mui/material';
-import React from 'react';
+import { memo } from 'react';
+import type { FC, ReactElement } from 'react';
 
 interface ZoomControlsProps {
   onZoomIn: () => void;
@@ -8,11 +9,11 @@ interface ZoomControlsProps {
   currentZoom: number;
 }
 
-const ZoomControls: React.FC<ZoomControlsProps> = ({
+const ZoomControls: FC<ZoomControlsProps> = ({
   onZoomIn,
   onZoomOut,
   currentZoom
-}) => {
+}): ReactElement => {
   return (
     <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
       <ButtonGroup size="small" aria-label="zoom controls">
@@ -28,4 +29,4 @@ const ZoomControls: React.FC<ZoomControlsProps> = ({
   );
 };
 
-export default React.memo(ZoomControls);
+export default memo(ZoomControls);

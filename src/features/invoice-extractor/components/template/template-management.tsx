@@ -15,7 +15,7 @@ import { InvoiceExtractTemplate } from '../../interfaces';
 
 import { TemplateCreatorModal } from './template-creator';
 
-const TemplateManagement = () => {
+const TemplateManagement = (): React.ReactElement => {
   const {
     templates,
     selectedTemplate,
@@ -30,18 +30,18 @@ const TemplateManagement = () => {
   const [templateToEdit, setTemplateToEdit] =
     useState<InvoiceExtractTemplate | null>(null);
 
-  const handleCreateTemplate = (template: InvoiceExtractTemplate) => {
+  const handleCreateTemplate = (template: InvoiceExtractTemplate): void => {
     addTemplate(template);
     setIsCreateModalOpen(false);
   };
 
-  const handleEditTemplate = (template: InvoiceExtractTemplate) => {
+  const handleEditTemplate = (template: InvoiceExtractTemplate): void => {
     updateTemplate(template);
     setIsEditModalOpen(false);
     setTemplateToEdit(null);
   };
 
-  const handleTemplateClick = (template: InvoiceExtractTemplate) => {
+  const handleTemplateClick = (template: InvoiceExtractTemplate): void => {
     if (selectedTemplate?.name === template.name) {
       setTemplateToEdit(template);
       setIsEditModalOpen(true);

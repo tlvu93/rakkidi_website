@@ -10,12 +10,15 @@ type Props = {
   setDateRange: (dateRange: DateRange) => void;
 };
 
-const DateRangePicker = ({ dateRange, setDateRange }: Props) => {
-  const setDateFrom = (newValue: Moment | null) => {
+const DateRangePicker = ({
+  dateRange,
+  setDateRange
+}: Props): React.ReactElement => {
+  const setDateFrom = (newValue: Moment | null): void => {
     setDateRange({ ...dateRange, dateFrom: newValue });
   };
 
-  const setDateTo = (newValue: Moment | null) => {
+  const setDateTo = (newValue: Moment | null): void => {
     setDateRange({ ...dateRange, dateTo: newValue });
   };
 

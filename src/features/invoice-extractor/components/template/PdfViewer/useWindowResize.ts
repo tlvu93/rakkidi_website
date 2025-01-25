@@ -1,10 +1,10 @@
 import { useEffect, useCallback } from 'react';
 
-const useWindowResize = (callback: () => void) => {
+const useWindowResize = (callback: () => void): void => {
   const memoizedCallback = useCallback(callback, [callback]);
 
   useEffect(() => {
-    const handleResize = () => {
+    const handleResize = (): void => {
       memoizedCallback();
     };
 
@@ -13,7 +13,7 @@ const useWindowResize = (callback: () => void) => {
     // Call the callback once on mount to set initial dimensions
     handleResize();
 
-    return () => {
+    return (): void => {
       window.removeEventListener('resize', handleResize);
     };
   }, [memoizedCallback]);

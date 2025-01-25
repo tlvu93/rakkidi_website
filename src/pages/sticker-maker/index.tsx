@@ -2,7 +2,7 @@ import React from 'react';
 
 import AppLayout from '@shared/layouts/app-layout';
 
-const StickerMaker = () => {
+const StickerMaker = (): React.ReactElement => {
   return <AppLayout>StickerMaker</AppLayout>;
 };
 

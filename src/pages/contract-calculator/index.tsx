@@ -9,7 +9,7 @@ import { selectOrders } from 'features/contract-calculator/order-slice';
 import PriceList from 'features/contract-calculator/price-list';
 import { useAppSelector } from 'hooks';
 
-const ContractCalculator = () => {
+const ContractCalculator = (): React.ReactElement => {
   const orders = useAppSelector(selectOrders);
 
   const hidden = orders.length !== 0;

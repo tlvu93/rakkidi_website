@@ -9,7 +9,7 @@ type Props = {
   toggleDrawer: ToggleDrawer;
 };
 
-const DrawerLogo = ({ toggleDrawer }: Props) => {
+const DrawerLogo = ({ toggleDrawer }: Props): React.ReactElement => {
   return (
     <Box
       sx={{

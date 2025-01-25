@@ -17,26 +17,29 @@ type Props = {
   zoom: number;
 };
 
-const PdfCanvasLayer = ({ pageDimensions, zoom }: Props) => {
+const PdfCanvasLayer: React.FC<Props> = ({
+  pageDimensions,
+  zoom
+}): React.ReactElement => {
   const { template, updateExtractionField } = useTemplate();
   const [selectedId, selectShape] = useState<string | null>(null);
   const stageRef = useRef<Konva.Stage>(null);
 
   const checkDeselect = (
     e: Konva.KonvaEventObject<MouseEvent | TouchEvent>
-  ) => {
+  ): void => {
     const clickedOnEmpty = e.target === e.target.getStage();
     if (clickedOnEmpty) {
       selectShape(null);
     }
   };
 
-  const handleSelect = useCallback((id: string) => {
+  const handleSelect = useCallback((id: string): void => {
     selectShape(id);
   }, []);
 
   const handleChange = useCallback(
-    (id: string, newAttrs: Partial<RectProps>) => {
+    (id: string, newAttrs: Partial<RectProps>): void => {
       // Ensure all required properties are present
       if (
         typeof newAttrs.x !== 'number' ||

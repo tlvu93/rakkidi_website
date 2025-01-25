@@ -8,7 +8,17 @@ const BASE_URL =
     ? 'http://localhost:3001'
     : 'https://api.rakkidi.de';
 
-const useWMDService = () => {
+interface WMDService {
+  isAuthenticated: boolean;
+  isScraping: boolean;
+  triggerScraper: (startDate: Moment, endDate: Moment) => Promise<void>;
+  setIsScraping: (value: boolean) => void;
+  login: (user: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  getInvoicesZipped: (startDate: Moment, endDate: Moment) => Promise<void>;
+}
+
+const useWMDService = (): WMDService => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isScraping, setIsScraping] = useState(false);
 
@@ -27,7 +37,7 @@ const useWMDService = () => {
       const response = await axiosInstance.get('/check-authentication');
       setIsAuthenticated(response.status === 200);
       return response.status === 200;
-    } catch (error) {
+    } catch {
       setIsAuthenticated(false);
       return false;
     }
@@ -37,7 +47,7 @@ const useWMDService = () => {
     checkAuthentication();
   }, [checkAuthentication]);
 
-  const login = async (user: string, password: string) => {
+  const login = async (user: string, password: string): Promise<void> => {
     const userObject = new URLSearchParams({
       user: user,
       pass: password
@@ -54,22 +64,25 @@ const useWMDService = () => {
       toast.success('Login successful');
     } catch (error) {
       setIsAuthenticated(false);
-      toast.error('Login failed');
+      toast.error('Login failed' + error);
     }
   };
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     try {
       await axiosInstance.get('/logout');
       setIsAuthenticated(false);
       toast.success('Logout successful');
     } catch (error) {
       setIsAuthenticated(false);
-      toast.error('Logout failed');
+      toast.error('Logout failed' + error);
     }
   };
 
-  const triggerScraper = async (startDate: Moment, endDate: Moment) => {
+  const triggerScraper = async (
+    startDate: Moment,
+    endDate: Moment
+  ): Promise<void> => {
     try {
       setIsScraping(true);
       await axiosInstance.get(
@@ -79,11 +92,14 @@ const useWMDService = () => {
       );
     } catch (error) {
       setIsScraping(false);
-      toast.error('Triggering scraper failed');
+      toast.error('Triggering scraper failed' + error);
     }
   };
 
-  const getInvoicesZipped = async (startDate: Moment, endDate: Moment) => {
+  const getInvoicesZipped = async (
+    startDate: Moment,
+    endDate: Moment
+  ): Promise<void> => {
     try {
       const response = await axiosInstance.get(
         `/invoices/zip?startDate=${startDate.format(
@@ -109,7 +125,7 @@ const useWMDService = () => {
 
       // Clean up the blob URL
       window.URL.revokeObjectURL(blobUrl);
-    } catch (error) {
+    } catch {
       toast.error(`Getting zipped invoices failed`);
     }
   };

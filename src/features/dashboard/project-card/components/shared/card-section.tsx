@@ -6,10 +6,10 @@ interface CardSectionProps {
   hasBorder?: boolean;
 }
 
-export const CardSection = ({
+export const CardSection: React.FC<CardSectionProps> = ({
   children,
   hasBorder = false
-}: CardSectionProps) => (
+}): React.ReactElement => (
   <Box
     sx={{
       flex: 1,
@@ -24,7 +24,13 @@ export const CardSection = ({
   </Box>
 );
 
-export const ImageContainer = ({ children }: { children: ReactNode }) => (
+interface ImageContainerProps {
+  children: ReactNode;
+}
+
+export const ImageContainer: React.FC<ImageContainerProps> = ({
+  children
+}): React.ReactElement => (
   <div
     style={{
       paddingBottom: '56.25%',

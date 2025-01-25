@@ -1,7 +1,7 @@
 export const fetchWithAuth = async (
   url: string,
   options: RequestInit = {}
-): Promise<any> => {
+): Promise<unknown> => {
   const token = sessionStorage.getItem('authToken');
   const headers = token
     ? { ...options.headers, Authorization: `Bearer ${token}` }

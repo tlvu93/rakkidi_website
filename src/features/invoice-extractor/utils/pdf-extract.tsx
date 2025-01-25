@@ -1,4 +1,3 @@
-
 import { TextContent, TextItem } from 'pdfjs-dist/types/src/display/api';
 import { pdfjs } from 'react-pdf';
 import { DocumentInitParameters } from 'react-pdf/node_modules/pdfjs-dist/types/src/display/api';
@@ -57,7 +56,7 @@ export const getTextTokenFromPdfFile = async (
   return new Promise((resolve, reject) => {
     const fileReader = new FileReader();
 
-    fileReader.onload = async () => {
+    fileReader.onload = async (): Promise<void> => {
       try {
         const arrayBuffer = fileReader.result as ArrayBuffer;
         resolve(await getTextContentFromPDF(arrayBuffer));
@@ -102,8 +101,8 @@ export const getTextFromAreaTemplate = async (
 
   const textItems = text.items as TextItem[];
 
-  // Extract position and scale from the transformation matrix
-  const [scaleX, , , scaleY, x, y] = tf;
+  // Extract position from the transformation matrix
+  const [, , , , x, y] = tf;
 
   // Use provided width/height or fallback to defaults
   const rectWidth = width || 0;
@@ -118,7 +117,7 @@ export const getTextFromAreaTemplate = async (
 
   logCoordinateAnalysis(debug);
 
-  const viewport = (text as ExtendedTextContent).viewport || {
+  const viewportInfo = (text as ExtendedTextContent).viewport || {
     width: 0,
     height: 0,
     rotation: 0
@@ -130,8 +129,8 @@ export const getTextFromAreaTemplate = async (
 
   // Convert Y coordinates from top-down (canvas) to bottom-up (PDF)
   // In PDF coordinates, y=0 is at the bottom
-  const yStart = viewport.height - (y + rectHeight); // Lower bound
-  const yEnd = viewport.height - y; // Upper bound
+  const yStart = viewportInfo.height - (y + rectHeight); // Lower bound
+  const yEnd = viewportInfo.height - y; // Upper bound
 
   // Filter text items that overlap with the selection area
   const selectedItems = textItems.filter((item) => {
@@ -168,11 +167,6 @@ export const getTextFromKeyword = async (
   if (!field.keyword) return '';
 
   const textItems = text.items as TextItem[];
-  const viewport = (text as ExtendedTextContent).viewport || {
-    width: 0,
-    height: 0,
-    rotation: 0
-  };
 
   // Find the keyword in the text content
   let keywordIndex = -1;
@@ -312,7 +306,11 @@ export const getTextFromKeyword = async (
   }
 };
 
-export const extractText = (items: TextItem[], start: number, end: number) =>
+export const extractText = (
+  items: TextItem[],
+  start: number,
+  end: number
+): string =>
   items
     .slice(start, end)
     .map((s) => s.str)

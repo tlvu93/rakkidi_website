@@ -5,7 +5,9 @@ type Props = {
   downloadInvoiceZipped: () => void;
 };
 
-const DownloadButtons = ({ downloadInvoiceZipped }: Props) => {
+const DownloadButtons = ({
+  downloadInvoiceZipped
+}: Props): React.ReactElement => {
   return (
     <Box>
       <Typography variant="h6" gutterBottom>

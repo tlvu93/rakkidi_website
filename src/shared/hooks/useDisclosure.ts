@@ -1,11 +1,18 @@
 import { useState } from 'react';
 
-const useDisclosure = (initialState = false) => {
+interface UseDisclosureReturn {
+  opened: boolean;
+  open: () => void;
+  close: () => void;
+  toggle: () => void;
+}
+
+const useDisclosure = (initialState = false): UseDisclosureReturn => {
   const [opened, setOpened] = useState(initialState);
 
-  const open = () => setOpened(true);
-  const close = () => setOpened(false);
-  const toggle = () => setOpened((prev) => !prev);
+  const open = (): void => setOpened(true);
+  const close = (): void => setOpened(false);
+  const toggle = (): void => setOpened((prev) => !prev);
 
   return { opened, open, close, toggle };
 };

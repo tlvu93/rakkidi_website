@@ -7,7 +7,10 @@ interface CardFooterProps {
   tags: Tags[];
 }
 
-export const CardFooter = ({ title, tags }: CardFooterProps) => {
+export const CardFooter: React.FC<CardFooterProps> = ({
+  title,
+  tags
+}): React.ReactElement => {
   return (
     <div
       style={{

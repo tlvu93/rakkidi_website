@@ -17,7 +17,7 @@ export const useTemplateStorage = ({
   template,
   setTemplate,
   initialTemplate
-}: UseTemplateStorageProps) => {
+}: UseTemplateStorageProps): void => {
   // Load template from localStorage on mount, but only if no initialTemplate was provided
   useEffect(() => {
     if (typeof window === 'undefined' || initialTemplate) {
@@ -76,7 +76,7 @@ const migrateField = (field: ExtractionField): ExtractionField => {
 };
 
 // Helper function to update the templates list in localStorage
-const updateTemplatesList = (currentTemplate: InvoiceExtractTemplate) => {
+const updateTemplatesList = (currentTemplate: InvoiceExtractTemplate): void => {
   try {
     const storedTemplates = localStorage.getItem('templates');
     let templates = storedTemplates ? JSON.parse(storedTemplates) : [];

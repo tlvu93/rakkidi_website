@@ -1,9 +1,14 @@
 import { useState } from 'react';
 
-const useFlip = () => {
+interface FlipResult {
+  flipped: boolean;
+  flipCard: () => void;
+}
+
+const useFlip = (): FlipResult => {
   const [flipped, setFlipped] = useState(false);
 
-  const flipCard = () => {
+  const flipCard = (): void => {
     setFlipped(!flipped);
   };
 

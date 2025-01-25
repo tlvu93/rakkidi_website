@@ -41,8 +41,6 @@ export const visualizeCoordinates = (
   const textItems = textContent.items as TextItem[];
 
   // Extract PDF dimensions from the first text item's transform
-  const firstItem = textItems[0];
-  const scale = firstItem?.transform[0] || 1;
   const pdfHeight = Math.max(
     ...textItems.map((item) => item.transform[5] + (item.height || 0))
   );
@@ -82,7 +80,7 @@ export const visualizeCoordinates = (
   };
 };
 
-export const logCoordinateAnalysis = (debug: DebugVisualization) => {
+export const logCoordinateAnalysis = (debug: DebugVisualization): void => {
   console.log('=== PDF Coordinate System Analysis ===');
   console.log('PDF Dimensions:', debug.pdfCoordinates);
   console.log('\nRectangle Position (PDF Space):', debug.rectangle.pdfCoords);

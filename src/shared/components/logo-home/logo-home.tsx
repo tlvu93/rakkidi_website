@@ -1,11 +1,10 @@
-import { IconButton, useTheme } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { useRouter } from 'next/router';
 
 import Logo from '@assets/logo_rakkidi_vert.svg';
 
-const LogoHome = () => {
+const LogoHome = (): React.ReactElement => {
   const router = useRouter();
-  const theme = useTheme();
 
   return (
     <IconButton

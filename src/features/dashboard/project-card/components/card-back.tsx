@@ -6,7 +6,7 @@ import { cardStyle } from '../style/style';
 import { CardSection, ImageContainer } from './shared/card-section';
 import { Weblinks } from './weblinks';
 
-const CardBack = ({ data }: ProjectCardProps) => {
+const CardBack: React.FC<ProjectCardProps> = ({ data }): React.ReactElement => {
   return (
     <Card
       sx={{

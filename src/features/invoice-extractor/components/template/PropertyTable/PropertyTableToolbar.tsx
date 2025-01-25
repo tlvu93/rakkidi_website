@@ -9,9 +9,12 @@ import React, { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { useTemplate } from 'features/invoice-extractor';
-import { ExtractionFieldType , InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
+import {
+  ExtractionFieldType,
+  InvoiceExtractTemplate
+} from 'features/invoice-extractor/interfaces';
 
-const PropertyTableToolbar = () => {
+const PropertyTableToolbar: React.FC = () => {
   const { getValues } = useFormContext<InvoiceExtractTemplate>();
   const {
     addExtractionField,
@@ -24,26 +27,26 @@ const PropertyTableToolbar = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleAddClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAddClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = () => {
+  const handleMenuClose = (): void => {
     setAnchorEl(null);
   };
 
-  const handleAddField = (type: ExtractionFieldType) => {
+  const handleAddField = (type: ExtractionFieldType): void => {
     addExtractionField(type);
     handleMenuClose();
   };
 
-  const handleImportClick = () => {
+  const handleImportClick = (): void => {
     fileInputRef.current?.click();
   };
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): Promise<void> => {
     const file = event.target.files?.[0];
     if (!file) return;
 

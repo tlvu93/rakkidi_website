@@ -10,15 +10,13 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 
-import ControlledTextField from '@shared/components/formControl/ControlledTextField';
 import { Order } from '@shared/interfaces/contract-calculator';
 import { useAppDispatch, useAppSelector } from 'hooks';
+import { AppState } from 'store';
 
 import { clearOrder, selectOrders } from './order-slice';
-
-
 
 const style = {
   position: 'absolute' as const,
@@ -32,8 +30,10 @@ const style = {
   p: 4
 };
 
-const PriceList = () => {
-  const orders = useAppSelector(selectOrders);
+const PriceList = (): ReactElement => {
+  const orders: Order[] = useAppSelector((state: AppState) =>
+    selectOrders(state)
+  );
   const dispatch = useAppDispatch();
 
   const [price, setPrice] = useState(0);
@@ -41,7 +41,7 @@ const PriceList = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    function getPrice(orders: Order[]) {
+    function getPrice(orders: Order[]): void {
       let computedPrice = 0;
       orders.forEach((order) => {
         computedPrice +=

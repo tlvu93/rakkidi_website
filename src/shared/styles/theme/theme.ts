@@ -1,6 +1,6 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
 import { Roboto } from 'next/font/google';
-import React, { useMemo, useState, createContext, useEffect } from 'react';
+import { useMemo, useState, createContext, useEffect } from 'react';
 
 export const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
@@ -34,7 +34,7 @@ const colors = {
   darkModeText: '#E0E0E0'
 };
 
-const getTheme = (mode: ThemeModes) => {
+const getTheme = (mode: ThemeModes): ReturnType<typeof createTheme> => {
   const isLight = mode === 'light';
 
   const themeOptions: ThemeOptions = {
@@ -100,7 +100,9 @@ const getTheme = (mode: ThemeModes) => {
           root: {
             borderRadius: 12,
             // border: `2px solid ${isLight ? colors.lightGray : colors.primaryLight}`
-            border: `2px solid ${isLight ? 'rgb(224, 224, 224)' : colors.darkGray}`
+            border: `2px solid ${
+              isLight ? 'rgb(224, 224, 224)' : colors.darkGray
+            }`
           }
         }
       }
@@ -110,7 +112,14 @@ const getTheme = (mode: ThemeModes) => {
   return createTheme(themeOptions);
 };
 
-const useCustomTheme = () => {
+interface UseCustomThemeReturn {
+  colorMode: {
+    toggleColorMode: () => void;
+  };
+  theme: ReturnType<typeof createTheme>;
+}
+
+const useCustomTheme = (): UseCustomThemeReturn => {
   // Initialize the mode state without accessing localStorage directly
   const [mode, setMode] = useState<ThemeModes>('dark');
 
@@ -125,7 +134,7 @@ const useCustomTheme = () => {
 
   const colorMode = useMemo(
     () => ({
-      toggleColorMode: () => {
+      toggleColorMode: (): void => {
         setMode((prevMode) => {
           const newMode = prevMode === 'light' ? 'dark' : 'light';
           if (typeof window !== 'undefined') {

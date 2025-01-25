@@ -8,11 +8,11 @@ import { Order } from '@shared/interfaces/contract-calculator';
 const MM_PER_PIXEL = 0.0846526655896607;
 const MM_PER_POINT = 0.3527777777778; // 1pt = 25,4/72mm
 
-async function getDimensionFromImage(file: FileWithPath) {
-  const getDimensionFromTif = async (file: FileWithPath) => {
+async function getDimensionFromImage(file: FileWithPath): Promise<Order> {
+  const getDimensionFromTif = async (file: FileWithPath): Promise<Order> => {
     return new Promise<Order>((resolve) => {
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = (event): void => {
         try {
           if (!event.target) return;
 
@@ -28,17 +28,19 @@ async function getDimensionFromImage(file: FileWithPath) {
             height: ifd.height * MM_PER_PIXEL
           });
         } catch (error) {
-          toast.error('Error while reading file');
+          toast.error('Error while reading file' + error);
         }
       };
       reader.readAsArrayBuffer(file);
     });
   };
 
-  const getDimensionFromOtherImages = async (file: FileWithPath) => {
+  const getDimensionFromOtherImages = async (
+    file: FileWithPath
+  ): Promise<Order> => {
     return new Promise<Order>((resolve) => {
       const img = new Image();
-      img.onload = (e) => {
+      img.onload = (): void => {
         resolve({
           id: uuidv4(),
           name: file.name,
@@ -57,7 +59,10 @@ async function getDimensionFromImage(file: FileWithPath) {
   }
 }
 
-const getDimensionFromEPS = (file: FileWithPath, match: RegExpMatchArray) => {
+const getDimensionFromEPS = (
+  file: FileWithPath,
+  match: RegExpMatchArray
+): Order | undefined => {
   const numbers = match[0].match(/[-?\d.]+/g);
   if (!numbers) return;
 
@@ -67,7 +72,7 @@ const getDimensionFromEPS = (file: FileWithPath, match: RegExpMatchArray) => {
   let maxY = parseFloat(numbers[3]);
   let tmp;
 
-  match.forEach((m) => {
+  match.forEach((m): void => {
     const numbers = m.match(/[-?\d.]+/g);
     if (!numbers) return;
 
@@ -95,10 +100,10 @@ const getDimensionFromEPS = (file: FileWithPath, match: RegExpMatchArray) => {
   } as Order;
 };
 
-async function getDimensionFromOtherFiles(file: FileWithPath) {
+async function getDimensionFromOtherFiles(file: FileWithPath): Promise<Order> {
   return new Promise<Order>((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = (e): void => {
       if (!e.target) return;
       const result: string = e!.target!.result as string;
 
@@ -120,7 +125,7 @@ async function getDimensionFromOtherFiles(file: FileWithPath) {
   });
 }
 
-export async function getDimension(file: FileWithPath) {
+export async function getDimension(file: FileWithPath): Promise<Order> {
   //1.1 Handle Image File [TIF, JPG, PNG...]
   if (file.type.includes('image')) {
     return await getDimensionFromImage(file);

@@ -10,7 +10,12 @@ interface RectangleProps {
     y: number;
     width: number;
     height: number;
-    [key: string]: any;
+    stroke?: string;
+    strokeWidth?: number;
+    draggable?: boolean;
+    fill?: string;
+    id?: string;
+    name?: string;
   };
   isSelected: boolean;
   onSelect: () => void;
@@ -34,7 +39,7 @@ const Rectangle: React.FC<RectangleProps> = ({
     }
   }, [isSelected]);
 
-  const handleDragEnd = (e: KonvaEventObject<DragEvent>) => {
+  const handleDragEnd = (e: KonvaEventObject<DragEvent>): void => {
     onChange({
       ...shapeProps,
       x: e.target.x(),
@@ -42,7 +47,7 @@ const Rectangle: React.FC<RectangleProps> = ({
     });
   };
 
-  const handleTransformEnd = (e: KonvaEventObject<Event>) => {
+  const handleTransformEnd = (): void => {
     const node = shapeRef.current!;
     const scaleX = node.scaleX();
     const scaleY = node.scaleY();

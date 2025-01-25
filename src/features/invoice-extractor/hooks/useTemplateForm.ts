@@ -1,4 +1,4 @@
-import { useForm, FieldErrors } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 import { InvoiceExtractTemplate, ExtractionField } from '../interfaces';
 
@@ -19,22 +19,12 @@ export type UseTemplateFormReturn = ReturnType<
 >;
 
 export const useTemplateForm = ({
-  selectedTemplate,
-  onSubmit,
-  currentFields
-}: UseTemplateFormProps) => {
+  selectedTemplate
+}: UseTemplateFormProps): UseTemplateFormReturn => {
   const methods = useForm<InvoiceExtractTemplate>({
     defaultValues: selectedTemplate ?? defaultTemplate,
     mode: 'onChange'
   });
-
-  const onSubmitHandler = (data: InvoiceExtractTemplate) => {
-    const updatedTemplate = {
-      ...data,
-      extractionFields: currentFields
-    };
-    onSubmit(updatedTemplate);
-  };
 
   return methods;
 };

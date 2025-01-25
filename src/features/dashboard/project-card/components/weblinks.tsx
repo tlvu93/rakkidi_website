@@ -25,8 +25,10 @@ type WebLinkProps = {
   link: WeblinkData;
 };
 
-export const Weblink = ({ link }: WebLinkProps) => {
-  const handleClick = (e: React.MouseEvent) => {
+export const Weblink: React.FC<WebLinkProps> = ({
+  link
+}): React.ReactElement => {
+  const handleClick = (e: React.MouseEvent): void => {
     e.stopPropagation();
     window.open(
       link.url.startsWith('http') ? link.url : `http://${link.url}`,
@@ -54,7 +56,9 @@ export const Weblink = ({ link }: WebLinkProps) => {
   );
 };
 
-export const Weblinks = ({ data }: ProjectCardProps) => {
+export const Weblinks: React.FC<ProjectCardProps> = ({
+  data
+}): React.ReactElement | null => {
   if (!data.weblinks?.length) return null;
 
   return (

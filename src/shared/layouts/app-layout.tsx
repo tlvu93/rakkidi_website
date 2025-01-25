@@ -8,12 +8,11 @@ import { ToggleDrawer } from '@shared/interfaces/ui';
 import { ColorModeContext } from '@shared/styles/theme/theme';
 import { layoutDimension } from 'config/ui-config';
 
-
 interface AppLayoutProps {
   children: React.ReactNode;
 }
 
-const AppLayout = (props: AppLayoutProps) => {
+const AppLayout = (props: AppLayoutProps): React.ReactElement => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('xl'));
   const colorMode = useContext(ColorModeContext);
@@ -40,7 +39,7 @@ const AppLayout = (props: AppLayoutProps) => {
     setDrawerOpen(!drawerOpen);
   };
 
-  const MainApp = (props: React.PropsWithChildren) => (
+  const MainApp = (props: React.PropsWithChildren): React.ReactElement => (
     <Box
       paddingX={4}
       paddingY={8}

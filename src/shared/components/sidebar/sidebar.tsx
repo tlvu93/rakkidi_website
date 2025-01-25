@@ -1,4 +1,3 @@
-
 import CalculateIcon from '@mui/icons-material/Calculate';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import DirtyLensOutlinedIcon from '@mui/icons-material/DirtyLensOutlined';
@@ -22,7 +21,6 @@ import { SidebarLink, ToggleDrawer } from '@shared/interfaces/ui';
 import { layoutDimension } from 'config/ui-config';
 
 import DrawerLogo from '../header/drawer-logo';
-
 
 const iconMap = {
   HomeIcon: <HomeIcon />,
@@ -69,7 +67,10 @@ interface SidebarProps {
   toggleDrawer: ToggleDrawer;
 }
 
-const Sidebar = ({ drawerOpen, toggleDrawer }: SidebarProps) => {
+const Sidebar = ({
+  drawerOpen,
+  toggleDrawer
+}: SidebarProps): React.ReactElement => {
   const router = useRouter();
 
   return (

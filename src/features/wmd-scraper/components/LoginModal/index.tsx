@@ -1,5 +1,5 @@
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
-import React from 'react';
+import { FormEvent, useState } from 'react';
 
 const style = {
   position: 'absolute' as const,
@@ -13,16 +13,25 @@ const style = {
   p: 4
 };
 
-const useLoginModal = (defaultOpen: boolean) => {
-  const [open, setOpen] = React.useState(defaultOpen);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+interface LoginModalProps {
+  login: (user: string, password: string) => void;
+}
 
-  type LoginModalProps = {
-    login: (user: string, password: string) => void;
-  };
-  const LoginModal = ({ login }: LoginModalProps) => {
-    const handleSubmit = (event: any) => {
+interface LoginModalHookResult {
+  LoginModal: React.FC<LoginModalProps>;
+  open: boolean;
+  handleOpen: () => void;
+  handleClose: () => void;
+}
+
+const useLoginModal = (defaultOpen: boolean): LoginModalHookResult => {
+  const [open, setOpen] = useState(defaultOpen);
+  const handleOpen = (): void => setOpen(true);
+  const handleClose = (): void => setOpen(false);
+  const LoginModal: React.FC<LoginModalProps> = ({
+    login
+  }): React.ReactElement => {
+    const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
       event.preventDefault();
 
       const data = new FormData(event.currentTarget);

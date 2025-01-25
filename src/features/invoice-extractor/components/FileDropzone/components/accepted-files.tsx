@@ -5,7 +5,9 @@ type AcceptedFilesProps = {
   acceptedFiles: FileWithPath[];
 };
 
-const AcceptedFiles = ({ acceptedFiles }: AcceptedFilesProps) => {
+const AcceptedFiles: React.FC<AcceptedFilesProps> = ({
+  acceptedFiles
+}): React.ReactElement => {
   return (
     <Box mt={2}>
       <Typography variant="h6">Accepted files</Typography>

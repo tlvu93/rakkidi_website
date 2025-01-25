@@ -46,13 +46,10 @@ const PdfViewer: React.FC = () => {
     }
   }, []);
 
-  const onDocumentLoadSuccess = useCallback(
-    ({ numPages }: { numPages: number }) => {
-      setIsLoading(false);
-      setError(undefined);
-    },
-    []
-  );
+  const onDocumentLoadSuccess = useCallback(() => {
+    setIsLoading(false);
+    setError(undefined);
+  }, []);
 
   const onDocumentLoadError = useCallback((error: Error) => {
     setIsLoading(false);

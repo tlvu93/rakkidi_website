@@ -7,7 +7,7 @@ import {
   useTheme
 } from '@mui/material';
 import moment, { Moment } from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
 import AppLayout from '@shared/layouts/app-layout';
@@ -27,9 +27,9 @@ const defaultDateRange = {
   dateTo: moment()
 };
 
-const WMDScraper = () => {
-  const [dateRange, setDateRange] = React.useState<DateRange>(defaultDateRange);
-  const [scrapingSuccess, setScrapingSuccess] = React.useState<boolean>(false);
+const WMDScraper = (): React.ReactElement => {
+  const [dateRange, setDateRange] = useState<DateRange>(defaultDateRange);
+  const [scrapingSuccess, setScrapingSuccess] = useState<boolean>(false);
 
   const {
     isAuthenticated,
@@ -44,7 +44,7 @@ const WMDScraper = () => {
   const theme = useTheme();
   const { LoginModal, handleOpen } = useLoginModal(isAuthenticated);
 
-  const downloadInvoiceZipped = () => {
+  const downloadInvoiceZipped = (): void => {
     if (!dateRange.dateFrom || !dateRange.dateTo) {
       toast.error('Please provide a date range');
       return;
@@ -53,7 +53,7 @@ const WMDScraper = () => {
     getInvoicesZipped(dateRange.dateFrom, dateRange.dateTo);
   };
 
-  const submitTriggerScraper = () => {
+  const submitTriggerScraper = (): void => {
     setScrapingSuccess(false);
     if (!dateRange.dateFrom || !dateRange.dateTo) {
       toast.error('Please provide a date range');

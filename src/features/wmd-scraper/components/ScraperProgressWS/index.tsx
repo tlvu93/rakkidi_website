@@ -21,7 +21,7 @@ export type ProgressData = {
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
-) {
+): React.ReactElement {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Box sx={{ width: '100%', mr: 1 }}>
@@ -46,14 +46,14 @@ const ScraperProgressWS = ({
   isScraping,
   setIsScraping,
   setScrapingSuccess
-}: Props) => {
+}: Props): React.ReactElement => {
   const [progressData, setProgressData] = useState<ProgressData>();
 
   useWebSocket(WS_URL, {
-    onOpen: () => {
+    onOpen: (): void => {
       console.log('WebSocket connection established.');
     },
-    onMessage: (event) => {
+    onMessage: (event): void => {
       const dataString: string = event.data;
 
       if (dataString.startsWith('{"status"')) {
@@ -67,12 +67,12 @@ const ScraperProgressWS = ({
           setScrapingSuccess(true);
         }
       }
-      onerror = (error) => {
+      onerror = (error): void => {
         toast.error('WebSocket error: ' + error);
         setIsScraping(false);
       };
 
-      onclose = () => {
+      onclose = (): void => {
         console.log('Disconnected from the WebSocket server');
         setIsScraping(false);
       };

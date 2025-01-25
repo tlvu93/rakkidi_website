@@ -11,15 +11,14 @@ import { useAppDispatch } from 'hooks';
 import ColorButton from './components/ColorButton';
 import { addOrder } from './order-slice';
 
-
-const CustomOrder = () => {
+const CustomOrder: React.FC = (): React.ReactElement => {
   const dispatch = useAppDispatch();
 
   const { control, handleSubmit } = useForm<Order>({
     resolver: zodResolver(OrderSchema)
   });
 
-  const submitOrder = (order: Order) => {
+  const submitOrder = (order: Order): void => {
     dispatch(addOrder(order as Order));
   };
 
