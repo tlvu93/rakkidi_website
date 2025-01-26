@@ -1,6 +1,10 @@
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
 import {
   DataGrid,
   GridColDef,
@@ -45,7 +49,9 @@ export default function PropertiesTable(): React.ReactElement {
     extractedText,
     deleteExtractionField,
     updateExtractionField,
-    updateExtractedText
+    updateExtractedText,
+    showTextTokens,
+    setShowTextTokens
   } = useTemplate();
 
   const rows = useMemo<FieldRow[]>(
@@ -132,12 +138,34 @@ export default function PropertiesTable(): React.ReactElement {
       {
         field: 'keyword',
         headerName: 'Keyword',
-        width: 120,
+        width: 180,
         editable: true,
-        renderCell: (params: CustomRenderCellParams): string =>
-          params.row.type === ExtractionFieldType.Keyword
-            ? (params.value as string)
-            : '-'
+        renderCell: (
+          params: CustomRenderCellParams
+        ): React.ReactElement | string => {
+          if (params.row.type !== ExtractionFieldType.Keyword) {
+            return '-';
+          }
+          return (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Tooltip
+                title={
+                  showTextTokens
+                    ? 'Hide text tokens'
+                    : 'Show text tokens to select keyword'
+                }
+              >
+                <IconButton
+                  size="small"
+                  onClick={() => setShowTextTokens(!showTextTokens)}
+                >
+                  {showTextTokens ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                </IconButton>
+              </Tooltip>
+              {params.value as string}
+            </Box>
+          );
+        }
       },
       {
         field: 'searchDirection',
@@ -230,7 +258,7 @@ export default function PropertiesTable(): React.ReactElement {
         )
       }
     ],
-    [handleDeleteClick]
+    [handleDeleteClick, setShowTextTokens, showTextTokens]
   );
 
   return (

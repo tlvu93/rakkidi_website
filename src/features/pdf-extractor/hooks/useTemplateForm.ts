@@ -1,5 +1,5 @@
-import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 import { PDFExtractTemplate, ExtractionField } from '../interfaces';
 

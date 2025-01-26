@@ -25,6 +25,8 @@ export interface TemplateContextProps {
     textContent: TextContent,
     extracted?: Record<string, string>
   ) => Promise<void>;
+  showTextTokens: boolean;
+  setShowTextTokens: (show: boolean) => void;
 }
 
 const TemplateContext = createContext<TemplateContextProps | undefined>(
@@ -52,6 +54,7 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
     }
   );
   const [extractedText, setExtractedText] = useState<ExtractedTextState>({});
+  const [showTextTokens, setShowTextTokens] = useState(false);
 
   // We don't want to use the template storage hook here anymore since we want to control when templates are saved
 
@@ -216,7 +219,9 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
         canAddExtractionField,
         exportTemplate,
         importTemplate,
-        updateExtractedText
+        updateExtractedText,
+        showTextTokens,
+        setShowTextTokens
       }}
     >
       {children}

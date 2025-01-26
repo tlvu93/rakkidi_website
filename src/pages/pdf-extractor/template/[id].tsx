@@ -4,9 +4,8 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import React, { ReactElement, useMemo, useState, Suspense } from 'react';
 
-import { ErrorBoundary } from 'features/pdf-extractor/components/ErrorBoundary/error-boundary';
-
 import { useTemplateManagement } from 'features/pdf-extractor';
+import { ErrorBoundary } from 'features/pdf-extractor/components/ErrorBoundary/error-boundary';
 import PDFExtractorLayout from 'features/pdf-extractor/components/layout/pdf-extractor-layout';
 import TemplateCreator from 'features/pdf-extractor/components/template/template-creator';
 import { TemplateProvider } from 'features/pdf-extractor/contexts/TemplateContext';
