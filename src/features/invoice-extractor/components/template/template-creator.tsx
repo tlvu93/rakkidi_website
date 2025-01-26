@@ -61,7 +61,7 @@ const TemplateCreatorInner = ({
       }}
     >
       <FormProvider {...formMethods}>
-        <Box sx={{ flex: 1, overflow: 'auto' }}>
+        <Box sx={{ flex: 1, overflow: 'auto', pt: 1.5 }}>
           <Container maxWidth={false} sx={styles.containerStyle}>
             <Grid container spacing={2} pb={4}>
               <Grid item xs={12} md={6}>

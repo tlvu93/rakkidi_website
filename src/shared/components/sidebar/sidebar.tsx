@@ -82,6 +82,7 @@ const Sidebar = ({
           width: layoutDimension.drawerWidth,
           boxSizing: 'border-box',
           border: 'none',
+          borderRadius: 0,
           bgcolor: 'primary.main'
         },
         color: 'background.default'
