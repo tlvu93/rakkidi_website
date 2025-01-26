@@ -33,9 +33,6 @@ export const useTemplateStorage = ({
       const parsed = JSON.parse(savedTemplate);
       const migratedTemplate = migrateTemplate(parsed);
       setTemplate(migratedTemplate);
-
-      // Update templates list
-      updateTemplatesList(migratedTemplate);
     } catch (error) {
       console.error('Error loading template from storage:', error);
     }
@@ -49,7 +46,6 @@ export const useTemplateStorage = ({
 
     try {
       localStorage.setItem('current-template', JSON.stringify(template));
-      updateTemplatesList(template);
     } catch (error) {
       console.error('Error saving template to storage:', error);
     }
@@ -76,7 +72,9 @@ const migrateField = (field: ExtractionField): ExtractionField => {
 };
 
 // Helper function to update the templates list in localStorage
-const updateTemplatesList = (currentTemplate: InvoiceExtractTemplate): void => {
+export const updateTemplatesList = (
+  currentTemplate: InvoiceExtractTemplate
+): void => {
   try {
     const storedTemplates = localStorage.getItem('templates');
     let templates = storedTemplates ? JSON.parse(storedTemplates) : [];

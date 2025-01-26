@@ -2,12 +2,11 @@ import { Typography, Paper, Container, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 
-import AppLayout from '@shared/layouts/app-layout';
 import {
-  TemplateManagementProvider,
   useTemplateManagement,
   TemplateManagement
 } from 'features/invoice-extractor';
+import InvoiceExtractorLayout from 'features/invoice-extractor/components/layout/invoice-extractor-layout';
 
 const DynamicFileDropzone = dynamic(
   () =>
@@ -59,11 +58,9 @@ const InvoiceExtractorContent = (): React.ReactElement => {
 
 const InvoiceExtractor = (): React.ReactElement => {
   return (
-    <AppLayout>
-      <TemplateManagementProvider>
-        <InvoiceExtractorContent />
-      </TemplateManagementProvider>
-    </AppLayout>
+    <InvoiceExtractorLayout>
+      <InvoiceExtractorContent />
+    </InvoiceExtractorLayout>
   );
 };
 

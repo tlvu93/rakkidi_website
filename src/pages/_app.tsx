@@ -2,8 +2,10 @@ import { CacheProvider, EmotionCache } from '@emotion/react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { AnimatePresence } from 'framer-motion';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { Provider } from 'react-redux';
 
@@ -28,6 +30,7 @@ const MyApp: React.FC<MyAppProps> = (pageProps): React.ReactElement => {
     ...rest
   } = pageProps;
   const { colorMode, theme } = useCustomTheme();
+  const router = useRouter();
 
   const { store, props } = wrapper.useWrappedStore(rest);
 
@@ -46,7 +49,9 @@ const MyApp: React.FC<MyAppProps> = (pageProps): React.ReactElement => {
             <CssBaseline />
             <Provider store={store}>
               <LocalizationProvider dateAdapter={AdapterMoment}>
-                <Component {...props} />
+                <AnimatePresence mode="wait">
+                  <Component {...props} key={router.pathname} />
+                </AnimatePresence>
               </LocalizationProvider>
             </Provider>
           </ThemeProvider>
