@@ -1,5 +1,6 @@
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 import {
   DataGrid,
   GridColDef,
@@ -160,49 +161,43 @@ export default function PropertiesTable(): React.ReactElement {
             ? params.value ?? 200
             : '-',
         renderEditCell: (params) => (
-          <Box
+          <TextField
+            type="number"
+            value={params.value ?? 200}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              params.api.setEditCellValue(
+                {
+                  id: params.id,
+                  field: params.field,
+                  value: value
+                },
+                true
+              );
+            }}
+            inputProps={{
+              step: 50,
+              min: 0,
+              style: {
+                padding: '0 16px',
+                height: '100%'
+              }
+            }}
+            variant="standard"
             sx={{
               width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              backgroundColor: 'background.paper',
-              '& input': {
-                width: '100%',
+              '& .MuiInput-root': {
+                height: '100%'
+              },
+              '& .MuiInput-input': {
                 height: '100%',
-                border: 'none',
-                padding: '0 16px',
-                fontSize: 'inherit',
-                fontFamily: 'inherit',
-                backgroundColor: 'transparent',
-                '&:focus': {
-                  outline: 'none'
-                },
                 '&::-webkit-inner-spin-button': {
                   opacity: 1,
                   marginLeft: '8px'
                 }
               }
             }}
-          >
-            <input
-              type="number"
-              value={params.value ?? 200}
-              onChange={(e) => {
-                const value = Number(e.target.value);
-                params.api.setEditCellValue(
-                  {
-                    id: params.id,
-                    field: params.field,
-                    value: value
-                  },
-                  true
-                );
-              }}
-              step={50}
-              min={0}
-            />
-          </Box>
+          />
         )
       },
       {
