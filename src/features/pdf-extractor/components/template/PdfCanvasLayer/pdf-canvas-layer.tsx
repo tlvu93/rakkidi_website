@@ -7,7 +7,8 @@ import { useTemplate } from 'features/pdf-extractor';
 import {
   PageDimensions,
   RectProps,
-  ExtractionFieldType
+  ExtractionFieldType,
+  ExtractionField
 } from 'features/pdf-extractor/interfaces';
 import { CoordinateTransformer } from 'features/pdf-extractor/utils/coordinate-transform';
 import { extractFieldsFromTemplate } from 'features/pdf-extractor/utils/template-extractor';
@@ -102,21 +103,6 @@ const PdfCanvasLayer: React.FC<Props> = ({
       const updatedTfMatrix =
         CoordinateTransformer.createTransformMatrix(pdfCoords);
 
-      // Create updated template with new coordinates
-      const updatedTemplate = {
-        ...template,
-        extractionFields: template.extractionFields.map((field) =>
-          field.id === id
-            ? {
-                ...field,
-                tfMatrix: updatedTfMatrix,
-                width: pdfCoords.width,
-                height: pdfCoords.height
-              }
-            : field
-        )
-      };
-
       // Update the field coordinates and get the updated template
       const updatedField = {
         id,
@@ -148,11 +134,21 @@ const PdfCanvasLayer: React.FC<Props> = ({
       // Pass both textContent and extracted fields to ensure we use latest state
       await updateExtractedText(textContent, extracted);
     },
-    [zoom, updateExtractionField, textContent, updateExtractedText]
+    [
+      zoom,
+      updateExtractionField,
+      textContent,
+      updateExtractedText,
+      pageDimensions.height,
+      template
+    ]
   );
 
   // Function to render the extraction area for a keyword field
-  const renderExtractionArea = (item: TextItem, field: any) => {
+  const renderExtractionArea = (
+    item: TextItem,
+    field: ExtractionField
+  ): React.ReactElement => {
     const screenCoords = CoordinateTransformer.pdfToScreen(
       {
         x: item.transform[4],
@@ -163,31 +159,24 @@ const PdfCanvasLayer: React.FC<Props> = ({
       { zoom, pageHeight: pageDimensions.height }
     );
 
-    let areaProps = {
+    const areaProps = {
       x: screenCoords.x,
       y: screenCoords.y,
       width: 0,
       height: screenCoords.height
     };
 
+    const maxDistance = field.maxDistance || 100; // Default to 100 pixels if not specified
+
     // Adjust area based on search direction
-    switch (field.searchDirection) {
-      case 'right':
-        areaProps.width = field.maxDistance * zoom;
-        break;
-      case 'left':
-        areaProps.x -= field.maxDistance * zoom;
-        areaProps.width = field.maxDistance * zoom;
-        break;
-      case 'up':
-        areaProps.y -= field.maxDistance * zoom;
-        areaProps.height = field.maxDistance * zoom;
-        areaProps.width = screenCoords.width;
-        break;
-      case 'down':
-        areaProps.height = field.maxDistance * zoom;
-        areaProps.width = screenCoords.width;
-        break;
+    if (field.searchDirection === 'right') {
+      areaProps.width = maxDistance * zoom;
+    } else if (field.searchDirection === 'below') {
+      areaProps.height = maxDistance * zoom;
+      areaProps.width = screenCoords.width;
+    } else {
+      // Default to searching right if no direction specified
+      areaProps.width = maxDistance * zoom;
     }
 
     return (

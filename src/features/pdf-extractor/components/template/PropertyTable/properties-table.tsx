@@ -161,7 +161,7 @@ export default function PropertiesTable(): React.ReactElement {
           params.row.type === ExtractionFieldType.Keyword
             ? params.value ?? 200
             : '-',
-        renderEditCell: (params) => (
+        renderEditCell: (params): React.ReactElement => (
           <TextField
             type="number"
             value={params.value ?? 200}

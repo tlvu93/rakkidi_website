@@ -117,12 +117,6 @@ export const getTextFromAreaTemplate = async (
 
   logCoordinateAnalysis(debug);
 
-  const viewportInfo = (text as ExtendedTextContent).viewport || {
-    width: 0,
-    height: 0,
-    rotation: 0
-  };
-
   // Calculate boundaries in PDF coordinate system
   const xStart = x;
   const xEnd = x + rectWidth;

@@ -1,5 +1,5 @@
-import { Box, Button, ButtonGroup, IconButton, Tooltip } from '@mui/material';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
+import { Box, Button, ButtonGroup, Tooltip } from '@mui/material';
 import { TextContent } from 'pdfjs-dist/types/src/display/api';
 import React, {
   useState,
