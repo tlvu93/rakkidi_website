@@ -9,6 +9,7 @@ export interface Coordinates {
 
 export interface TransformOptions {
   zoom: number;
+  pageHeight?: number;
 }
 
 export class CoordinateTransformer {
@@ -19,10 +20,12 @@ export class CoordinateTransformer {
     coords: Coordinates,
     options: TransformOptions
   ): Coordinates {
-    const { zoom } = options;
+    const { zoom, pageHeight } = options;
     return {
       x: coords.x / zoom,
-      y: coords.y / zoom,
+      y: pageHeight
+        ? pageHeight - (coords.y + coords.height) / zoom
+        : coords.y / zoom,
       width: coords.width / zoom,
       height: coords.height / zoom
     };
@@ -35,10 +38,12 @@ export class CoordinateTransformer {
     coords: Coordinates,
     options: TransformOptions
   ): Coordinates {
-    const { zoom } = options;
+    const { zoom, pageHeight } = options;
     return {
       x: coords.x * zoom,
-      y: coords.y * zoom,
+      y: pageHeight
+        ? (pageHeight - coords.y - coords.height) * zoom
+        : coords.y * zoom,
       width: coords.width * zoom,
       height: coords.height * zoom
     };

@@ -1,4 +1,5 @@
-import { Box } from '@mui/material';
+import { Box, IconButton, Tooltip } from '@mui/material';
+import TextFieldsIcon from '@mui/icons-material/TextFields';
 import { TextContent } from 'pdfjs-dist/types/src/display/api';
 import React, {
   useState,
@@ -52,6 +53,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ onTextContentChange }) => {
   }>({ width: 0, height: 0 });
 
   const [zoom, setZoom] = useState(1.0);
+  const [showTokens, setShowTokens] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const handleDrop = useCallback(
@@ -156,7 +158,17 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ onTextContentChange }) => {
         </Box>
       ) : (
         <>
-          {zoomControls}
+          <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+            {zoomControls}
+            <Tooltip title="Show Text Tokens">
+              <IconButton
+                onClick={() => setShowTokens((prev) => !prev)}
+                color={showTokens ? 'primary' : 'default'}
+              >
+                <TextFieldsIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
           <Box
             ref={containerRef}
             sx={{
@@ -194,6 +206,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ onTextContentChange }) => {
                 pageDimensions={pageDimensions}
                 zoom={zoom}
                 textContent={textContent}
+                showTokens={showTokens}
               />
             </Box>
           </Box>
