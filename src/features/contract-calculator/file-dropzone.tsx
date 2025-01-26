@@ -68,7 +68,7 @@ const FileDropzone: React.FC = (): React.ReactElement => {
           {...getInputProps({
             //Its important to filter, because somehow .cdrt files makes the HTML5 Filepicker to crash
             //Add more filters if any forgotten
-            accept: 'image/*, .eps'
+            accept: 'image/*, .eps, .pdf'
           })}
         />
         <div

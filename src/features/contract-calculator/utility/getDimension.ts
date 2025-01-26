@@ -2,6 +2,7 @@ import { FileWithPath } from 'react-dropzone';
 import { toast } from 'react-toastify';
 import { decode, decodeImage } from 'utif';
 import { v4 as uuidv4 } from 'uuid';
+import * as pdfjsLib from 'pdfjs-dist';
 
 import { Order } from '@shared/interfaces/contract-calculator';
 
@@ -125,10 +126,37 @@ async function getDimensionFromOtherFiles(file: FileWithPath): Promise<Order> {
   });
 }
 
-export async function getDimension(file: FileWithPath): Promise<Order> {
+async function getDimensionFromPDF(file: FileWithPath) {
+  return new Promise<Order>(async (resolve, reject) => {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const page = await pdf.getPage(1);
+      const viewport = page.getViewport({ scale: 1.0 });
+
+      // Convert points to millimeters (1 point = 0.3527777777778 mm)
+      const width = viewport.width * MM_PER_POINT;
+      const height = viewport.height * MM_PER_POINT;
+
+      resolve({
+        id: uuidv4(),
+        name: file.name,
+        width: Math.round(width * 100) / 100,
+        height: Math.round(height * 100) / 100
+      });
+    } catch (error) {
+      toast.error('Error while reading PDF file');
+      reject(error);
+    }
+  });
+}
+
+export async function getDimension(file: FileWithPath) {
   //1.1 Handle Image File [TIF, JPG, PNG...]
   if (file.type.includes('image')) {
     return await getDimensionFromImage(file);
+  } else if (file.type === 'application/pdf') {
+    return await getDimensionFromPDF(file);
   } else {
     //1.2 Handle Other files
     return await getDimensionFromOtherFiles(file);
