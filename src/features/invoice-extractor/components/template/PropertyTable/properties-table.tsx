@@ -157,8 +157,53 @@ export default function PropertiesTable(): React.ReactElement {
         editable: true,
         renderCell: (params: CustomRenderCellParams): string | number =>
           params.row.type === ExtractionFieldType.Keyword
-            ? params.value ?? 0
-            : '-'
+            ? params.value ?? 200
+            : '-',
+        renderEditCell: (params) => (
+          <Box
+            sx={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              backgroundColor: 'background.paper',
+              '& input': {
+                width: '100%',
+                height: '100%',
+                border: 'none',
+                padding: '0 16px',
+                fontSize: 'inherit',
+                fontFamily: 'inherit',
+                backgroundColor: 'transparent',
+                '&:focus': {
+                  outline: 'none'
+                },
+                '&::-webkit-inner-spin-button': {
+                  opacity: 1,
+                  marginLeft: '8px'
+                }
+              }
+            }}
+          >
+            <input
+              type="number"
+              value={params.value ?? 200}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                params.api.setEditCellValue(
+                  {
+                    id: params.id,
+                    field: params.field,
+                    value: value
+                  },
+                  true
+                );
+              }}
+              step={50}
+              min={0}
+            />
+          </Box>
+        )
       },
       {
         field: 'extractedText',

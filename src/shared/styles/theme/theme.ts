@@ -147,7 +147,14 @@ const useCustomTheme = (): UseCustomThemeReturn => {
     []
   );
 
-  const theme = useMemo(() => getTheme(mode), [mode]);
+  const theme = useMemo(() => {
+    // Apply dark mode class to html element
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.remove('Mui-dark', 'Mui-light');
+      document.documentElement.classList.add(`Mui-${mode}`);
+    }
+    return getTheme(mode);
+  }, [mode]);
 
   return { colorMode, theme };
 };

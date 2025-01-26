@@ -74,7 +74,7 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
             ...baseField,
             keyword: '',
             searchDirection: 'right' as const,
-            maxDistance: 100 // default max distance in pixels
+            maxDistance: 200 // default max distance in pixels
           };
 
     setTemplate((prevTemplate) => ({
