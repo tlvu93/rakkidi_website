@@ -2,12 +2,10 @@ import { Box, Typography, Stack, Button } from '@mui/material';
 import React from 'react';
 
 type Props = {
-  downloadInvoiceZipped: () => void;
+  downloadPDFZipped: () => void;
 };
 
-const DownloadButtons = ({
-  downloadInvoiceZipped
-}: Props): React.ReactElement => {
+const DownloadButtons = ({ downloadPDFZipped }: Props): React.ReactElement => {
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
@@ -17,7 +15,7 @@ const DownloadButtons = ({
         <Button
           variant="contained"
           sx={{ width: '100%' }}
-          onClick={() => downloadInvoiceZipped()}
+          onClick={() => downloadPDFZipped()}
           color="secondary"
         >
           DOWNLOAD AS ZIP

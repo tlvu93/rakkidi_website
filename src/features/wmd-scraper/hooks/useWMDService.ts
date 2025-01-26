@@ -15,7 +15,7 @@ interface WMDService {
   setIsScraping: (value: boolean) => void;
   login: (user: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  getInvoicesZipped: (startDate: Moment, endDate: Moment) => Promise<void>;
+  getPDFsZipped: (startDate: Moment, endDate: Moment) => Promise<void>;
 }
 
 const useWMDService = (): WMDService => {
@@ -96,13 +96,13 @@ const useWMDService = (): WMDService => {
     }
   };
 
-  const getInvoicesZipped = async (
+  const getPDFsZipped = async (
     startDate: Moment,
     endDate: Moment
   ): Promise<void> => {
     try {
       const response = await axiosInstance.get(
-        `/invoices/zip?startDate=${startDate.format(
+        `/PDFs/zip?startDate=${startDate.format(
           'YYYY-MM-DD'
         )}&endDate=${endDate.format('YYYY-MM-DD')}`,
         {
@@ -110,7 +110,7 @@ const useWMDService = (): WMDService => {
         }
       );
 
-      const filename = 'invoices.zip';
+      const filename = 'PDFs.zip';
       const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
 
       // Create a temporary link and trigger the download
@@ -126,7 +126,7 @@ const useWMDService = (): WMDService => {
       // Clean up the blob URL
       window.URL.revokeObjectURL(blobUrl);
     } catch {
-      toast.error(`Getting zipped invoices failed`);
+      toast.error(`Getting zipped PDFs failed`);
     }
   };
   return {
@@ -136,7 +136,7 @@ const useWMDService = (): WMDService => {
     setIsScraping,
     login,
     logout,
-    getInvoicesZipped
+    getPDFsZipped
   };
 };
 

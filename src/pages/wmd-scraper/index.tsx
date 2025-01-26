@@ -35,7 +35,7 @@ const WMDScraper = (): React.ReactElement => {
     isAuthenticated,
     login,
     logout,
-    getInvoicesZipped,
+    getPDFsZipped,
     triggerScraper,
     setIsScraping,
     isScraping
@@ -44,13 +44,13 @@ const WMDScraper = (): React.ReactElement => {
   const theme = useTheme();
   const { LoginModal, handleOpen } = useLoginModal(isAuthenticated);
 
-  const downloadInvoiceZipped = (): void => {
+  const downloadPDFZipped = (): void => {
     if (!dateRange.dateFrom || !dateRange.dateTo) {
       toast.error('Please provide a date range');
       return;
     }
 
-    getInvoicesZipped(dateRange.dateFrom, dateRange.dateTo);
+    getPDFsZipped(dateRange.dateFrom, dateRange.dateTo);
   };
 
   const submitTriggerScraper = (): void => {
@@ -116,9 +116,7 @@ const WMDScraper = (): React.ReactElement => {
                     />
 
                     {scrapingSuccess && (
-                      <DownloadButtons
-                        downloadInvoiceZipped={downloadInvoiceZipped}
-                      />
+                      <DownloadButtons downloadPDFZipped={downloadPDFZipped} />
                     )}
 
                     <Box

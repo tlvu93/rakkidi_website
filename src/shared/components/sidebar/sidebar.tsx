@@ -51,8 +51,8 @@ const sidebarLinks: SidebarLink[] = [
     icon: iconMap.CalculateIcon
   },
   {
-    name: 'Invoice Extractor',
-    route: '/invoice-extractor',
+    name: 'PDF Extractor',
+    route: '/pdf-extractor',
     icon: iconMap.ReceiptIcon
   },
   {
