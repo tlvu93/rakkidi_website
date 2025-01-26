@@ -6,14 +6,10 @@ import {
   CircularProgress,
   Container
 } from '@mui/material';
-import React, { Suspense } from 'react';
+import React from 'react';
 import { FormProvider } from 'react-hook-form';
 
-import { ErrorBoundary } from 'features/pdf-extractor/components/ErrorBoundary/error-boundary';
-import {
-  TemplateProvider,
-  useTemplate
-} from 'features/pdf-extractor/contexts/TemplateContext';
+import { useTemplate } from 'features/pdf-extractor/contexts/TemplateContext';
 import { useTemplateForm } from 'features/pdf-extractor/hooks/useTemplateForm';
 import { PDFExtractTemplate } from 'features/pdf-extractor/interfaces';
 
@@ -134,29 +130,8 @@ const TemplateCreatorInner = ({
   );
 };
 
-const LoadingFallback = (): React.ReactElement => (
-  <Box
-    sx={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100%'
-    }}
-  >
-    <CircularProgress />
-  </Box>
-);
-
 const TemplateCreator = (props: TemplateCreatorProps): React.ReactElement => {
-  return (
-    <ErrorBoundary>
-      <Suspense fallback={<LoadingFallback />}>
-        <TemplateProvider initialTemplate={props.selectedTemplate}>
-          <TemplateCreatorInner {...props} />
-        </TemplateProvider>
-      </Suspense>
-    </ErrorBoundary>
-  );
+  return <TemplateCreatorInner {...props} />;
 };
 
 export default TemplateCreator;

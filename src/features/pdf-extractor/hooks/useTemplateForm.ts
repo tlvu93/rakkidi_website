@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 
 import { PDFExtractTemplate, ExtractionField } from '../interfaces';
 
@@ -25,6 +26,14 @@ export const useTemplateForm = ({
     defaultValues: selectedTemplate ?? defaultTemplate,
     mode: 'onChange'
   });
+
+  useEffect(() => {
+    if (selectedTemplate) {
+      methods.reset(selectedTemplate);
+    } else {
+      methods.reset(defaultTemplate);
+    }
+  }, [selectedTemplate, methods]);
 
   return methods;
 };

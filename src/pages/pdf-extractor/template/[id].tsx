@@ -1,8 +1,10 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Box, IconButton, Typography } from '@mui/material';
+import { Box, IconButton, Typography, CircularProgress } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useMemo, useState } from 'react';
+import React, { ReactElement, useMemo, useState, Suspense } from 'react';
+
+import { ErrorBoundary } from 'features/pdf-extractor/components/ErrorBoundary/error-boundary';
 
 import { useTemplateManagement } from 'features/pdf-extractor';
 import PDFExtractorLayout from 'features/pdf-extractor/components/layout/pdf-extractor-layout';
@@ -14,12 +16,19 @@ import { PDFExtractTemplate } from 'features/pdf-extractor/interfaces';
 const TemplatePageContent = (): ReactElement => {
   const router = useRouter();
   const { id } = router.query;
-  const { templates, addTemplate, updateTemplate } = useTemplateManagement();
+  const { templates, addTemplate, updateTemplate, isLoading } =
+    useTemplateManagement();
 
   const selectedTemplate = useMemo(() => {
-    if (!id || id === 'new') return null;
-    return templates.find((t) => t.name === id) ?? null;
-  }, [id, templates]);
+    if (!id || id === 'new' || isLoading) return null;
+    const template = templates.find((t) => t.name === id);
+    if (!template && !isLoading) {
+      // Template not found after loading completed
+      router.push('/pdf-extractor');
+      return null;
+    }
+    return template ?? null;
+  }, [id, templates, isLoading, router]);
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -73,14 +82,40 @@ const TemplatePageContent = (): ReactElement => {
           </Typography>
         </Box>
 
-        <TemplateProvider initialTemplate={selectedTemplate}>
-          <TemplateCreator
-            selectedTemplate={selectedTemplate}
-            onSubmit={handleSubmit}
-            onCancel={handleCancel}
-            isSaving={isSaving}
-          />
-        </TemplateProvider>
+        {isLoading ? (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="80%"
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+          <ErrorBoundary>
+            <Suspense
+              fallback={
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  height="80%"
+                >
+                  <CircularProgress />
+                </Box>
+              }
+            >
+              <TemplateProvider initialTemplate={selectedTemplate}>
+                <TemplateCreator
+                  selectedTemplate={selectedTemplate}
+                  onSubmit={handleSubmit}
+                  onCancel={handleCancel}
+                  isSaving={isSaving}
+                />
+              </TemplateProvider>
+            </Suspense>
+          </ErrorBoundary>
+        )}
       </Box>
     </motion.div>
   );
