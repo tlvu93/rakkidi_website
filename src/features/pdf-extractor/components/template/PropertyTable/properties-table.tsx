@@ -93,6 +93,7 @@ export default function PropertiesTable(): React.ReactElement {
       // Re-extract text after field update
       const textContent = window.__pdfTextContent;
       if (textContent) {
+        // Let the context compute extraction from current template state
         updateExtractedText(textContent);
       }
 

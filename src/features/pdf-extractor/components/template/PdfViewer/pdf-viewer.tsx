@@ -66,6 +66,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ onTextContentChange }) => {
           const content = await getTextTokenFromPdfFile(acceptedFiles[0]);
           setTextContent(content);
           onTextContentChange?.(content);
+          // Let the context compute extraction from current template state
           await updateExtractedText(content);
           // Store textContent in window object for access by other components
           window.__pdfTextContent = content;

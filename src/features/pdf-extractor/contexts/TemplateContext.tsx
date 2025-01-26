@@ -21,7 +21,10 @@ export interface TemplateContextProps {
   canAddExtractionField: boolean;
   exportTemplate: (formName?: string) => void;
   importTemplate: (file: File, newName?: string) => Promise<void>;
-  updateExtractedText: (textContent: TextContent) => Promise<void>;
+  updateExtractedText: (
+    textContent: TextContent,
+    extracted?: Record<string, string>
+  ) => Promise<void>;
 }
 
 const TemplateContext = createContext<TemplateContextProps | undefined>(
@@ -184,10 +187,20 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
   };
 
   const updateExtractedText = async (
-    textContent: TextContent
+    textContent: TextContent,
+    extracted?: Record<string, string>
   ): Promise<void> => {
-    const extracted = await extractFieldsFromTemplate(textContent, template);
-    setExtractedText(extracted);
+    if (extracted) {
+      // Use pre-computed extracted fields if provided
+      setExtractedText(extracted);
+    } else {
+      // Otherwise compute extraction from current template
+      const newExtracted = await extractFieldsFromTemplate(
+        textContent,
+        template
+      );
+      setExtractedText(newExtracted);
+    }
   };
 
   return (

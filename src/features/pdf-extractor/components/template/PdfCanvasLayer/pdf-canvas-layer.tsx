@@ -10,6 +10,7 @@ import {
   ExtractionFieldType
 } from 'features/pdf-extractor/interfaces';
 import { CoordinateTransformer } from 'features/pdf-extractor/utils/coordinate-transform';
+import { extractFieldsFromTemplate } from 'features/pdf-extractor/utils/template-extractor';
 
 import Rectangle from './rectangle';
 
@@ -74,7 +75,7 @@ const PdfCanvasLayer: React.FC<Props> = ({
   }, []);
 
   const handleChange = useCallback(
-    (id: string, newAttrs: Partial<RectProps>): void => {
+    async (id: string, newAttrs: Partial<RectProps>): Promise<void> => {
       if (!textContent) return;
       // Ensure all required properties are present
       if (
@@ -101,16 +102,51 @@ const PdfCanvasLayer: React.FC<Props> = ({
       const updatedTfMatrix =
         CoordinateTransformer.createTransformMatrix(pdfCoords);
 
-      // Update the extraction field
-      updateExtractionField({
+      // Create updated template with new coordinates
+      const updatedTemplate = {
+        ...template,
+        extractionFields: template.extractionFields.map((field) =>
+          field.id === id
+            ? {
+                ...field,
+                tfMatrix: updatedTfMatrix,
+                width: pdfCoords.width,
+                height: pdfCoords.height
+              }
+            : field
+        )
+      };
+
+      // Update the field coordinates and get the updated template
+      const updatedField = {
         id,
         tfMatrix: updatedTfMatrix,
         width: pdfCoords.width,
         height: pdfCoords.height
-      });
+      };
+      updateExtractionField(updatedField);
 
-      // Update extracted text after modifying the rectangle
-      updateExtractedText(textContent);
+      // Create updated template with new field values to ensure we use latest state
+      const updatedTemplateForExtraction = {
+        ...template,
+        extractionFields: template.extractionFields.map((field) =>
+          field.id === id
+            ? {
+                ...field,
+                ...updatedField
+              }
+            : field
+        )
+      };
+
+      // Extract text using the updated template state
+      const extracted = await extractFieldsFromTemplate(
+        textContent,
+        updatedTemplateForExtraction
+      );
+
+      // Pass both textContent and extracted fields to ensure we use latest state
+      await updateExtractedText(textContent, extracted);
     },
     [zoom, updateExtractionField, textContent, updateExtractedText]
   );

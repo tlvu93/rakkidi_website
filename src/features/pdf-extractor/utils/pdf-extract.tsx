@@ -127,10 +127,9 @@ export const getTextFromAreaTemplate = async (
   const xStart = x;
   const xEnd = x + rectWidth;
 
-  // Convert Y coordinates from top-down (canvas) to bottom-up (PDF)
-  // In PDF coordinates, y=0 is at the bottom
-  const yStart = viewportInfo.height - (y + rectHeight); // Lower bound
-  const yEnd = viewportInfo.height - y; // Upper bound
+  // Use PDF coordinates directly since they're already converted by CoordinateTransformer
+  const yStart = y; // Lower bound
+  const yEnd = y + rectHeight; // Upper bound
 
   // Filter text items that overlap with the selection area
   const selectedItems = textItems.filter((item) => {
