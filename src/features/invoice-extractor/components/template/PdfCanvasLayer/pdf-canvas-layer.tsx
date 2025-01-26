@@ -1,6 +1,7 @@
 import Konva from 'konva';
 import React, { useRef, useState, useCallback } from 'react';
 import { Layer, Stage, Text } from 'react-konva';
+import { TextContent } from 'pdfjs-dist/types/src/display/api';
 
 import { useTemplate } from 'features/invoice-extractor';
 import {
@@ -15,13 +16,16 @@ import Rectangle from './rectangle';
 type Props = {
   pageDimensions: PageDimensions;
   zoom: number;
+  textContent: TextContent | null;
 };
 
 const PdfCanvasLayer: React.FC<Props> = ({
   pageDimensions,
-  zoom
+  zoom,
+  textContent
 }): React.ReactElement => {
-  const { template, updateExtractionField } = useTemplate();
+  const { template, updateExtractionField, updateExtractedText } =
+    useTemplate();
   const [selectedId, selectShape] = useState<string | null>(null);
   const stageRef = useRef<Konva.Stage>(null);
 
@@ -40,6 +44,7 @@ const PdfCanvasLayer: React.FC<Props> = ({
 
   const handleChange = useCallback(
     (id: string, newAttrs: Partial<RectProps>): void => {
+      if (!textContent) return;
       // Ensure all required properties are present
       if (
         typeof newAttrs.x !== 'number' ||
@@ -72,8 +77,11 @@ const PdfCanvasLayer: React.FC<Props> = ({
         width: pdfCoords.width,
         height: pdfCoords.height
       });
+
+      // Update extracted text after modifying the rectangle
+      updateExtractedText(textContent);
     },
-    [zoom, updateExtractionField]
+    [zoom, updateExtractionField, textContent, updateExtractedText]
   );
 
   return (

@@ -7,9 +7,12 @@ import {
   ExtractionFieldType,
   InvoiceExtractTemplate
 } from 'features/invoice-extractor/interfaces';
+import { TextContent } from 'pdfjs-dist/types/src/display/api';
+import { extractFieldsFromTemplate } from '../utils/template-extractor';
 
 export interface TemplateContextProps {
   template: InvoiceExtractTemplate;
+  extractedText: Record<string, string>;
   addExtractionField: (type?: ExtractionFieldType) => void;
   deleteExtractionField: (id: string) => void;
   updateExtractionField: (updateField: Partial<ExtractionField>) => void;
@@ -18,11 +21,16 @@ export interface TemplateContextProps {
   canAddExtractionField: boolean;
   exportTemplate: (formName?: string) => void;
   importTemplate: (file: File, newName?: string) => Promise<void>;
+  updateExtractedText: (textContent: TextContent) => Promise<void>;
 }
 
 const TemplateContext = createContext<TemplateContextProps | undefined>(
   undefined
 );
+
+interface ExtractedTextState {
+  [key: string]: string;
+}
 
 interface TemplateProviderProps {
   children: ReactNode;
@@ -40,6 +48,7 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
       extractionFields: []
     }
   );
+  const [extractedText, setExtractedText] = useState<ExtractedTextState>({});
 
   // Use the template storage hook
   useTemplateStorage({ template, setTemplate, initialTemplate });
@@ -177,10 +186,18 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
     }
   };
 
+  const updateExtractedText = async (
+    textContent: TextContent
+  ): Promise<void> => {
+    const extracted = await extractFieldsFromTemplate(textContent, template);
+    setExtractedText(extracted);
+  };
+
   return (
     <TemplateContext.Provider
       value={{
         template,
+        extractedText,
         addExtractionField,
         deleteExtractionField,
         updateExtractionField,
@@ -188,7 +205,8 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
         updateTemplate,
         canAddExtractionField,
         exportTemplate,
-        importTemplate
+        importTemplate,
+        updateExtractedText
       }}
     >
       {children}

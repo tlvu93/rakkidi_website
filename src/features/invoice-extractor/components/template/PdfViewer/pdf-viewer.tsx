@@ -8,9 +8,12 @@ import React, {
 } from 'react';
 import { FileWithPath } from 'react-dropzone';
 import { Document, Page, pdfjs } from 'react-pdf';
+import { TextContent } from 'pdfjs-dist/types/src/display/api';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import FileDropzone from 'features/invoice-extractor/components/FileDropzone/file-dropzone';
+import { useTemplate } from 'features/invoice-extractor';
+import { getTextTokenFromPdfFile } from 'features/invoice-extractor/utils/pdf-extract';
 
 import PdfCanvasLayer from '../PdfCanvasLayer/pdf-canvas-layer';
 
@@ -21,8 +24,14 @@ import ZoomControls from './ZoomControls';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
-const PdfViewer: React.FC = () => {
+interface PdfViewerProps {
+  onTextContentChange?: (textContent: TextContent) => void;
+}
+
+const PdfViewer: React.FC<PdfViewerProps> = ({ onTextContentChange }) => {
+  const { updateExtractedText } = useTemplate();
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [textContent, setTextContent] = useState<TextContent | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
   const [pageDimensions, setPageDimensions] = useState({
@@ -39,12 +48,27 @@ const PdfViewer: React.FC = () => {
   const [zoom, setZoom] = useState(1.0);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const handleDrop = useCallback((acceptedFiles: FileWithPath[]) => {
-    if (acceptedFiles.length > 0) {
-      setError(undefined);
-      setPdfFile(acceptedFiles[0]);
-    }
-  }, []);
+  const handleDrop = useCallback(
+    async (acceptedFiles: FileWithPath[]) => {
+      if (acceptedFiles.length > 0) {
+        setError(undefined);
+        setPdfFile(acceptedFiles[0]);
+
+        try {
+          const content = await getTextTokenFromPdfFile(acceptedFiles[0]);
+          setTextContent(content);
+          onTextContentChange?.(content);
+          await updateExtractedText(content);
+        } catch (error) {
+          console.error('Error extracting text from PDF:', error);
+        }
+      }
+    },
+    [updateExtractedText, onTextContentChange]
+  );
+
+  // Expose text content through ref
+  const getTextContent = useCallback(() => textContent, [textContent]);
 
   const onDocumentLoadSuccess = useCallback(() => {
     setIsLoading(false);
@@ -161,7 +185,11 @@ const PdfViewer: React.FC = () => {
                   renderTextLayer={false}
                 />
               </Document>
-              <PdfCanvasLayer pageDimensions={pageDimensions} zoom={zoom} />
+              <PdfCanvasLayer
+                pageDimensions={pageDimensions}
+                zoom={zoom}
+                textContent={textContent}
+              />
             </Box>
           </Box>
         </>

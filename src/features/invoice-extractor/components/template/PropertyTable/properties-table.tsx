@@ -26,13 +26,18 @@ interface FieldRow {
   keyword?: string;
   searchDirection?: 'right' | 'below';
   maxDistance?: number;
+  extractedText?: string;
 }
 
 type CustomRenderCellParams = GridRenderCellParams<FieldRow, string | number>;
 
 export default function PropertiesTable(): React.ReactElement {
-  const { template, deleteExtractionField, updateExtractionField } =
-    useTemplate();
+  const {
+    template,
+    extractedText,
+    deleteExtractionField,
+    updateExtractionField
+  } = useTemplate();
 
   const rows = useMemo<FieldRow[]>(
     () =>
@@ -45,9 +50,10 @@ export default function PropertiesTable(): React.ReactElement {
           keyword: field.keyword,
           searchDirection: field.searchDirection,
           maxDistance: field.maxDistance
-        })
+        }),
+        extractedText: extractedText[field.name] || ''
       })),
-    [template.extractionFields]
+    [template.extractionFields, extractedText]
   );
 
   const handleDeleteClick = useCallback(
@@ -138,6 +144,13 @@ export default function PropertiesTable(): React.ReactElement {
           params.row.type === ExtractionFieldType.Keyword
             ? params.value ?? 0
             : '-'
+      },
+      {
+        field: 'extractedText',
+        headerName: 'Extracted Text',
+        width: 200,
+        renderCell: (params: CustomRenderCellParams): string =>
+          String(params.value || '-')
       },
       {
         field: 'actions',
