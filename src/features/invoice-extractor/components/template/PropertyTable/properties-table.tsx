@@ -36,7 +36,8 @@ export default function PropertiesTable(): React.ReactElement {
     template,
     extractedText,
     deleteExtractionField,
-    updateExtractionField
+    updateExtractionField,
+    updateExtractedText
   } = useTemplate();
 
   const rows = useMemo<FieldRow[]>(
@@ -80,9 +81,16 @@ export default function PropertiesTable(): React.ReactElement {
       }
 
       updateExtractionField(updateData);
+
+      // Re-extract text after field update
+      const textContent = (window as any).__pdfTextContent;
+      if (textContent) {
+        updateExtractedText(textContent);
+      }
+
       return data;
     },
-    [updateExtractionField]
+    [updateExtractionField, updateExtractedText]
   );
 
   const columns = useMemo<GridColDef<FieldRow>[]>(

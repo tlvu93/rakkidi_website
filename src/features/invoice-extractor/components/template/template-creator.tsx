@@ -1,15 +1,10 @@
-import CloseIcon from '@mui/icons-material/Close';
 import {
-  Container,
   Grid,
   Box,
   Button,
   TextField,
-  Modal,
-  Typography,
-  Paper,
-  IconButton,
-  CircularProgress
+  CircularProgress,
+  Container
 } from '@mui/material';
 import React, { Suspense } from 'react';
 import { FormProvider } from 'react-hook-form';
@@ -30,12 +25,14 @@ interface TemplateCreatorProps {
   selectedTemplate: InvoiceExtractTemplate | null;
   onSubmit: (form: InvoiceExtractTemplate) => void;
   onCancel: () => void;
+  isSaving?: boolean;
 }
 
 const TemplateCreatorInner = ({
   selectedTemplate,
   onSubmit,
-  onCancel
+  onCancel,
+  isSaving = false
 }: TemplateCreatorProps): React.ReactElement => {
   const { template } = useTemplate();
   const formMethods = useTemplateForm({
@@ -59,18 +56,13 @@ const TemplateCreatorInner = ({
         ...styles.formStyle,
         display: 'flex',
         flexDirection: 'column',
-        height: '100%'
+        height: '100%',
+        width: '100%'
       }}
     >
       <FormProvider {...formMethods}>
         <Box sx={{ flex: 1, overflow: 'auto' }}>
-          <Container maxWidth="xl" sx={styles.containerStyle}>
-            <Typography variant="h3" sx={styles.templateDetailsStyle}>
-              Template Creator
-            </Typography>
-            <Typography variant="h5" sx={styles.templateFieldsStyle}>
-              Template Details
-            </Typography>
+          <Container maxWidth={false} sx={styles.containerStyle}>
             <Grid container spacing={2} pb={4}>
               <Grid item xs={12} md={6}>
                 <TextField
@@ -95,19 +87,16 @@ const TemplateCreatorInner = ({
                 />
               </Grid>
             </Grid>
-            <Typography variant="h5" pb={2}>
-              Records and PDF Preview
-            </Typography>
             <Grid container spacing={4} sx={styles.gridContainerStyle}>
-              <Grid item xs={12} md={8}>
-                <Paper sx={styles.pdfPreviewStyle}>
+              <Grid item xs={12} lg={8}>
+                <Box sx={styles.pdfPreviewStyle}>
                   <PdfViewer />
-                </Paper>
+                </Box>
               </Grid>
-              <Grid item xs={12} md={4}>
-                <Paper sx={styles.propertiesTableStyle}>
+              <Grid item xs={12} lg={4}>
+                <Box sx={styles.propertiesTableStyle}>
                   <PropertiesTable />
-                </Paper>
+                </Box>
               </Grid>
             </Grid>
           </Container>
@@ -132,8 +121,13 @@ const TemplateCreatorInner = ({
         <Button variant="outlined" onClick={onCancel}>
           Cancel
         </Button>
-        <Button variant="contained" type="submit">
-          Save Template
+        <Button
+          variant="contained"
+          type="submit"
+          disabled={isSaving}
+          startIcon={isSaving ? <CircularProgress size={20} /> : null}
+        >
+          {isSaving ? 'Saving...' : 'Save Template'}
         </Button>
       </Box>
     </Box>
@@ -166,77 +160,3 @@ const TemplateCreator = (props: TemplateCreatorProps): React.ReactElement => {
 };
 
 export default TemplateCreator;
-
-export interface TemplateCreatorModalProps {
-  open: boolean;
-  close: () => void;
-  onSubmit: (form: InvoiceExtractTemplate) => void;
-  selectedTemplate: InvoiceExtractTemplate | null;
-}
-
-export const TemplateCreatorModal = ({
-  open,
-  close,
-  onSubmit,
-  selectedTemplate
-}: TemplateCreatorModalProps): React.ReactElement => {
-  return (
-    <Modal
-      open={open}
-      onClose={(_, reason) => {
-        if (reason !== 'backdropClick') {
-          close();
-        }
-      }}
-    >
-      <Paper
-        sx={{
-          ...styles.modalStyle,
-          display: 'flex',
-          flexDirection: 'column',
-          maxHeight: '90vh'
-        }}
-      >
-        <Box
-          sx={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 1,
-            backgroundColor: 'background.paper',
-            borderTopLeftRadius: 4,
-            borderTopRightRadius: 4,
-            borderBottom: 1,
-            borderColor: 'divider'
-          }}
-        >
-          <IconButton
-            aria-label="close"
-            onClick={close}
-            sx={{
-              ...styles.closeButtonStyle,
-              position: 'absolute',
-              right: 8,
-              top: 8
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </Box>
-        <Box
-          sx={{
-            flexGrow: 1,
-            overflow: 'auto',
-            minHeight: 400,
-            mt: 6 // Add margin top to account for the sticky header
-          }}
-        >
-          <TemplateCreator
-            onSubmit={onSubmit}
-            selectedTemplate={selectedTemplate}
-            onCancel={close}
-          />
-        </Box>
-      </Paper>
-    </Modal>
-  );
-};

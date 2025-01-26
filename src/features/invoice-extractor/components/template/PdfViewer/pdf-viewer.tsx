@@ -59,6 +59,8 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ onTextContentChange }) => {
           setTextContent(content);
           onTextContentChange?.(content);
           await updateExtractedText(content);
+          // Store textContent in window object for access by other components
+          (window as any).__pdfTextContent = content;
         } catch (error) {
           console.error('Error extracting text from PDF:', error);
         }

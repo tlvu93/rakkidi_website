@@ -1,4 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import {
   Box,
   Button,
@@ -6,14 +7,14 @@ import {
   List,
   ListItem,
   ListItemText,
-  IconButton
+  IconButton,
+  CircularProgress
 } from '@mui/material';
-import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 import { useTemplateManagement } from '../../contexts/template-management-context';
 import { InvoiceExtractTemplate } from '../../interfaces';
-
-import { TemplateCreatorModal } from './template-creator';
 
 const TemplateManagement = (): React.ReactElement => {
   const {
@@ -22,32 +23,24 @@ const TemplateManagement = (): React.ReactElement => {
     selectTemplate,
     deleteTemplate,
     addTemplate,
-    updateTemplate
+    updateTemplate,
+    isLoading
   } = useTemplateManagement();
 
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [templateToEdit, setTemplateToEdit] =
-    useState<InvoiceExtractTemplate | null>(null);
+  const router = useRouter();
 
-  const handleCreateTemplate = (template: InvoiceExtractTemplate): void => {
-    addTemplate(template);
-    setIsCreateModalOpen(false);
+  const handleCreateClick = () => {
+    router.push('/invoice-extractor/template/new');
   };
 
-  const handleEditTemplate = (template: InvoiceExtractTemplate): void => {
-    updateTemplate(template);
-    setIsEditModalOpen(false);
-    setTemplateToEdit(null);
+  const handleEditClick = (template: InvoiceExtractTemplate) => {
+    router.push(
+      `/invoice-extractor/template/${encodeURIComponent(template.name)}`
+    );
   };
 
   const handleTemplateClick = (template: InvoiceExtractTemplate): void => {
-    if (selectedTemplate?.name === template.name) {
-      setTemplateToEdit(template);
-      setIsEditModalOpen(true);
-    } else {
-      selectTemplate(template);
-    }
+    selectTemplate(template);
   };
 
   return (
@@ -59,11 +52,7 @@ const TemplateManagement = (): React.ReactElement => {
         mb={2}
       >
         <Typography variant="h5">Templates</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setIsCreateModalOpen(true)}
-        >
+        <Button variant="contained" color="primary" onClick={handleCreateClick}>
           Create Template
         </Button>
       </Box>
@@ -81,47 +70,49 @@ const TemplateManagement = (): React.ReactElement => {
                   : 'inherit'
             }}
             onClick={() => handleTemplateClick(template)}
+            secondaryAction={
+              <>
+                <IconButton
+                  edge="end"
+                  aria-label="edit"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditClick(template);
+                  }}
+                  sx={{ mr: 1 }}
+                >
+                  <EditIcon />
+                </IconButton>
+                <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteTemplate(template);
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </>
+            }
           >
             <ListItemText
               primary={template.name}
               secondary={template.description}
             />
-            <IconButton
-              edge="end"
-              aria-label="delete"
-              onClick={(e) => {
-                e.stopPropagation();
-                deleteTemplate(template);
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
           </ListItem>
         ))}
       </List>
 
-      {templates.length === 0 && (
+      {isLoading ? (
+        <Box display="flex" justifyContent="center" mt={4}>
+          <CircularProgress />
+        </Box>
+      ) : templates.length === 0 ? (
         <Typography variant="body2" color="text.secondary" align="center">
           No templates yet. Create one to get started.
         </Typography>
-      )}
-
-      <TemplateCreatorModal
-        open={isCreateModalOpen}
-        close={() => setIsCreateModalOpen(false)}
-        onSubmit={handleCreateTemplate}
-        selectedTemplate={null}
-      />
-
-      <TemplateCreatorModal
-        open={isEditModalOpen}
-        close={() => {
-          setIsEditModalOpen(false);
-          setTemplateToEdit(null);
-        }}
-        onSubmit={handleEditTemplate}
-        selectedTemplate={templateToEdit}
-      />
+      ) : null}
     </Box>
   );
 };

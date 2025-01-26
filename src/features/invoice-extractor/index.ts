@@ -1,7 +1,6 @@
 // Components
 export {
   TemplateCreator,
-  TemplateCreatorModal,
   PdfViewer,
   PropertiesTable,
   TemplateManagement

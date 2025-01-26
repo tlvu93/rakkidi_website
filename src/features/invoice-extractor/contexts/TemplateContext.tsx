@@ -50,8 +50,7 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
   );
   const [extractedText, setExtractedText] = useState<ExtractedTextState>({});
 
-  // Use the template storage hook
-  useTemplateStorage({ template, setTemplate, initialTemplate });
+  // We don't want to use the template storage hook here anymore since we want to control when templates are saved
 
   const addExtractionField = (
     type: ExtractionFieldType = ExtractionFieldType.Rectangle
