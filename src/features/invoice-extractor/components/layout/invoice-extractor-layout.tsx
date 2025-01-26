@@ -1,5 +1,7 @@
 import React from 'react';
+
 import AppLayout from '@shared/layouts/app-layout';
+
 import { TemplateManagementProvider } from '../../contexts/template-management-context';
 
 interface InvoiceExtractorLayoutProps {

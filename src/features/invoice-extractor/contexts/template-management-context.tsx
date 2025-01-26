@@ -5,10 +5,12 @@ import React, {
   useEffect,
   ReactNode,
   useCallback,
-  useMemo
+  useMemo,
+  FC
 } from 'react';
 
 import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
+
 import { updateTemplatesList } from '../hooks/useTemplateStorage';
 
 export interface TemplateManagementContextProps {
@@ -46,7 +48,7 @@ const saveTemplatesToStorage = (templates: InvoiceExtractTemplate[]): void => {
   }
 };
 
-export const TemplateManagementProvider: React.FC<{ children: ReactNode }> = ({
+export const TemplateManagementProvider: FC<{ children: ReactNode }> = ({
   children
 }) => {
   const [templates, setTemplates] = useState<InvoiceExtractTemplate[]>([]);
@@ -56,7 +58,7 @@ export const TemplateManagementProvider: React.FC<{ children: ReactNode }> = ({
 
   // Load templates on mount
   useEffect(() => {
-    const loadTemplates = async () => {
+    const loadTemplates = async (): Promise<void> => {
       setIsLoading(true);
       try {
         const loadedTemplates = loadTemplatesFromStorage();

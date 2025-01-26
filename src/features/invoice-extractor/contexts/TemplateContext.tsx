@@ -1,13 +1,13 @@
 import { faker } from '@faker-js/faker';
+import { TextContent } from 'pdfjs-dist/types/src/display/api';
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-import { useTemplateStorage } from 'features/invoice-extractor/hooks/useTemplateStorage';
 import {
   ExtractionField,
   ExtractionFieldType,
   InvoiceExtractTemplate
 } from 'features/invoice-extractor/interfaces';
-import { TextContent } from 'pdfjs-dist/types/src/display/api';
+
 import { extractFieldsFromTemplate } from '../utils/template-extractor';
 
 export interface TemplateContextProps {

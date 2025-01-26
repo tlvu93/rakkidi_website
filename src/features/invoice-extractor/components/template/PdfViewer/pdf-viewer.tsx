@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import { TextContent } from 'pdfjs-dist/types/src/display/api';
 import React, {
   useState,
   useEffect,
@@ -8,11 +9,10 @@ import React, {
 } from 'react';
 import { FileWithPath } from 'react-dropzone';
 import { Document, Page, pdfjs } from 'react-pdf';
-import { TextContent } from 'pdfjs-dist/types/src/display/api';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
-import FileDropzone from 'features/invoice-extractor/components/FileDropzone/file-dropzone';
 import { useTemplate } from 'features/invoice-extractor';
+import FileDropzone from 'features/invoice-extractor/components/FileDropzone/file-dropzone';
 import { getTextTokenFromPdfFile } from 'features/invoice-extractor/utils/pdf-extract';
 
 import PdfCanvasLayer from '../PdfCanvasLayer/pdf-canvas-layer';
@@ -21,6 +21,12 @@ import { ErrorState } from './ErrorState';
 import { LoadingOverlay } from './LoadingOverlay';
 import useWindowResize from './useWindowResize';
 import ZoomControls from './ZoomControls';
+
+declare global {
+  interface Window {
+    __pdfTextContent: TextContent | undefined;
+  }
+}
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -60,7 +66,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ onTextContentChange }) => {
           onTextContentChange?.(content);
           await updateExtractedText(content);
           // Store textContent in window object for access by other components
-          (window as any).__pdfTextContent = content;
+          window.__pdfTextContent = content;
         } catch (error) {
           console.error('Error extracting text from PDF:', error);
         }
@@ -68,9 +74,6 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ onTextContentChange }) => {
     },
     [updateExtractedText, onTextContentChange]
   );
-
-  // Expose text content through ref
-  const getTextContent = useCallback(() => textContent, [textContent]);
 
   const onDocumentLoadSuccess = useCallback(() => {
     setIsLoading(false);

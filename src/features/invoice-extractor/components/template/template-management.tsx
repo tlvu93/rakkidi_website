@@ -22,18 +22,17 @@ const TemplateManagement = (): React.ReactElement => {
     selectedTemplate,
     selectTemplate,
     deleteTemplate,
-    addTemplate,
-    updateTemplate,
+
     isLoading
   } = useTemplateManagement();
 
   const router = useRouter();
 
-  const handleCreateClick = () => {
+  const handleCreateClick = (): void => {
     router.push('/invoice-extractor/template/new');
   };
 
-  const handleEditClick = (template: InvoiceExtractTemplate) => {
+  const handleEditClick = (template: InvoiceExtractTemplate): void => {
     router.push(
       `/invoice-extractor/template/${encodeURIComponent(template.name)}`
     );

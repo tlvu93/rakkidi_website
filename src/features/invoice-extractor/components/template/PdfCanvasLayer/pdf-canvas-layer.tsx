@@ -1,7 +1,7 @@
 import Konva from 'konva';
+import { TextContent } from 'pdfjs-dist/types/src/display/api';
 import React, { useRef, useState, useCallback } from 'react';
 import { Layer, Stage, Text } from 'react-konva';
-import { TextContent } from 'pdfjs-dist/types/src/display/api';
 
 import { useTemplate } from 'features/invoice-extractor';
 import {

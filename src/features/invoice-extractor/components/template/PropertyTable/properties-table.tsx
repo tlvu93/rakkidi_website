@@ -7,8 +7,15 @@ import {
   GridSlots,
   GridRenderCellParams
 } from '@mui/x-data-grid';
+import { TextContent } from 'pdfjs-dist/types/src/display/api';
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
+
+declare global {
+  interface Window {
+    __pdfTextContent: TextContent | undefined;
+  }
+}
 
 import { useTemplate } from 'features/invoice-extractor';
 import {
@@ -83,7 +90,7 @@ export default function PropertiesTable(): React.ReactElement {
       updateExtractionField(updateData);
 
       // Re-extract text after field update
-      const textContent = (window as any).__pdfTextContent;
+      const textContent = window.__pdfTextContent;
       if (textContent) {
         updateExtractedText(textContent);
       }

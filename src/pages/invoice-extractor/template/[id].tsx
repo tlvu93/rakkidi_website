@@ -1,29 +1,32 @@
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, IconButton, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
-import React, { useMemo } from 'react';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import React, { ReactElement, useMemo, useState } from 'react';
 
-import { useNavigationDirection } from 'features/invoice-extractor/hooks/useNavigationDirection';
 
-import TemplateCreator from 'features/invoice-extractor/components/template/template-creator';
-import { TemplateProvider } from 'features/invoice-extractor/contexts/TemplateContext';
 import { useTemplateManagement } from 'features/invoice-extractor';
 import InvoiceExtractorLayout from 'features/invoice-extractor/components/layout/invoice-extractor-layout';
+import TemplateCreator from 'features/invoice-extractor/components/template/template-creator';
+import { TemplateProvider } from 'features/invoice-extractor/contexts/TemplateContext';
+import { useNavigationDirection } from 'features/invoice-extractor/hooks/useNavigationDirection';
+import { InvoiceExtractTemplate } from 'features/invoice-extractor/interfaces';
 
-const TemplatePageContent = (): React.ReactElement => {
+const TemplatePageContent = (): ReactElement => {
   const router = useRouter();
   const { id } = router.query;
   const { templates, addTemplate, updateTemplate } = useTemplateManagement();
 
-  const selectedTemplate = React.useMemo(() => {
+  const selectedTemplate = useMemo(() => {
     if (!id || id === 'new') return null;
     return templates.find((t) => t.name === id) ?? null;
   }, [id, templates]);
 
-  const [isSaving, setIsSaving] = React.useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSubmit = async (template: any) => {
+  const handleSubmit = async (
+    template: InvoiceExtractTemplate
+  ): Promise<void> => {
     try {
       setIsSaving(true);
       if (id === 'new') {
@@ -39,7 +42,7 @@ const TemplatePageContent = (): React.ReactElement => {
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = (): void => {
     router.push('/invoice-extractor');
   };
 
@@ -86,7 +89,7 @@ const TemplatePageContent = (): React.ReactElement => {
   );
 };
 
-const TemplatePage = (): React.ReactElement => {
+const TemplatePage = (): ReactElement => {
   return (
     <InvoiceExtractorLayout>
       <TemplatePageContent />
