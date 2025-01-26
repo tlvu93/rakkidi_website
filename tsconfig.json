@@ -16,6 +16,10 @@
     "incremental": true,
     "baseUrl": "./src",
     "pretty": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "paths": {
       "@assets/*": ["assets/*"],
       "@shared/*": ["shared/*"],

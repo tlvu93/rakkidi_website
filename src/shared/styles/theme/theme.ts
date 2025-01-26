@@ -1,6 +1,6 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
-import React, { useMemo, useState, createContext, useEffect } from 'react';
 import { Roboto } from 'next/font/google';
+import { useMemo, useState, createContext, useEffect } from 'react';
 
 export const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
@@ -17,71 +17,109 @@ const colors = {
   primaryDark: '#00081c',
   primaryNormal: '#2A3142',
   primaryLight: '#535A6D',
-  // primaryLight: '#F7F6F5',
   secondaryLight: '#FFFA8A',
   secondaryNormal: '#DBC75A',
-  secondaryDark: 'A7972A',
+  secondaryDark: '#A7972A',
 
   white: '#ffffff',
 
   lightGray: '#c2c4c7',
+  darkGray: '#5b636d',
   darkBlack: '#00081c',
   backgroundDefault: '#FEFEFE',
-  backgroundPaperLight: '#ECECEC'
+  backgroundPaperLight: '#ECECEC',
+  // New colors for better contrast
+  darkModeBackground: '#111827',
+  darkModePaper: '#1f2937',
+  darkModeText: '#E0E0E0'
 };
 
-const getTheme = (mode: ThemeModes) => {
+const getTheme = (mode: ThemeModes): ReturnType<typeof createTheme> => {
   const isLight = mode === 'light';
 
   const themeOptions: ThemeOptions = {
     palette: {
       mode,
       primary: {
-        contrastText: isLight ? colors.white : colors.white,
-        light: isLight ? colors.white : colors.backgroundPaperLight,
-        main: isLight ? colors.primaryNormal : colors.primaryNormal,
-        dark: isLight ? colors.lightGray : colors.primaryDark
+        light: colors.primaryLight,
+        main: colors.primaryNormal,
+        dark: colors.primaryDark,
+        contrastText: colors.white
       },
       secondary: {
-        main: colors.secondaryNormal
+        main: colors.secondaryNormal,
+        light: colors.secondaryLight,
+        dark: colors.secondaryDark
       },
       background: {
-        default: isLight ? colors.backgroundDefault : colors.primaryNormal,
-        paper: isLight ? colors.backgroundPaperLight : colors.primaryNormal
+        default: isLight ? colors.backgroundDefault : colors.darkModeBackground,
+        paper: isLight ? colors.backgroundPaperLight : colors.darkModePaper
       },
       text: {
-        primary: isLight ? colors.primaryDark : colors.white
+        primary: isLight ? colors.primaryDark : colors.darkModeText,
+        secondary: isLight ? colors.primaryLight : colors.lightGray
+      }
+    },
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none'
+          },
+          outlined: {
+            borderColor: isLight ? colors.primaryNormal : colors.darkModeText,
+            color: isLight ? colors.primaryNormal : colors.darkModeText,
+            '&:hover': {
+              borderColor: isLight ? colors.primaryDark : colors.white,
+              color: isLight ? colors.primaryDark : colors.white
+            }
+          },
+          contained: {
+            backgroundColor: isLight
+              ? colors.primaryNormal
+              : colors.secondaryNormal,
+            color: isLight ? colors.white : colors.darkBlack,
+            '&:hover': {
+              backgroundColor: isLight
+                ? colors.primaryDark
+                : colors.secondaryDark
+            }
+          },
+          text: {
+            color: isLight ? colors.primaryNormal : colors.darkModeText,
+            '&:hover': {
+              backgroundColor: isLight
+                ? 'rgba(42, 49, 66, 0.04)'
+                : 'rgba(224, 224, 224, 0.04)'
+            }
+          }
+        }
+      },
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            borderRadius: 12,
+            // border: `2px solid ${isLight ? colors.lightGray : colors.primaryLight}`
+            border: `2px solid ${
+              isLight ? 'rgb(224, 224, 224)' : colors.darkGray
+            }`
+          }
+        }
       }
     }
-    // components: {
-    //   MuiIconButton: {
-    //     styleOverrides: {
-    //       sizeMedium: {
-    //         color: colors.primaryDark
-    //       }
-    //     }
-    //   },
-    //   MuiOutlinedInput: {
-    //     styleOverrides: {
-    //       root: {
-    //         color: colors.primaryDark
-    //       }
-    //     }
-    //   },
-    //   MuiInputLabel: {
-    //     styleOverrides: {
-    //       root: {
-    //         color: colors.primaryDark
-    //       }
-    //     }
-    //   }
-    // }
   };
 
   return createTheme(themeOptions);
 };
 
-const useCustomTheme = () => {
+interface UseCustomThemeReturn {
+  colorMode: {
+    toggleColorMode: () => void;
+  };
+  theme: ReturnType<typeof createTheme>;
+}
+
+const useCustomTheme = (): UseCustomThemeReturn => {
   // Initialize the mode state without accessing localStorage directly
   const [mode, setMode] = useState<ThemeModes>('dark');
 
@@ -96,7 +134,7 @@ const useCustomTheme = () => {
 
   const colorMode = useMemo(
     () => ({
-      toggleColorMode: () => {
+      toggleColorMode: (): void => {
         setMode((prevMode) => {
           const newMode = prevMode === 'light' ? 'dark' : 'light';
           if (typeof window !== 'undefined') {
@@ -109,7 +147,14 @@ const useCustomTheme = () => {
     []
   );
 
-  const theme = useMemo(() => getTheme(mode), [mode]);
+  const theme = useMemo(() => {
+    // Apply dark mode class to html element
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.remove('Mui-dark', 'Mui-light');
+      document.documentElement.classList.add(`Mui-${mode}`);
+    }
+    return getTheme(mode);
+  }, [mode]);
 
   return { colorMode, theme };
 };

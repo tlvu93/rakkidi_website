@@ -1,15 +1,15 @@
 import { Box, Typography } from '@mui/material';
-import { useAppSelector } from 'hooks';
-import FileDropzone from 'feature/contract-calculator/file-dropzone';
-import OrderList from 'feature/contract-calculator/order-item-list';
-import { selectOrders } from 'feature/contract-calculator/order-slice';
-
-import PriceList from 'feature/contract-calculator/price-list';
-import AppLayout from '@shared/layouts/app-layout';
 import React from 'react';
-import CustomOrder from 'feature/contract-calculator/custom-order';
 
-const ContractCalculator = () => {
+import AppLayout from '@shared/layouts/app-layout';
+import CustomOrder from 'features/contract-calculator/custom-order';
+import FileDropzone from 'features/contract-calculator/file-dropzone';
+import OrderList from 'features/contract-calculator/order-item-list';
+import { selectOrders } from 'features/contract-calculator/order-slice';
+import PriceList from 'features/contract-calculator/price-list';
+import { useAppSelector } from 'hooks';
+
+const ContractCalculator = (): React.ReactElement => {
   const orders = useAppSelector(selectOrders);
 
   const hidden = orders.length !== 0;

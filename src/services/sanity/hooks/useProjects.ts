@@ -1,14 +1,24 @@
 import { useEffect, useState } from 'react';
-import { GET_PROJECTS } from '../queries/queries';
-import client from '../apollo-client';
+
 import {
   AllProjectResponse,
   ProjectGroup,
-  ProjectCardData,
-  ProjectCategory
-} from 'feature/dashboard/interfaces';
+  ProjectCardData
+} from 'features/dashboard/interfaces';
 
-const getProjects = async () => {
+import client from '../apollo-client';
+import { GET_PROJECTS } from '../queries/queries';
+
+interface UseProjectsReturn {
+  projects: ProjectCardData[];
+  getProjects: () => Promise<AllProjectResponse>;
+}
+
+interface UseGroupedProjectsReturn {
+  groupedProjects: ProjectGroup;
+}
+
+const getProjects = async (): Promise<AllProjectResponse> => {
   const { data } = await client.query({
     query: GET_PROJECTS
   });
@@ -16,7 +26,7 @@ const getProjects = async () => {
   return data;
 };
 
-export const getGroupedProjects = async () => {
+export const getGroupedProjects = async (): Promise<ProjectGroup> => {
   const { data }: { data: AllProjectResponse } = await client.query({
     query: GET_PROJECTS
   });
@@ -37,13 +47,13 @@ export const getGroupedProjects = async () => {
   return grouped;
 };
 
-const useProjects = () => {
-  const [projects, setProjects] = useState([]);
+const useProjects = (): UseProjectsReturn => {
+  const [projects, setProjects] = useState<ProjectCardData[]>([]);
 
   useEffect(() => {
-    const fetchProject = async () => {
+    const fetchProject = async (): Promise<void> => {
       const data = await getProjects();
-      setProjects(data);
+      setProjects(data.allProject);
     };
     fetchProject();
   }, []);
@@ -51,13 +61,13 @@ const useProjects = () => {
   return { projects, getProjects };
 };
 
-const useGroupedProjects = () => {
+const useGroupedProjects = (): UseGroupedProjectsReturn => {
   const [groupedProjects, setGroupedProjects] = useState<ProjectGroup>(
     {} as ProjectGroup
   );
 
   useEffect(() => {
-    const fetchGroupedProjects = async () => {
+    const fetchGroupedProjects = async (): Promise<void> => {
       setGroupedProjects(await getGroupedProjects());
     };
     fetchGroupedProjects();

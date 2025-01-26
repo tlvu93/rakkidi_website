@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { faker } from '@faker-js/faker';
+import { z } from 'zod';
 
 export interface Order {
   id: string;

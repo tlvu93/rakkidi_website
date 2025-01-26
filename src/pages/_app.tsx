@@ -1,16 +1,20 @@
-import * as React from 'react';
+import { CacheProvider, EmotionCache } from '@emotion/react';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { AnimatePresence } from 'framer-motion';
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import { Provider } from 'react-redux';
-import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+
+import useCustomTheme, { ColorModeContext } from '@shared/styles/theme/theme';
+import { wrapper } from 'store';
+
 import createEmotionCache from '../createEmotionCache';
 
 import '@shared/styles/globals.css';
-import { wrapper } from 'store';
-import Head from 'next/head';
-import useCustomTheme, { ColorModeContext } from '@shared/styles/theme/theme';
-import { CacheProvider, EmotionCache } from '@emotion/react';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import 'react-toastify/dist/ReactToastify.css';
 
 const clientSideEmotionCache = createEmotionCache();
@@ -19,13 +23,14 @@ export interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
 
-const MyApp: React.FC<MyAppProps> = (pageProps) => {
+const MyApp: React.FC<MyAppProps> = (pageProps): React.ReactElement => {
   const {
     Component,
     emotionCache = clientSideEmotionCache,
     ...rest
   } = pageProps;
   const { colorMode, theme } = useCustomTheme();
+  const router = useRouter();
 
   const { store, props } = wrapper.useWrappedStore(rest);
 
@@ -44,7 +49,9 @@ const MyApp: React.FC<MyAppProps> = (pageProps) => {
             <CssBaseline />
             <Provider store={store}>
               <LocalizationProvider dateAdapter={AdapterMoment}>
-                <Component {...props} />
+                <AnimatePresence mode="wait">
+                  <Component {...props} key={router.pathname} />
+                </AnimatePresence>
               </LocalizationProvider>
             </Provider>
           </ThemeProvider>

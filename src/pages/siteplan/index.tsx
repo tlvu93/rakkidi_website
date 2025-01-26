@@ -1,7 +1,8 @@
-import AppLayout from '@shared/layouts/app-layout';
 import React from 'react';
 
-const SitePlan = () => {
+import AppLayout from '@shared/layouts/app-layout';
+
+const SitePlan = (): React.ReactElement => {
   return <AppLayout>SitePlan</AppLayout>;
 };
 

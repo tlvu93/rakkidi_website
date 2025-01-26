@@ -1,10 +1,11 @@
 import type { NextPage } from 'next';
+
 import AppLayout from '@shared/layouts/app-layout';
 import {
   AllProjectResponse,
   ProjectGroup as IProjectGroup
-} from 'feature/dashboard/interfaces';
-import ProjectGroup from 'feature/dashboard/project-group';
+} from 'features/dashboard/interfaces';
+import ProjectGroup from 'features/dashboard/project-group';
 import client from 'services/sanity/apollo-client';
 import { GET_PROJECTS } from 'services/sanity/queries/queries';
 interface DashboardProps {
@@ -22,7 +23,9 @@ const Dashboard: NextPage<DashboardProps> = ({ pageProps }) => {
   );
 };
 
-export async function getStaticProps() {
+export async function getStaticProps(): Promise<{
+  props: { groupedProjects: IProjectGroup };
+}> {
   const { data }: { data: AllProjectResponse } = await client.query({
     query: GET_PROJECTS
   });

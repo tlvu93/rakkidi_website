@@ -1,24 +1,29 @@
-import * as React from 'react';
+import createEmotionServer from '@emotion/server/create-instance';
+import { AppType } from 'next/app';
 import Document, {
   Html,
   Head,
   Main,
   NextScript,
   DocumentProps,
-  DocumentContext
+  DocumentContext,
+  DocumentInitialProps
 } from 'next/document';
-import createEmotionServer from '@emotion/server/create-instance';
-import { AppType } from 'next/app';
+import * as React from 'react';
 
-import createEmotionCache from '../createEmotionCache';
-import { MyAppProps } from './_app';
 import useCustomTheme from '@shared/styles/theme/theme';
 
+import createEmotionCache from '../createEmotionCache';
+
+import { MyAppProps } from './_app';
+
 interface MyDocumentProps extends DocumentProps {
-  emotionStyleTags: JSX.Element[];
+  emotionStyleTags: React.ReactElement[];
 }
 
-export default function MyDocument({ emotionStyleTags }: MyDocumentProps) {
+export default function MyDocument({
+  emotionStyleTags
+}: MyDocumentProps): React.ReactElement {
   const { theme } = useCustomTheme();
   return (
     <Html lang="en">
@@ -39,7 +44,11 @@ export default function MyDocument({ emotionStyleTags }: MyDocumentProps) {
 
 // `getInitialProps` belongs to `_document` (instead of `_app`),
 // it's compatible with static-site generation (SSG).
-MyDocument.getInitialProps = async (ctx: DocumentContext) => {
+MyDocument.getInitialProps = async (
+  ctx: DocumentContext
+): Promise<
+  DocumentInitialProps & { emotionStyleTags: React.ReactElement[] }
+> => {
   // Resolution order
   //
   // On the server:
@@ -69,12 +78,14 @@ MyDocument.getInitialProps = async (ctx: DocumentContext) => {
   const cache = createEmotionCache();
   const { extractCriticalToChunks } = createEmotionServer(cache);
 
-  ctx.renderPage = () =>
+  ctx.renderPage = (): DocumentInitialProps | Promise<DocumentInitialProps> =>
     originalRenderPage({
       enhanceApp: (
         App: React.ComponentType<React.ComponentProps<AppType> & MyAppProps>
       ) =>
-        function EnhanceApp(props) {
+        function EnhanceApp(
+          props: React.ComponentProps<AppType> & MyAppProps
+        ): React.ReactElement {
           return <App emotionCache={cache} {...props} />;
         }
     });

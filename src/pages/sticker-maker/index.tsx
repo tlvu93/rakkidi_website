@@ -1,7 +1,8 @@
-import AppLayout from '@shared/layouts/app-layout';
 import React from 'react';
 
-const StickerMaker = () => {
+import AppLayout from '@shared/layouts/app-layout';
+
+const StickerMaker = (): React.ReactElement => {
   return <AppLayout>StickerMaker</AppLayout>;
 };
 

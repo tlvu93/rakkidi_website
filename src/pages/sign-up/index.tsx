@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -13,14 +11,15 @@ import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import * as React from 'react';
+
 import Copyright from '@shared/components/copyright/copyright';
 
 const theme = createTheme();
 
-const SignUp = () => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+const SignUp = (): React.ReactElement => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
   };
 
   return (

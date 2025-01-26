@@ -6,18 +6,16 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
+import moment, { Moment } from 'moment';
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 import AppLayout from '@shared/layouts/app-layout';
-import DateRangePicker from 'feature/wmd-scraper/components/DateRangePicker';
-import DownloadButtons from 'feature/wmd-scraper/components/DownloadButtons';
-import useLoginModal from 'feature/wmd-scraper/components/LoginModal';
-import ScraperProgressWS from 'feature/wmd-scraper/components/ScraperProgressWS';
-
-import useWMDService from 'feature/wmd-scraper/hooks/useWMDService';
-import moment from 'moment';
-import { Moment } from 'moment';
-import React from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import DateRangePicker from 'features/wmd-scraper/components/DateRangePicker';
+import DownloadButtons from 'features/wmd-scraper/components/DownloadButtons';
+import useLoginModal from 'features/wmd-scraper/components/LoginModal';
+import ScraperProgressWS from 'features/wmd-scraper/components/ScraperProgressWS';
+import useWMDService from 'features/wmd-scraper/hooks/useWMDService';
 
 export type DateRange = {
   dateFrom: Moment | null;
@@ -29,15 +27,15 @@ const defaultDateRange = {
   dateTo: moment()
 };
 
-const WMDScraper = () => {
-  const [dateRange, setDateRange] = React.useState<DateRange>(defaultDateRange);
-  const [scrapingSuccess, setScrapingSuccess] = React.useState<boolean>(false);
+const WMDScraper = (): React.ReactElement => {
+  const [dateRange, setDateRange] = useState<DateRange>(defaultDateRange);
+  const [scrapingSuccess, setScrapingSuccess] = useState<boolean>(false);
 
   const {
     isAuthenticated,
     login,
     logout,
-    getInvoicesZipped,
+    getPDFsZipped,
     triggerScraper,
     setIsScraping,
     isScraping
@@ -46,16 +44,16 @@ const WMDScraper = () => {
   const theme = useTheme();
   const { LoginModal, handleOpen } = useLoginModal(isAuthenticated);
 
-  const downloadInvoiceZipped = () => {
+  const downloadPDFZipped = (): void => {
     if (!dateRange.dateFrom || !dateRange.dateTo) {
       toast.error('Please provide a date range');
       return;
     }
 
-    getInvoicesZipped(dateRange.dateFrom, dateRange.dateTo);
+    getPDFsZipped(dateRange.dateFrom, dateRange.dateTo);
   };
 
-  const submitTriggerScraper = () => {
+  const submitTriggerScraper = (): void => {
     setScrapingSuccess(false);
     if (!dateRange.dateFrom || !dateRange.dateTo) {
       toast.error('Please provide a date range');
@@ -118,9 +116,7 @@ const WMDScraper = () => {
                     />
 
                     {scrapingSuccess && (
-                      <DownloadButtons
-                        downloadInvoiceZipped={downloadInvoiceZipped}
-                      />
+                      <DownloadButtons downloadPDFZipped={downloadPDFZipped} />
                     )}
 
                     <Box

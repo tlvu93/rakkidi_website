@@ -1,25 +1,26 @@
-import { SidebarLink, ToggleDrawer } from '@shared/interfaces/ui';
-import { useRouter } from 'next/router';
-
 import CalculateIcon from '@mui/icons-material/Calculate';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import DirtyLensOutlinedIcon from '@mui/icons-material/DirtyLensOutlined';
 import HomeIcon from '@mui/icons-material/Home';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import MapIcon from '@mui/icons-material/Map';
 import MenuIcon from '@mui/icons-material/Menu';
 import ReceiptIcon from '@mui/icons-material/Receipt';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
+import { useRouter } from 'next/router';
+
 import Footer from '@shared/components/footer/footer';
-import DrawerLogo from '../header/drawer-logo';
-import { Save, StayPrimaryLandscape } from '@mui/icons-material';
+import { SidebarLink, ToggleDrawer } from '@shared/interfaces/ui';
 import { layoutDimension } from 'config/ui-config';
-import SaveAsIcon from '@mui/icons-material/SaveAs';
+
+import DrawerLogo from '../header/drawer-logo';
 
 const iconMap = {
   HomeIcon: <HomeIcon />,
@@ -50,8 +51,8 @@ const sidebarLinks: SidebarLink[] = [
     icon: iconMap.CalculateIcon
   },
   {
-    name: 'Invoice Extractor',
-    route: '/invoice-extractor',
+    name: 'PDF Extractor',
+    route: '/pdf-extractor',
     icon: iconMap.ReceiptIcon
   },
   {
@@ -66,8 +67,11 @@ interface SidebarProps {
   toggleDrawer: ToggleDrawer;
 }
 
-const Sidebar = ({ drawerOpen, toggleDrawer }: SidebarProps) => {
-  let router = useRouter();
+const Sidebar = ({
+  drawerOpen,
+  toggleDrawer
+}: SidebarProps): React.ReactElement => {
+  const router = useRouter();
 
   return (
     <Drawer
@@ -78,6 +82,7 @@ const Sidebar = ({ drawerOpen, toggleDrawer }: SidebarProps) => {
           width: layoutDimension.drawerWidth,
           boxSizing: 'border-box',
           border: 'none',
+          borderRadius: 0,
           bgcolor: 'primary.main'
         },
         color: 'background.default'
@@ -99,18 +104,18 @@ const Sidebar = ({ drawerOpen, toggleDrawer }: SidebarProps) => {
       </Toolbar>
       {sidebarLinks.map((sidebarlink) => (
         <List key={sidebarlink.name}>
-          <ListItem
-            button
-            key={sidebarlink.name}
-            onClick={() => router.push(sidebarlink.route)}
-            sx={{
-              color: 'primary.contrastText'
-            }}
-          >
-            <ListItemIcon sx={{ color: 'primary.contrastText' }}>
-              {sidebarlink.icon}
-            </ListItemIcon>
-            <ListItemText primary={sidebarlink.name} />
+          <ListItem disablePadding key={sidebarlink.name}>
+            <ListItemButton
+              onClick={() => router.push(sidebarlink.route)}
+              sx={{
+                color: 'primary.contrastText'
+              }}
+            >
+              <ListItemIcon sx={{ color: 'primary.contrastText' }}>
+                {sidebarlink.icon}
+              </ListItemIcon>
+              <ListItemText primary={sidebarlink.name} />
+            </ListItemButton>
           </ListItem>
         </List>
       ))}

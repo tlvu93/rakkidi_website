@@ -1,8 +1,9 @@
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
-import { orderSlice } from 'feature/contract-calculator/order-slice';
 import { createWrapper } from 'next-redux-wrapper';
 
-const makeStore = () =>
+import { orderSlice } from 'features/contract-calculator/order-slice';
+
+const makeStore = (): ReturnType<typeof configureStore> =>
   configureStore({
     reducer: {
       [orderSlice.name]: orderSlice.reducer

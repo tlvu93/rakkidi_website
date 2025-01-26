@@ -1,7 +1,7 @@
-import { Box, Container, Paper, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import Link from 'next/link';
 
-const Copyright = () => {
+const Copyright = (): React.ReactElement => {
   return (
     <Typography variant="body2" color="white">
       {'Made by '}
@@ -14,7 +14,7 @@ const Copyright = () => {
   );
 };
 
-const Footer = () => {
+const Footer = (): React.ReactElement => {
   return (
     <Box
       component="footer"

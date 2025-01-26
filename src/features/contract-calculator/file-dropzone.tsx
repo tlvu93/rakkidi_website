@@ -1,0 +1,111 @@
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import { Card, Typography } from '@mui/material';
+import { useCallback } from 'react';
+import { FileWithPath, useDropzone } from 'react-dropzone';
+
+import { Order } from '@shared/interfaces/contract-calculator';
+import { useAppDispatch } from 'hooks';
+
+import { addOrder } from './order-slice';
+import { getDimension } from './utility/getDimension';
+
+/**
+ * This Component renders a Field, in which files can be dropped
+ */
+
+const FileDropzone: React.FC = (): React.ReactElement => {
+  const dispatch = useAppDispatch();
+
+  const onDrop = useCallback(
+    (acceptedFiles: FileWithPath[]): void => {
+      const promises = acceptedFiles.map(async (file) => {
+        return getDimension(file);
+      });
+      // Filter out all errors
+      const resolvedPromises = Promise.all(
+        promises.map((p) => p.catch(() => 'FAILED'))
+      ).then((values) => values.filter((v) => v !== 'FAILED'));
+
+      resolvedPromises.then((returnedValues) =>
+        returnedValues.forEach((value) => {
+          dispatch(addOrder(value as Order));
+        })
+      );
+    },
+    [dispatch]
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  return (
+    <Card
+      variant="outlined"
+      sx={{
+        width: '26rem',
+        height: '20rem',
+        padding: '0.625rem',
+        // backgroundColor: '#F5F7FA',
+
+        border: isDragActive
+          ? '2px dashed var(--primary-normal, #00081C)'
+          : '1px dashed var(--primary-normal, linear-gradient(rgba(255, 255, 255, 0.05))'
+      }}
+    >
+      <div
+        {...getRootProps()}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          height: '100%',
+          width: '100%',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          gap: '25px'
+        }}
+      >
+        <FileUploadOutlinedIcon style={{ fontSize: '5.0em' }} />
+        <input
+          {...getInputProps({
+            //Its important to filter, because somehow .cdrt files makes the HTML5 Filepicker to crash
+            //Add more filters if any forgotten
+            accept: 'image/*, .eps'
+          })}
+        />
+        <div
+          style={{
+            display: 'flex',
+            padding: '15px 20px',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '30px',
+
+            borderRadius: '15px',
+            background: 'var(--primary-normal, #2A3142)'
+          }}
+        >
+          <Typography color={'#F5F7FA'}>Datei hochladen</Typography>
+        </div>
+        <div>
+          <Typography
+            display="flex"
+            flexDirection={'column'}
+            alignItems={'center'}
+            justifyContent={'center'}
+            textAlign={'center'}
+            variant="body1"
+          >
+            Bitte laden Sie ihre Dateien im
+            <br />
+            Dateiformat
+            <br />
+            .jpeg, .png, .pdf oder .eps
+            <br />
+            hoch
+          </Typography>
+        </div>
+      </div>
+    </Card>
+  );
+};
+
+export default FileDropzone;
