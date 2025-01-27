@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { decode, decodeImage } from 'utif';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Order } from '@shared/interfaces/contract-calculator';
+import { Order, OrderType } from '@shared/interfaces/contract-calculator';
 
 const MM_PER_PIXEL = 0.0846526655896607;
 const MM_PER_POINT = 0.3527777777778; // 1pt = 25,4/72mm
@@ -27,7 +27,7 @@ async function getDimensionFromImage(file: FileWithPath): Promise<Order> {
             name: file.name,
             width: ifd.width * MM_PER_PIXEL,
             height: ifd.height * MM_PER_PIXEL,
-            type: 'Folienplott',
+            type: OrderType.Folienplott,
             amount: 1
           });
         } catch (error) {
@@ -49,7 +49,7 @@ async function getDimensionFromImage(file: FileWithPath): Promise<Order> {
           name: file.name,
           width: img.width,
           height: img.height,
-          type: 'Folienplott',
+          type: OrderType.Folienplott,
           amount: 1
         });
       };
@@ -149,7 +149,7 @@ async function getDimensionFromPDF(file: FileWithPath): Promise<Order> {
         name: file.name,
         width: Math.round(width * 100) / 100,
         height: Math.round(height * 100) / 100,
-        type: 'Folienplott',
+        type: OrderType.Folienplott,
         amount: 1
       });
     } catch (error) {
