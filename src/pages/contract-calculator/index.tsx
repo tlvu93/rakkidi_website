@@ -3,46 +3,35 @@ import React from 'react';
 
 import AppLayout from '@shared/layouts/app-layout';
 import CustomOrder from 'features/contract-calculator/custom-order';
-import FileDropzone from 'features/contract-calculator/file-dropzone';
 import OrderList from 'features/contract-calculator/order-item-list';
 import { selectOrders } from 'features/contract-calculator/order-slice';
-import PriceList from 'features/contract-calculator/price-list';
 import { useAppSelector } from 'hooks';
 
 const ContractCalculator = (): React.ReactElement => {
   const orders = useAppSelector(selectOrders);
 
-  const hidden = orders.length !== 0;
+  const hidden = orders.length === 0;
 
   return (
     <AppLayout>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-        <Box sx={{ textAlign: 'center', display: hidden ? 'none' : 'block' }}>
-          <Typography variant="h3">Aufträge Berechnen</Typography>
-          <Typography variant="body1">
-            Berechnen Sie Ihre Auftragsberechnung spielend leicht,
-            <br /> indem Sie Ihre Auftragsdatei problemlos in das dafür
-            vorgesehene Feld ziehen.
-          </Typography>
-        </Box>
-        <div style={{ display: hidden ? 'flex' : 'none' }}>
-          <OrderList />
-        </div>
+        {hidden && (
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h3">Contract Calculator</Typography>
+            <Typography variant="body1">
+              Calculate your orders easily by dragging your files into the
+              upload area or entering dimensions manually.
+            </Typography>
+          </Box>
+        )}
 
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            alignContent: 'center',
-            justifyContent: 'center',
-            flexDirection: { xs: 'column', md: 'row' },
-            gap: 2
-          }}
-        >
-          <FileDropzone />
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <CustomOrder />
         </Box>
-        <PriceList />
+
+        <Box sx={{ width: '100%' }}>
+          <OrderList />
+        </Box>
       </Box>
     </AppLayout>
   );
