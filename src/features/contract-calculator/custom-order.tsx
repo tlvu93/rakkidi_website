@@ -1,9 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AddIcon from '@mui/icons-material/Add';
-import React, { useCallback } from 'react';
-import { useForm } from 'react-hook-form';
-import { FileWithPath, useDropzone } from 'react-dropzone';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import {
   Card,
   CardContent,
@@ -11,7 +8,6 @@ import {
   Tab,
   TextField,
   Button,
-  Box,
   Typography,
   Select,
   MenuItem,
@@ -19,6 +15,15 @@ import {
   InputLabel,
   FormHelperText
 } from '@mui/material';
+import React, {
+  FC,
+  ReactElement,
+  SyntheticEvent,
+  useCallback,
+  useState
+} from 'react';
+import { FileWithPath, useDropzone } from 'react-dropzone';
+import { useForm } from 'react-hook-form';
 
 import {
   Order,
@@ -26,6 +31,7 @@ import {
   OrderType
 } from '@shared/interfaces/contract-calculator';
 import { useAppDispatch } from 'hooks';
+
 import { addOrder } from './order-slice';
 import { getDimension } from './utility/getDimension';
 
@@ -33,11 +39,9 @@ interface CustomOrderProps {
   onItemAdded?: () => void;
 }
 
-const CustomOrder: React.FC<CustomOrderProps> = ({
-  onItemAdded
-}): React.ReactElement => {
+const CustomOrder: FC<CustomOrderProps> = ({ onItemAdded }): ReactElement => {
   const dispatch = useAppDispatch();
-  const [tabValue, setTabValue] = React.useState(0);
+  const [tabValue, setTabValue] = useState(0);
 
   const {
     register,
@@ -47,7 +51,7 @@ const CustomOrder: React.FC<CustomOrderProps> = ({
   } = useForm<Order>({
     resolver: zodResolver(OrderSchema),
     defaultValues: {
-      type: 'Folienplott'
+      type: OrderType.Folienplott
     }
   });
 
@@ -56,7 +60,7 @@ const CustomOrder: React.FC<CustomOrderProps> = ({
     onItemAdded?.();
   };
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: SyntheticEvent, newValue: number): void => {
     setTabValue(newValue);
   };
 
@@ -79,7 +83,7 @@ const CustomOrder: React.FC<CustomOrderProps> = ({
         }
       });
     },
-    [dispatch]
+    [dispatch, onItemAdded]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -195,10 +199,12 @@ const CustomOrder: React.FC<CustomOrderProps> = ({
                     <FormControl error={!!errors.type}>
                       <InputLabel>Type</InputLabel>
                       <Select label="Type" {...register('type')}>
-                        <MenuItem value="Folienplott">Folienplott</MenuItem>
-                        <MenuItem value="Banner">Banner</MenuItem>
-                        <MenuItem value="PVC">PVC</MenuItem>
-                        <MenuItem value="Custom">Custom</MenuItem>
+                        <MenuItem value={OrderType.Folienplott}>
+                          Folienplott
+                        </MenuItem>
+                        <MenuItem value={OrderType.Banner}>Banner</MenuItem>
+                        <MenuItem value={OrderType.PVC}>PVC</MenuItem>
+                        <MenuItem value={OrderType.Custom}>Custom</MenuItem>
                       </Select>
                       {errors.type && (
                         <FormHelperText>{errors.type.message}</FormHelperText>
@@ -206,7 +212,7 @@ const CustomOrder: React.FC<CustomOrderProps> = ({
                     </FormControl>
                   </div>
 
-                  {watch('type') === 'Custom' && (
+                  {watch('type') === OrderType.Custom && (
                     <TextField
                       label="Custom Price"
                       type="number"

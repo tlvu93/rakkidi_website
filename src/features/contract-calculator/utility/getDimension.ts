@@ -1,8 +1,8 @@
+import * as pdfjsLib from 'pdfjs-dist';
 import { FileWithPath } from 'react-dropzone';
 import { toast } from 'react-toastify';
 import { decode, decodeImage } from 'utif';
 import { v4 as uuidv4 } from 'uuid';
-import * as pdfjsLib from 'pdfjs-dist';
 
 import { Order } from '@shared/interfaces/contract-calculator';
 
@@ -132,7 +132,7 @@ async function getDimensionFromOtherFiles(file: FileWithPath): Promise<Order> {
   });
 }
 
-async function getDimensionFromPDF(file: FileWithPath) {
+async function getDimensionFromPDF(file: FileWithPath): Promise<Order> {
   return new Promise<Order>(async (resolve, reject) => {
     try {
       const arrayBuffer = await file.arrayBuffer();
@@ -159,7 +159,7 @@ async function getDimensionFromPDF(file: FileWithPath) {
   });
 }
 
-export async function getDimension(file: FileWithPath) {
+export async function getDimension(file: FileWithPath): Promise<Order> {
   //1.1 Handle Image File [TIF, JPG, PNG...]
   if (file.type.includes('image')) {
     return await getDimensionFromImage(file);

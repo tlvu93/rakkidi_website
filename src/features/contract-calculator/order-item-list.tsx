@@ -1,7 +1,7 @@
-import DeleteIcon from '@mui/icons-material/Delete';
-import InfoIcon from '@mui/icons-material/Info';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import DownloadIcon from '@mui/icons-material/Download';
+import InfoIcon from '@mui/icons-material/Info';
 import {
   Card,
   CardContent,
@@ -22,7 +22,13 @@ import {
   MenuItem,
   FormControl
 } from '@mui/material';
-import React, { ReactElement, useState, useEffect } from 'react';
+import React, {
+  ReactElement,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo
+} from 'react';
 
 import {
   Order,
@@ -30,13 +36,14 @@ import {
   OrderType
 } from '@shared/interfaces/contract-calculator';
 import { useAppDispatch, useAppSelector } from 'hooks';
+
+import CustomOrder from './custom-order';
 import {
   selectOrders,
   removeOrder,
   clearOrder,
   updateOrder
 } from './order-slice';
-import CustomOrder from './custom-order';
 import { generateInvoicePdf } from './utility/generateInvoicePdf';
 
 const OrderList = (): ReactElement => {
@@ -49,11 +56,11 @@ const OrderList = (): ReactElement => {
   const [address2, setAddress2] = useState('Business City, 12345');
   const [invoiceNumber, setInvoiceNumber] = useState('INV-2025-001');
 
-  useEffect(() => {
+  useEffect((): void => {
     setDate(new Date().toISOString().split('T')[0]);
   }, []);
 
-  const calculatePrice = React.useCallback(
+  const calculatePrice = useCallback(
     (
       height: number,
       width: number,
@@ -61,7 +68,7 @@ const OrderList = (): ReactElement => {
       amount: number,
       customPrice?: number
     ): number => {
-      if (type === 'Custom' && customPrice !== undefined) {
+      if (type === OrderType.Custom && customPrice !== undefined) {
         return Number((customPrice * amount).toFixed(2));
       }
       const pricePerSqm = ORDER_TYPE_PRICES[type] || 0;
@@ -71,8 +78,8 @@ const OrderList = (): ReactElement => {
     []
   );
 
-  const totalPrice = React.useMemo(
-    () =>
+  const totalPrice = useMemo(
+    (): number =>
       orders.reduce(
         (sum, order) =>
           sum +
@@ -88,20 +95,20 @@ const OrderList = (): ReactElement => {
     [orders, calculatePrice]
   );
 
-  const handleTypeChange = React.useCallback(
-    (order: Order, newType: OrderType) => {
+  const handleTypeChange = useCallback(
+    (order: Order, newType: OrderType): void => {
       const updatedOrder = {
         ...order,
         type: newType,
-        customPrice: newType === 'Custom' ? 0 : undefined
+        customPrice: newType === OrderType.Custom ? 0 : undefined
       };
       dispatch(updateOrder(updatedOrder));
     },
     [dispatch]
   );
 
-  const handleOrderUpdate = React.useCallback(
-    (order: Order, updates: Partial<Order>) => {
+  const handleOrderUpdate = useCallback(
+    (order: Order, updates: Partial<Order>): void => {
       dispatch(updateOrder({ ...order, ...updates }));
     },
     [dispatch]
@@ -120,14 +127,14 @@ const OrderList = (): ReactElement => {
                 variant="standard"
                 size="small"
                 value={date || '---'}
-                onChange={(e) => setDate(e.target.value)}
+                onChange={(e): void => setDate(e.target.value)}
                 sx={{ mb: 1, display: 'block' }}
               />
               <TextField
                 variant="standard"
                 size="small"
                 value={invoiceNumber}
-                onChange={(e) => setInvoiceNumber(e.target.value)}
+                onChange={(e): void => setInvoiceNumber(e.target.value)}
                 sx={{ display: 'block' }}
               />
             </Box>
@@ -136,21 +143,21 @@ const OrderList = (): ReactElement => {
                 variant="standard"
                 size="small"
                 value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
+                onChange={(e): void => setCompanyName(e.target.value)}
                 sx={{ mb: 1, display: 'block', textAlign: 'right' }}
               />
               <TextField
                 variant="standard"
                 size="small"
                 value={address1}
-                onChange={(e) => setAddress1(e.target.value)}
+                onChange={(e): void => setAddress1(e.target.value)}
                 sx={{ mb: 1, display: 'block', textAlign: 'right' }}
               />
               <TextField
                 variant="standard"
                 size="small"
                 value={address2}
-                onChange={(e) => setAddress2(e.target.value)}
+                onChange={(e): void => setAddress2(e.target.value)}
                 sx={{ display: 'block', textAlign: 'right' }}
               />
             </Box>
@@ -208,7 +215,7 @@ const OrderList = (): ReactElement => {
                           size="small"
                           type="number"
                           value={order.amount}
-                          onChange={(e) =>
+                          onChange={(e): void =>
                             handleOrderUpdate(order, {
                               amount: parseFloat(e.target.value) || 1
                             })
@@ -221,7 +228,7 @@ const OrderList = (): ReactElement => {
                           variant="standard"
                           size="small"
                           value={order.name}
-                          onChange={(e) =>
+                          onChange={(e): void =>
                             handleOrderUpdate(order, { name: e.target.value })
                           }
                           fullWidth
@@ -234,27 +241,29 @@ const OrderList = (): ReactElement => {
                         <FormControl size="small" fullWidth>
                           <Select
                             value={order.type}
-                            onChange={(e) => {
+                            onChange={(e): void => {
                               handleTypeChange(
                                 order,
                                 e.target.value as OrderType
                               );
                             }}
                           >
-                            <MenuItem value="Folienplott">Folienplott</MenuItem>
-                            <MenuItem value="Banner">Banner</MenuItem>
-                            <MenuItem value="PVC">PVC</MenuItem>
-                            <MenuItem value="Custom">Custom</MenuItem>
+                            <MenuItem value={OrderType.Folienplott}>
+                              Folienplott
+                            </MenuItem>
+                            <MenuItem value={OrderType.Banner}>Banner</MenuItem>
+                            <MenuItem value={OrderType.PVC}>PVC</MenuItem>
+                            <MenuItem value={OrderType.Custom}>Custom</MenuItem>
                           </Select>
                         </FormControl>
-                        {order.type === 'Custom' && (
+                        {order.type === OrderType.Custom && (
                           <TextField
                             variant="standard"
                             size="small"
                             type="number"
                             label="Price"
                             value={order.customPrice || 0}
-                            onChange={(e) =>
+                            onChange={(e): void =>
                               handleOrderUpdate(order, {
                                 customPrice: parseFloat(e.target.value) || 0
                               })
@@ -277,7 +286,9 @@ const OrderList = (): ReactElement => {
                       <TableCell>
                         <IconButton
                           size="small"
-                          onClick={() => dispatch(removeOrder(order.id))}
+                          onClick={(): ReturnType<typeof removeOrder> =>
+                            dispatch(removeOrder(order.id))
+                          }
                         >
                           <DeleteIcon fontSize="small" />
                         </IconButton>
@@ -310,7 +321,7 @@ const OrderList = (): ReactElement => {
                     <Box sx={{ display: 'flex', gap: 2 }}>
                       <Button
                         startIcon={<AddIcon />}
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={(): void => setIsModalOpen(true)}
                         variant="outlined"
                         fullWidth
                       >
@@ -318,7 +329,7 @@ const OrderList = (): ReactElement => {
                       </Button>
                       <Button
                         startIcon={<DownloadIcon />}
-                        onClick={() => {
+                        onClick={(): void => {
                           generateInvoicePdf({
                             date,
                             invoiceNumber,
@@ -359,7 +370,9 @@ const OrderList = (): ReactElement => {
                     <IconButton
                       size="small"
                       color="error"
-                      onClick={() => dispatch(clearOrder())}
+                      onClick={(): ReturnType<typeof clearOrder> =>
+                        dispatch(clearOrder())
+                      }
                     >
                       <DeleteIcon fontSize="small" />
                     </IconButton>
@@ -372,7 +385,7 @@ const OrderList = (): ReactElement => {
       </Card>
       <Modal
         open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={(): void => setIsModalOpen(false)}
         aria-labelledby="add-items-modal"
         sx={{
           display: 'flex',
@@ -394,9 +407,9 @@ const OrderList = (): ReactElement => {
           <Typography variant="h6" component="h2" gutterBottom>
             Add Items
           </Typography>
-          <CustomOrder onItemAdded={() => setIsModalOpen(false)} />
+          <CustomOrder onItemAdded={(): void => setIsModalOpen(false)} />
           <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
-            <Button onClick={() => setIsModalOpen(false)}>Close</Button>
+            <Button onClick={(): void => setIsModalOpen(false)}>Close</Button>
           </Box>
         </Box>
       </Modal>
