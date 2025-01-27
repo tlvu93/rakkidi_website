@@ -23,11 +23,23 @@ export const orderSlice = createSlice({
     },
     clearOrder: (state) => {
       state.list = [];
+    },
+    updateOrder: (state, action: PayloadAction<Order>) => {
+      const index = state.list.findIndex(
+        (order) => order.id === action.payload.id
+      );
+      if (index !== -1) {
+        state.list[index] = {
+          ...state.list[index],
+          ...action.payload
+        };
+      }
     }
   }
 });
 
-export const { addOrder, removeOrder, clearOrder } = orderSlice.actions;
+export const { addOrder, removeOrder, clearOrder, updateOrder } =
+  orderSlice.actions;
 
 export const selectOrders = (state: AppState): Order[] =>
   (state as { [key: string]: OrderState })[orderSlice.name].list;

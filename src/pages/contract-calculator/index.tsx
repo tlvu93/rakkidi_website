@@ -14,24 +14,8 @@ const ContractCalculator = (): React.ReactElement => {
 
   return (
     <AppLayout>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-        {hidden && (
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography variant="h3">Contract Calculator</Typography>
-            <Typography variant="body1">
-              Calculate your orders easily by dragging your files into the
-              upload area or entering dimensions manually.
-            </Typography>
-          </Box>
-        )}
-
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <CustomOrder />
-        </Box>
-
-        <Box sx={{ width: '100%' }}>
-          <OrderList />
-        </Box>
+      <Box sx={{ height: '100vh', p: 2 }}>
+        <OrderList />
       </Box>
     </AppLayout>
   );

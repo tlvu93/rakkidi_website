@@ -26,7 +26,9 @@ async function getDimensionFromImage(file: FileWithPath): Promise<Order> {
             id: uuidv4(),
             name: file.name,
             width: ifd.width * MM_PER_PIXEL,
-            height: ifd.height * MM_PER_PIXEL
+            height: ifd.height * MM_PER_PIXEL,
+            type: 'Folienplott',
+            amount: 1
           });
         } catch (error) {
           toast.error('Error while reading file' + error);
@@ -46,7 +48,9 @@ async function getDimensionFromImage(file: FileWithPath): Promise<Order> {
           id: uuidv4(),
           name: file.name,
           width: img.width,
-          height: img.height
+          height: img.height,
+          type: 'Folienplott',
+          amount: 1
         });
       };
       img.src = URL.createObjectURL(file);
@@ -97,7 +101,9 @@ const getDimensionFromEPS = (
     id: uuidv4(),
     name: file.name,
     width: Math.round(width * 100) / 100,
-    height: Math.round(height * 100) / 100
+    height: Math.round(height * 100) / 100,
+    type: 'Folienplott',
+    amount: 1
   } as Order;
 };
 
@@ -142,7 +148,9 @@ async function getDimensionFromPDF(file: FileWithPath) {
         id: uuidv4(),
         name: file.name,
         width: Math.round(width * 100) / 100,
-        height: Math.round(height * 100) / 100
+        height: Math.round(height * 100) / 100,
+        type: 'Folienplott',
+        amount: 1
       });
     } catch (error) {
       toast.error('Error while reading PDF file');

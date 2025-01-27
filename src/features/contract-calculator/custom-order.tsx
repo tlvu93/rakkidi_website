@@ -12,28 +12,48 @@ import {
   TextField,
   Button,
   Box,
-  Typography
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  FormHelperText
 } from '@mui/material';
 
-import { Order, OrderSchema } from '@shared/interfaces/contract-calculator';
+import {
+  Order,
+  OrderSchema,
+  OrderType
+} from '@shared/interfaces/contract-calculator';
 import { useAppDispatch } from 'hooks';
 import { addOrder } from './order-slice';
 import { getDimension } from './utility/getDimension';
 
-const CustomOrder: React.FC = (): React.ReactElement => {
+interface CustomOrderProps {
+  onItemAdded?: () => void;
+}
+
+const CustomOrder: React.FC<CustomOrderProps> = ({
+  onItemAdded
+}): React.ReactElement => {
   const dispatch = useAppDispatch();
   const [tabValue, setTabValue] = React.useState(0);
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors }
   } = useForm<Order>({
-    resolver: zodResolver(OrderSchema)
+    resolver: zodResolver(OrderSchema),
+    defaultValues: {
+      type: 'Folienplott'
+    }
   });
 
   const submitOrder = (order: Order): void => {
     dispatch(addOrder(order as Order));
+    onItemAdded?.();
   };
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -50,11 +70,14 @@ const CustomOrder: React.FC = (): React.ReactElement => {
         promises.map((p) => p.catch(() => 'FAILED'))
       ).then((values) => values.filter((v) => v !== 'FAILED'));
 
-      resolvedPromises.then((returnedValues) =>
+      resolvedPromises.then((returnedValues) => {
         returnedValues.forEach((value) => {
           dispatch(addOrder(value as Order));
-        })
-      );
+        });
+        if (returnedValues.length > 0) {
+          onItemAdded?.();
+        }
+      });
     },
     [dispatch]
   );
@@ -69,8 +92,8 @@ const CustomOrder: React.FC = (): React.ReactElement => {
   });
 
   return (
-    <div className="min-h-screen p-6">
-      <div className="mx-auto max-w-4xl space-y-6">
+    <div>
+      <div className="space-y-6">
         <Tabs
           value={tabValue}
           onChange={handleTabChange}
@@ -148,13 +171,50 @@ const CustomOrder: React.FC = (): React.ReactElement => {
                 <div
                   style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
                 >
-                  <TextField
-                    fullWidth
-                    label="Name"
-                    {...register('name')}
-                    error={!!errors.name}
-                    helperText={errors.name?.message}
-                  />
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '2fr 1fr 1fr',
+                      gap: 16
+                    }}
+                  >
+                    <TextField
+                      label="Name"
+                      {...register('name')}
+                      error={!!errors.name}
+                      helperText={errors.name?.message}
+                    />
+                    <TextField
+                      label="Amount"
+                      type="text"
+                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                      {...register('amount')}
+                      error={!!errors.amount}
+                      helperText={errors.amount?.message}
+                    />
+                    <FormControl error={!!errors.type}>
+                      <InputLabel>Type</InputLabel>
+                      <Select label="Type" {...register('type')}>
+                        <MenuItem value="Folienplott">Folienplott</MenuItem>
+                        <MenuItem value="Banner">Banner</MenuItem>
+                        <MenuItem value="PVC">PVC</MenuItem>
+                        <MenuItem value="Custom">Custom</MenuItem>
+                      </Select>
+                      {errors.type && (
+                        <FormHelperText>{errors.type.message}</FormHelperText>
+                      )}
+                    </FormControl>
+                  </div>
+
+                  {watch('type') === 'Custom' && (
+                    <TextField
+                      label="Custom Price"
+                      type="number"
+                      {...register('customPrice')}
+                      error={!!errors.customPrice}
+                      helperText={errors.customPrice?.message}
+                    />
+                  )}
 
                   <div
                     style={{
