@@ -103,7 +103,11 @@ const TemplatePageContent = (): ReactElement => {
         </Box>
 
         {saveError && (
-          <Alert severity="error" sx={{ mb: 3 }} onClose={() => setSaveError(null)}>
+          <Alert
+            severity="error"
+            sx={{ mb: 3 }}
+            onClose={() => setSaveError(null)}
+          >
             {saveError}
           </Alert>
         )}

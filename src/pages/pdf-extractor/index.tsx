@@ -1,4 +1,4 @@
-import { Typography, Paper, Container, Divider } from '@mui/material';
+﻿import { Typography, Paper, Container, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 
@@ -29,21 +29,25 @@ const PDFExtractorContent = (): React.ReactElement => {
       <Typography variant="h4" gutterBottom sx={{ mb: 3, mt: 4 }}>
         PDF Extractor
       </Typography>
-      <Typography variant="body1" paragraph>
+      <Typography
+        variant="body1"
+        sx={{ mb: 2 }}
+      >
         Extract data from your PDFs easily. First, select or create a template,
         then upload your PDF files for processing.
       </Typography>
-
       <StyledPaper>
         <TemplateManagement />
       </StyledPaper>
-
       {selectedTemplate && (
         <StyledPaper>
           <Typography variant="h5" gutterBottom>
             Upload PDFs
           </Typography>
-          <Typography variant="body2" paragraph>
+          <Typography
+            variant="body2"
+            sx={{ mb: 2 }}
+          >
             Selected template: <strong>{selectedTemplate.name}</strong>
           </Typography>
           <Divider sx={{ mb: 2 }} />

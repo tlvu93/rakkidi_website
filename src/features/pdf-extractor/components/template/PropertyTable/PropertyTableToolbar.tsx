@@ -82,8 +82,10 @@ const PropertyTableToolbar: React.FC = () => {
             anchorEl={anchorEl}
             open={open}
             onClose={handleMenuClose}
-            MenuListProps={{
-              'aria-labelledby': 'add-field-button'
+            slotProps={{
+              list: {
+                'aria-labelledby': 'add-field-button'
+              }
             }}
           >
             <MenuItem

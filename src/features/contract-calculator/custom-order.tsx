@@ -191,10 +191,12 @@ const CustomOrder: FC<CustomOrderProps> = ({ onItemAdded }): ReactElement => {
                     <TextField
                       label="Amount"
                       type="text"
-                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                       {...register('amount')}
                       error={!!errors.amount}
                       helperText={errors.amount?.message}
+                      slotProps={{
+                        htmlInput: { inputMode: 'numeric', pattern: '[0-9]*' }
+                      }}
                     />
                     <FormControl error={!!errors.type}>
                       <InputLabel>Type</InputLabel>
@@ -232,18 +234,22 @@ const CustomOrder: FC<CustomOrderProps> = ({ onItemAdded }): ReactElement => {
                     <TextField
                       label="Height (mm)"
                       type="text"
-                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                       {...register('height')}
                       error={!!errors.height}
                       helperText={errors.height?.message}
+                      slotProps={{
+                        htmlInput: { inputMode: 'numeric', pattern: '[0-9]*' }
+                      }}
                     />
                     <TextField
                       label="Width (mm)"
                       type="text"
-                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                       {...register('width')}
                       error={!!errors.width}
                       helperText={errors.width?.message}
+                      slotProps={{
+                        htmlInput: { inputMode: 'numeric', pattern: '[0-9]*' }
+                      }}
                     />
                   </div>
 

@@ -1,0 +1,15 @@
+# Keep line endings deterministic across Windows/macOS/Linux checkouts.
+* text=auto eol=lf
+
+# Binary assets git should never touch.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+
+# Generated - keep out of diffs and language stats.
+yarn.lock -diff linguist-generated

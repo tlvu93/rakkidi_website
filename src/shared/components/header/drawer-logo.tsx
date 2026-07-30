@@ -11,7 +11,10 @@ type Props = {
   drawerOpen: boolean;
 };
 
-const DrawerLogo = ({ toggleDrawer, drawerOpen }: Props): React.ReactElement => {
+const DrawerLogo = ({
+  toggleDrawer,
+  drawerOpen
+}: Props): React.ReactElement => {
   return (
     <Box
       sx={{

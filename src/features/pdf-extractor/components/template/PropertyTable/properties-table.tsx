@@ -187,7 +187,7 @@ export default function PropertiesTable(): React.ReactElement {
         editable: true,
         renderCell: (params: CustomRenderCellParams): string | number =>
           params.row.type === ExtractionFieldType.Keyword
-            ? params.value ?? 200
+            ? (params.value ?? 200)
             : '-',
         renderEditCell: (params): React.ReactElement => (
           <TextField
@@ -204,14 +204,6 @@ export default function PropertiesTable(): React.ReactElement {
                 true
               );
             }}
-            inputProps={{
-              step: 50,
-              min: 0,
-              style: {
-                padding: '0 16px',
-                height: '100%'
-              }
-            }}
             variant="standard"
             sx={{
               width: '100%',
@@ -223,6 +215,16 @@ export default function PropertiesTable(): React.ReactElement {
                 '&::-webkit-inner-spin-button': {
                   opacity: 1,
                   marginLeft: '8px'
+                }
+              }
+            }}
+            slotProps={{
+              htmlInput: {
+                step: 50,
+                min: 0,
+                style: {
+                  padding: '0 16px',
+                  height: '100%'
                 }
               }
             }}
