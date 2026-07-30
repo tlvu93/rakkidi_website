@@ -6,5 +6,5 @@
 export { default as useFlip } from './useFlip';
 export type { UseFlipReturn } from './useFlip';
 
-// When adding new hooks, export them here
-// Example: export { default as useDebounce } from './useDebounce';
+export { default as useDisclosure } from './useDisclosure';
+export type { UseDisclosureReturn } from './useDisclosure';

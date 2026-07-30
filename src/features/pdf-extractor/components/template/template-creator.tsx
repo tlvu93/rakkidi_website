@@ -24,18 +24,14 @@ interface TemplateCreatorProps {
   isSaving?: boolean;
 }
 
-const TemplateCreatorInner = ({
+const TemplateCreator = ({
   selectedTemplate,
   onSubmit,
   onCancel,
   isSaving = false
 }: TemplateCreatorProps): React.ReactElement => {
   const { template } = useTemplate();
-  const formMethods = useTemplateForm({
-    selectedTemplate,
-    onSubmit,
-    currentFields: template.extractionFields
-  });
+  const formMethods = useTemplateForm({ selectedTemplate });
 
   const onSubmitHandler = formMethods.handleSubmit((data): void => {
     onSubmit({
@@ -128,10 +124,6 @@ const TemplateCreatorInner = ({
       </Box>
     </Box>
   );
-};
-
-const TemplateCreator = (props: TemplateCreatorProps): React.ReactElement => {
-  return <TemplateCreatorInner {...props} />;
 };
 
 export default TemplateCreator;

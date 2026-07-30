@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { PDFExtractTemplate, ExtractionField } from '../interfaces';
+import { PDFExtractTemplate } from '../interfaces';
 
 const defaultTemplate: PDFExtractTemplate = {
   name: 'New Template',
@@ -10,15 +10,18 @@ const defaultTemplate: PDFExtractTemplate = {
 };
 
 export interface UseTemplateFormProps {
+  /** Template being edited, or `null` when creating a new one. */
   selectedTemplate: PDFExtractTemplate | null;
-  onSubmit: (template: PDFExtractTemplate) => void;
-  currentFields: ExtractionField[];
 }
 
 export type UseTemplateFormReturn = ReturnType<
   typeof useForm<PDFExtractTemplate>
 >;
 
+/**
+ * Wraps react-hook-form for the template name/description fields and keeps the
+ * form in sync when the edited template changes.
+ */
 export const useTemplateForm = ({
   selectedTemplate
 }: UseTemplateFormProps): UseTemplateFormReturn => {
@@ -27,13 +30,11 @@ export const useTemplateForm = ({
     mode: 'onChange'
   });
 
+  const { reset } = methods;
+
   useEffect(() => {
-    if (selectedTemplate) {
-      methods.reset(selectedTemplate);
-    } else {
-      methods.reset(defaultTemplate);
-    }
-  }, [selectedTemplate, methods]);
+    reset(selectedTemplate ?? defaultTemplate);
+  }, [selectedTemplate, reset]);
 
   return methods;
 };

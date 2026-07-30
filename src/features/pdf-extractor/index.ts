@@ -25,12 +25,7 @@ export {
 } from './hooks';
 
 // Utils
-export {
-  CoordinateTransformer,
-  visualizeCoordinates,
-  logCoordinateAnalysis,
-  type DebugVisualization
-} from './utils';
+export { CoordinateTransformer, type Coordinates } from './utils';
 
 // Interfaces
 export type {

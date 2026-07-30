@@ -78,20 +78,4 @@ export class CoordinateTransformer {
       height
     };
   }
-
-  /**
-   * Validates if coordinates are within page boundaries
-   */
-  static validateCoordinates(
-    coords: Coordinates,
-    pageWidth: number,
-    pageHeight: number
-  ): boolean {
-    return (
-      coords.x >= 0 &&
-      coords.y >= 0 &&
-      coords.x + coords.width <= pageWidth &&
-      coords.y + coords.height <= pageHeight
-    );
-  }
 }

@@ -9,9 +9,19 @@ import {
   ExtractionFieldType
 } from 'features/pdf-extractor/interfaces';
 
-import { visualizeCoordinates, logCoordinateAnalysis } from './debug-helpers';
-
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+
+/** Returned when a keyword field cannot be resolved against a document. */
+export const NO_MATCH = 'No match found';
+
+/** Max Y delta (PDF units) for two tokens to count as being on one baseline. */
+const SAME_LINE_TOLERANCE = 10;
+/** Max Y delta below a keyword that is still considered "the next line". */
+const BELOW_LINE_TOLERANCE = 20;
+/** Max X delta for a token to count as being in the keyword's column. */
+const COLUMN_ALIGN_TOLERANCE = 50;
+/** Below this delta two tokens are treated as co-located on that axis. */
+const CO_LOCATED_TOLERANCE = 5;
 
 interface ExtendedTextContent extends TextContent {
   viewport?: {
@@ -108,15 +118,6 @@ export const getTextFromAreaTemplate = async (
   const rectWidth = width || 0;
   const rectHeight = height || 0;
 
-  // Use debug helpers to analyze coordinate systems
-  const debug = visualizeCoordinates(text, {
-    transform: tf,
-    width: rectWidth,
-    height: rectHeight
-  });
-
-  logCoordinateAnalysis(debug);
-
   // Calculate boundaries in PDF coordinate system
   const xStart = x;
   const xEnd = x + rectWidth;
@@ -162,26 +163,15 @@ export const getTextFromKeyword = async (
   const textItems = text.items as TextItem[];
 
   // Find the keyword in the text content
-  let keywordIndex = -1;
-  let keywordItem: TextItem | null = null;
+  const keywordIndex = textItems.findIndex((item) =>
+    item.str.includes(field.keyword as string)
+  );
 
-  console.log('textItems', textItems);
-  for (let i = 0; i < textItems.length; i++) {
-    if (textItems[i].str.includes(field.keyword)) {
-      keywordIndex = i;
-      keywordItem = textItems[i];
-      console.log(
-        `Found keyword "${field.keyword}" at index ${i}:`,
-        textItems[i].str
-      );
-      break;
-    }
+  if (keywordIndex === -1) {
+    return NO_MATCH;
   }
 
-  if (keywordIndex === -1 || !keywordItem) {
-    console.log(`Keyword "${field.keyword}" not found in document`);
-    return 'No match found';
-  }
+  const keywordItem = textItems[keywordIndex];
 
   const maxDistance = field.maxDistance || 200;
   const keywordX = keywordItem.transform[TransformIndex.X];
@@ -195,117 +185,44 @@ export const getTextFromKeyword = async (
     const itemY = item.transform[TransformIndex.Y];
 
     if (field.searchDirection === 'right') {
-      // Check if item is on the same line (tighter tolerance)
-      const sameLineY = Math.abs(itemY - keywordY) < 10;
-      // Check if item is to the right and within maxDistance
+      // Item must sit on the same baseline, to the right, within maxDistance
+      const sameLineY = Math.abs(itemY - keywordY) < SAME_LINE_TOLERANCE;
       const isToRight = itemX > keywordX;
       const withinDistance = itemX - keywordX <= maxDistance;
-      // Log coordinate comparison
-      console.log('Right direction check:', {
-        item: item.str,
-        yDiff: Math.abs(itemY - keywordY),
-        xDiff: itemX - keywordX,
-        sameLineY,
-        isToRight,
-        withinDistance,
-        maxDistance
-      });
       return sameLineY && isToRight && withinDistance;
-    } else {
-      // 'below' direction
-      // In PDF coordinates, higher Y values are lower on the page
-      // Check if item is below the keyword (Y value is less than keyword's Y)
-      const isBelow = itemY < keywordY;
-      // Check if item is within maxDistance below (tighter tolerance)
-      const withinYDistance = keywordY - itemY <= 20;
-      // Check if item is roughly aligned with keyword (tighter tolerance)
-      const alignedX = Math.abs(itemX - keywordX) < 50;
-      // Log coordinate comparison
-      console.log('Below direction check:', {
-        item: item.str,
-        yDiff: keywordY - itemY,
-        isBelow,
-        withinYDistance,
-        alignedX
-      });
-      return isBelow && withinYDistance && alignedX;
     }
+
+    // 'below' direction. In PDF coordinates the origin is bottom-left, so an
+    // item that is visually below the keyword has a *smaller* Y value.
+    const isBelow = itemY < keywordY;
+    const withinYDistance = keywordY - itemY <= BELOW_LINE_TOLERANCE;
+    const alignedX = Math.abs(itemX - keywordX) < COLUMN_ALIGN_TOLERANCE;
+    return isBelow && withinYDistance && alignedX;
   });
 
-  // Sort items by position and filter out items that might be part of other fields
-  const sortedItems = relevantItems.sort((a, b) => {
+  // Sort items into reading order for the chosen search direction. Items that
+  // are nearly co-located on the primary axis are ordered by the other axis so
+  // that e.g. the digits of a single number stay together.
+  const sortedItems = [...relevantItems].sort((a, b) => {
     if (field.searchDirection === 'right') {
-      // For right direction, sort by X coordinate
       const xDiff =
         a.transform[TransformIndex.X] - b.transform[TransformIndex.X];
-      // If items are very close horizontally, they might be part of the same number
-      if (Math.abs(xDiff) < 5) {
-        // Secondary sort by Y coordinate for items that are close horizontally
+      if (Math.abs(xDiff) < CO_LOCATED_TOLERANCE) {
         return b.transform[TransformIndex.Y] - a.transform[TransformIndex.Y];
       }
       return xDiff;
-    } else {
-      // For below direction, sort by Y coordinate
-      const yDiff =
-        b.transform[TransformIndex.Y] - a.transform[TransformIndex.Y];
-      // If items are very close vertically, they might be part of the same line
-      if (Math.abs(yDiff) < 5) {
-        // Secondary sort by X coordinate for items that are close vertically
-        return a.transform[TransformIndex.X] - b.transform[TransformIndex.X];
-      }
-      return yDiff;
     }
+
+    const yDiff = b.transform[TransformIndex.Y] - a.transform[TransformIndex.Y];
+    if (Math.abs(yDiff) < CO_LOCATED_TOLERANCE) {
+      return a.transform[TransformIndex.X] - b.transform[TransformIndex.X];
+    }
+    return yDiff;
   });
-  // .filter((item, index, array) => {
-  //   // Filter out items that are likely part of other fields
-  //   if (index === 0) return true;
-  //   const prevItem = array[index - 1];
-  //   const xDiff =
-  //     item.transform[TransformIndex.X] - prevItem.transform[TransformIndex.X];
-  //   const yDiff =
-  //     item.transform[TransformIndex.Y] - prevItem.transform[TransformIndex.Y];
 
-  //   // If items are very close, they're probably part of the same number/text
-  //   const closeX = Math.abs(xDiff) < 5;
-  //   const closeY = Math.abs(yDiff) < 5;
-  //   const isNumber = !isNaN(Number(item.str.trim()));
-  //   const prevIsNumber = !isNaN(Number(prevItem.str.trim()));
-
-  //   // Keep items that are either:
-  //   // 1. Close to previous item and both are numbers (part of same number)
-  //   // 2. Not too close to previous item (different field)
-  //   return (
-  //     (closeX && closeY && isNumber && prevIsNumber) || (!closeX && !closeY)
-  //   );
-  // });
-
-  // Filter out empty strings and return all relevant items concatenated
-  if (sortedItems.length > 0) {
-    const extractedText = sortedItems
-      .map((item) => {
-        console.log(`Including matched item: "${item.str}"`);
-        return item.str;
-      })
-      .join('');
-    console.log(
-      `Found values "${extractedText}" for keyword "${field.keyword}"`
-    );
-    return extractedText;
-  } else {
-    console.log(
-      `No matching text found ${field.searchDirection} of keyword "${field.keyword}"`
-    );
-    return 'No match found';
+  if (sortedItems.length === 0) {
+    return NO_MATCH;
   }
-};
 
-export const extractText = (
-  items: TextItem[],
-  start: number,
-  end: number
-): string =>
-  items
-    .slice(start, end)
-    .map((s) => s.str)
-    .join('')
-    .replace(/\s/g, '');
+  return sortedItems.map((item) => item.str).join('');
+};
