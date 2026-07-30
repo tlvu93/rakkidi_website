@@ -102,7 +102,7 @@ const useWMDService = (): WMDService => {
   ): Promise<void> => {
     try {
       const response = await axiosInstance.get(
-        `/PDFs/zip?startDate=${startDate.format(
+        `/invoices/zip?startDate=${startDate.format(
           'YYYY-MM-DD'
         )}&endDate=${endDate.format('YYYY-MM-DD')}`,
         {
