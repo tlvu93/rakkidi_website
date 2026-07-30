@@ -1,6 +1,6 @@
-import { faker } from '@faker-js/faker';
 import { TextContent } from 'pdfjs-dist/types/src/display/api';
 import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import {
   ExtractionField,
@@ -62,7 +62,7 @@ export const TemplateProvider: React.FC<TemplateProviderProps> = ({
     type: ExtractionFieldType = ExtractionFieldType.Rectangle
   ): void => {
     const baseField = {
-      id: faker.string.uuid(),
+      id: uuidv4(),
       name: `Field ${template.extractionFields.length + 1}`,
       type,
       page: null
