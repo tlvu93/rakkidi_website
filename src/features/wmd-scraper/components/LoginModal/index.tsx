@@ -1,90 +1,91 @@
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
-import { FormEvent, useState } from 'react';
+import { FormEvent } from 'react';
 
-const style = {
+const modalStyle = {
   position: 'absolute' as const,
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: { xs: '90%', sm: 400 },
+  maxWidth: 400,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  borderRadius: 2,
   boxShadow: 24,
   p: 4
 };
 
-interface LoginModalProps {
+export interface LoginModalProps {
+  open: boolean;
+  onClose: () => void;
   login: (user: string, password: string) => void;
 }
 
-interface LoginModalHookResult {
-  LoginModal: React.FC<LoginModalProps>;
-  open: boolean;
-  handleOpen: () => void;
-  handleClose: () => void;
-}
+/**
+ * Credential prompt for the WMD portal.
+ *
+ * Defined at module scope on purpose: when this lived inside a hook body it
+ * was a brand new component type on every parent render, so React unmounted
+ * and remounted the modal — discarding whatever had been typed into it.
+ */
+const LoginModal = ({
+  open,
+  onClose,
+  login
+}: LoginModalProps): React.ReactElement => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
 
-const useLoginModal = (defaultOpen: boolean): LoginModalHookResult => {
-  const [open, setOpen] = useState(defaultOpen);
-  const handleOpen = (): void => setOpen(true);
-  const handleClose = (): void => setOpen(false);
-  const LoginModal: React.FC<LoginModalProps> = ({
-    login
-  }): React.ReactElement => {
-    const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
-      event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const user = data.get('user');
+    const password = data.get('password');
 
-      const data = new FormData(event.currentTarget);
-      const user = data.get('user');
-      const password = data.get('password');
+    if (typeof user === 'string' && typeof password === 'string') {
+      login(user, password);
+    }
 
-      if (user && password) {
-        login(user as string, password as string);
-      }
-
-      handleClose();
-    };
-    return (
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
-          >
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Login with your WMD Account
-            </Typography>
-            <TextField
-              id="user"
-              label="Kundennummer"
-              name="user"
-              variant="outlined"
-              required
-            />
-            <TextField
-              id="password"
-              label="Password"
-              name="password"
-              type="password"
-              variant="outlined"
-              required
-            />
-            <Button type={'submit'} variant="contained" color="secondary">
-              Submit
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
-    );
+    onClose();
   };
 
-  return { LoginModal, open, handleOpen, handleClose };
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby="wmd-login-modal-title"
+    >
+      <Box sx={modalStyle}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
+        >
+          <Typography id="wmd-login-modal-title" variant="h6" component="h2">
+            Login with your WMD Account
+          </Typography>
+          <TextField
+            id="wmd-user"
+            label="Kundennummer"
+            name="user"
+            autoComplete="username"
+            variant="outlined"
+            required
+            autoFocus
+          />
+          <TextField
+            id="wmd-password"
+            label="Password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            variant="outlined"
+            required
+          />
+          <Button type="submit" variant="contained" color="secondary">
+            Submit
+          </Button>
+        </Box>
+      </Box>
+    </Modal>
+  );
 };
 
-export default useLoginModal;
+export default LoginModal;

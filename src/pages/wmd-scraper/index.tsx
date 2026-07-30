@@ -10,10 +10,11 @@ import moment, { Moment } from 'moment';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
+import { useDisclosure } from '@shared/hooks';
 import AppLayout from '@shared/layouts/app-layout';
 import DateRangePicker from 'features/wmd-scraper/components/DateRangePicker';
 import DownloadButtons from 'features/wmd-scraper/components/DownloadButtons';
-import useLoginModal from 'features/wmd-scraper/components/LoginModal';
+import LoginModal from 'features/wmd-scraper/components/LoginModal';
 import ScraperProgressWS from 'features/wmd-scraper/components/ScraperProgressWS';
 import useWMDService from 'features/wmd-scraper/hooks/useWMDService';
 
@@ -42,7 +43,11 @@ const WMDScraper = (): React.ReactElement => {
   } = useWMDService();
 
   const theme = useTheme();
-  const { LoginModal, handleOpen } = useLoginModal(isAuthenticated);
+  const {
+    opened: loginOpen,
+    open: openLogin,
+    close: closeLogin
+  } = useDisclosure();
 
   const downloadPDFZipped = (): void => {
     if (!dateRange.dateFrom || !dateRange.dateTo) {
@@ -50,7 +55,7 @@ const WMDScraper = (): React.ReactElement => {
       return;
     }
 
-    getPDFsZipped(dateRange.dateFrom, dateRange.dateTo);
+    void getPDFsZipped(dateRange.dateFrom, dateRange.dateTo);
   };
 
   const submitTriggerScraper = (): void => {
@@ -60,13 +65,13 @@ const WMDScraper = (): React.ReactElement => {
       return;
     }
 
-    triggerScraper(dateRange.dateFrom, dateRange.dateTo);
+    void triggerScraper(dateRange.dateFrom, dateRange.dateTo);
   };
 
   return (
     <>
       <AppLayout>
-        <LoginModal login={login} />
+        <LoginModal open={loginOpen} onClose={closeLogin} login={login} />
         <Container maxWidth="sm">
           <Box
             sx={{
@@ -135,7 +140,7 @@ const WMDScraper = (): React.ReactElement => {
                   <Button
                     variant="contained"
                     color="secondary"
-                    onClick={() => handleOpen()}
+                    onClick={openLogin}
                   >
                     Login
                   </Button>

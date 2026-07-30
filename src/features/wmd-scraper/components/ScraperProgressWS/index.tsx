@@ -22,15 +22,20 @@ export type ProgressData = {
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
 ): React.ReactElement {
+  const rounded = Math.round(props.value);
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Box sx={{ width: '100%', mr: 1 }}>
-        <LinearProgress variant="determinate" {...props} />
+        <LinearProgress
+          variant="determinate"
+          aria-label="Scraping progress"
+          {...props}
+        />
       </Box>
       <Box sx={{ minWidth: 35 }}>
-        <Typography variant="body2" color="text.secondary">{`${Math.round(
-          props.value
-        )}%`}</Typography>
+        <Typography variant="body2" color="text.secondary">
+          {`${rounded}%`}
+        </Typography>
       </Box>
     </Box>
   );
@@ -42,53 +47,68 @@ type Props = {
   setScrapingSuccess: (scrapingSuccess: boolean) => void;
 };
 
+const isProgressData = (value: unknown): value is ProgressData => {
+  if (typeof value !== 'object' || value === null) return false;
+  const candidate = value as Record<string, unknown>;
+  return (
+    typeof candidate.status === 'string' &&
+    typeof candidate.progress === 'number' &&
+    typeof candidate.message === 'string'
+  );
+};
+
 const ScraperProgressWS = ({
   isScraping,
   setIsScraping,
   setScrapingSuccess
-}: Props): React.ReactElement => {
+}: Props): React.ReactElement | null => {
   const [progressData, setProgressData] = useState<ProgressData>();
 
   useWebSocket(WS_URL, {
-    onOpen: (): void => {
-      console.log('WebSocket connection established.');
-    },
+    shouldReconnect: () => true,
     onMessage: (event): void => {
-      const dataString: string = event.data;
+      if (typeof event.data !== 'string') return;
 
-      if (dataString.startsWith('{"status"')) {
-        const data: ProgressData = JSON.parse(dataString);
-
-        setProgressData(data);
-
-        if (data.status === 'scraping') setIsScraping(true);
-        else if (data.status === 'finished') {
-          setIsScraping(false);
-          setScrapingSuccess(true);
-        }
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(event.data);
+      } catch {
+        // The server also emits non-JSON keep-alive frames; ignore them.
+        return;
       }
-      onerror = (error): void => {
-        toast.error('WebSocket error: ' + error);
-        setIsScraping(false);
-      };
 
-      onclose = (): void => {
-        console.log('Disconnected from the WebSocket server');
+      if (!isProgressData(parsed)) return;
+
+      setProgressData(parsed);
+
+      if (parsed.status === 'scraping') {
+        setIsScraping(true);
+      } else if (parsed.status === 'finished') {
         setIsScraping(false);
-      };
+        setScrapingSuccess(true);
+      }
+    },
+    onError: (): void => {
+      toast.error('Lost the connection to the scraper.');
+      setIsScraping(false);
+    },
+    onClose: (): void => {
+      setIsScraping(false);
     }
   });
 
-  if (isScraping)
-    return (
-      <>
-        <Typography variant="h6" gutterBottom>
-          Scraping progress: {progressData?.message}
-        </Typography>
-        <LinearProgressWithLabel value={progressData?.progress || 0} />
-      </>
-    );
-  else return <></>;
+  if (!isScraping) return null;
+
+  const progress = progressData?.progress ?? 0;
+
+  return (
+    <Box role="status" aria-live="polite">
+      <Typography variant="h6" gutterBottom>
+        Scraping progress: {progressData?.message ?? 'Starting…'}
+      </Typography>
+      <LinearProgressWithLabel value={progress} />
+    </Box>
+  );
 };
 
 export default ScraperProgressWS;

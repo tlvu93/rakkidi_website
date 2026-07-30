@@ -4,7 +4,6 @@ import { ToastContainer } from 'react-toastify';
 
 import Header from '@shared/components/header/header';
 import Sidebar from '@shared/components/sidebar/sidebar';
-import { ToggleDrawer } from '@shared/interfaces/ui';
 import { ColorModeContext } from '@shared/styles/theme/theme';
 import { layoutDimension } from 'config/ui-config';
 
@@ -12,7 +11,7 @@ interface AppLayoutProps {
   children: React.ReactNode;
 }
 
-const AppLayout = (props: AppLayoutProps): React.ReactElement => {
+const AppLayout = ({ children }: AppLayoutProps): React.ReactElement => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('xl'));
   const colorMode = useContext(ColorModeContext);
@@ -28,43 +27,16 @@ const AppLayout = (props: AppLayoutProps): React.ReactElement => {
     setDrawerOpen(getInitialDrawerState);
   }, [getInitialDrawerState]);
 
-  const toggleDrawer: ToggleDrawer = () => (event) => {
-    if (
-      event.type === 'keydown' &&
-      ((event as React.KeyboardEvent).key === 'Tab' ||
-        (event as React.KeyboardEvent).key === 'Shift')
-    ) {
-      return;
-    }
-    setDrawerOpen(!drawerOpen);
-  };
+  const toggleDrawer = useCallback((): void => {
+    setDrawerOpen((prev) => !prev);
+  }, []);
 
-  const MainApp = (props: React.PropsWithChildren): React.ReactElement => (
-    <Box
-      paddingX={4}
-      paddingY={8}
-      flexGrow={1}
-      sx={{
-        transition: theme.transitions.create('margin', {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen
-        }),
-        // marginTop: `${layoutDimension.headerHeight}px`,
-        ...(drawerOpen && {
-          transition: theme.transitions.create('margin', {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen
-          }),
-          marginLeft: `${layoutDimension.drawerWidth}px`
-        })
-      }}
-    >
-      {props.children}
-    </Box>
-  );
+  const closeDrawer = useCallback((): void => {
+    setDrawerOpen(false);
+  }, []);
 
   return (
-    <div>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <ToastContainer
         position="top-right"
         autoClose={1500}
@@ -75,15 +47,42 @@ const AppLayout = (props: AppLayoutProps): React.ReactElement => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="dark"
+        theme={theme.palette.mode}
       />
       <Header
+        drawerOpen={drawerOpen}
         toggleDrawer={toggleDrawer}
         toggleColorMode={colorMode.toggleColorMode}
       />
-      <Sidebar drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
-      <MainApp>{props.children}</MainApp>
-    </div>
+      <Sidebar
+        drawerOpen={drawerOpen}
+        toggleDrawer={toggleDrawer}
+        closeDrawer={closeDrawer}
+      />
+      {/* Previously this Box lived in a `MainApp` component declared inside
+          the render body, which gave it a new component type on every render
+          and therefore remounted the whole page subtree (losing all of its
+          state) whenever the layout re-rendered. */}
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          px: { xs: 2, sm: 3, md: 4 },
+          py: { xs: 4, md: 8 },
+          transition: theme.transitions.create('margin', {
+            easing: drawerOpen
+              ? theme.transitions.easing.easeOut
+              : theme.transitions.easing.sharp,
+            duration: drawerOpen
+              ? theme.transitions.duration.enteringScreen
+              : theme.transitions.duration.leavingScreen
+          }),
+          marginLeft: drawerOpen ? `${layoutDimension.drawerWidth}px` : 0
+        }}
+      >
+        {children}
+      </Box>
+    </Box>
   );
 };
 

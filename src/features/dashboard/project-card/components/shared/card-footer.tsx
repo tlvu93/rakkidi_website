@@ -21,18 +21,20 @@ export const CardFooter: React.FC<CardFooterProps> = ({
         justifyContent: 'center'
       }}
     >
-      <Typography variant="h6">{title}</Typography>
-      <div>
-        {tags.map((tag) => (
-          <Typography
-            key={tag.title}
-            variant="caption"
-            sx={{ whiteSpace: 'nowrap' }}
-          >
-            {`${tag.title}, `}
-          </Typography>
-        ))}
-      </div>
+      <Typography variant="h6" component="h3">
+        {title}
+      </Typography>
+      {tags.length > 0 && (
+        // Joining beats mapping here: the previous version appended a comma
+        // after every tag, including the last one.
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ display: 'block' }}
+        >
+          {tags.map((tag) => tag.title).join(', ')}
+        </Typography>
+      )}
     </div>
   );
 };

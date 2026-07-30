@@ -1,6 +1,6 @@
 import LinkIcon from '@mui/icons-material/Link';
 import PublicIcon from '@mui/icons-material/Public';
-import { Box } from '@mui/material';
+import { Box, Link as MuiLink } from '@mui/material';
 import React from 'react';
 
 import FigmaSVG from '@assets/figma_logo.svg';
@@ -21,6 +21,12 @@ const WEBLINK_ICONS = {
   Default: LinkIcon
 } as const;
 
+const SVG_ICON_TITLES = ['Figma', 'Github'];
+
+/** Normalises a Sanity-authored URL to an absolute https URL. */
+const toAbsoluteUrl = (url: string): string =>
+  /^https?:\/\//i.test(url) ? url : `https://${url}`;
+
 type WebLinkProps = {
   link: WeblinkData;
 };
@@ -28,31 +34,48 @@ type WebLinkProps = {
 export const Weblink: React.FC<WebLinkProps> = ({
   link
 }): React.ReactElement => {
-  const handleClick = (e: React.MouseEvent): void => {
-    e.stopPropagation();
-    window.open(
-      link.url.startsWith('http') ? link.url : `http://${link.url}`,
-      '_blank'
-    );
-  };
-
   const Icon =
-    WEBLINK_ICONS[link.type.title as keyof typeof WEBLINK_ICONS] ||
+    WEBLINK_ICONS[link.type.title as keyof typeof WEBLINK_ICONS] ??
     WEBLINK_ICONS.Default;
-  const isSvgIcon = link.type.title === 'Figma' || link.type.title === 'Github';
+  const isSvgIcon = SVG_ICON_TITLES.includes(link.type.title);
 
   return (
-    <Box sx={iconContainerStyle}>
+    <MuiLink
+      href={toAbsoluteUrl(link.url)}
+      target="_blank"
+      // noopener denies the opened tab access to window.opener; without it the
+      // target page can navigate this one (reverse tabnabbing).
+      rel="noopener noreferrer"
+      aria-label={`${link.type.title} (opens in a new tab)`}
+      // The card behind this is itself clickable (it flips); stop the click and
+      // the keyboard activation from also flipping it.
+      onClick={(event) => event.stopPropagation()}
+      onKeyDown={(event) => event.stopPropagation()}
+      sx={{
+        ...iconContainerStyle,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'inherit',
+        borderRadius: 1,
+        '&:focus-visible': {
+          outline: '2px solid',
+          outlineColor: 'primary.main',
+          outlineOffset: 2
+        }
+      }}
+    >
       {isSvgIcon ? (
         <Icon
           style={svgIconStyle}
           preserveAspectRatio="xMidYMid meet"
-          onClick={handleClick}
+          aria-hidden="true"
+          focusable="false"
         />
       ) : (
-        <Icon onClick={handleClick} sx={iconContainerStyle} />
+        <Icon sx={iconContainerStyle} aria-hidden="true" />
       )}
-    </Box>
+    </MuiLink>
   );
 };
 
@@ -62,12 +85,16 @@ export const Weblinks: React.FC<ProjectCardProps> = ({
   if (!data.weblinks?.length) return null;
 
   return (
-    <div style={weblinksContainerStyle}>
+    <Box component="ul" sx={{ ...weblinksContainerStyle, m: 0, p: 0 }}>
       {data.weblinks.map((link, index) => (
-        <Box key={`${link.url}_${index}`} sx={{ height: '5rem' }}>
+        <Box
+          component="li"
+          key={`${link.url}_${index}`}
+          sx={{ height: '5rem', listStyle: 'none' }}
+        >
           <Weblink link={link} />
         </Box>
       ))}
-    </div>
+    </Box>
   );
 };

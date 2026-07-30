@@ -6,13 +6,19 @@ import { cardStyle } from '../style/style';
 import { CardSection, ImageContainer } from './shared/card-section';
 import { Weblinks } from './weblinks';
 
-const CardBack: React.FC<ProjectCardProps> = ({ data }): React.ReactElement => {
+type CardBackProps = ProjectCardProps & React.HTMLAttributes<HTMLDivElement>;
+
+const CardBack: React.FC<CardBackProps> = ({
+  data,
+  ...rest
+}): React.ReactElement => {
   return (
     <Card
       sx={{
         ...cardStyle,
         transform: 'rotateY(180deg)'
       }}
+      {...rest}
     >
       <ImageContainer>
         <Box
@@ -25,7 +31,7 @@ const CardBack: React.FC<ProjectCardProps> = ({ data }): React.ReactElement => {
             flexDirection: 'column'
           }}
         >
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" component="h3" gutterBottom>
             {data.title}
           </Typography>
           <Box
@@ -41,7 +47,7 @@ const CardBack: React.FC<ProjectCardProps> = ({ data }): React.ReactElement => {
         </Box>
       </ImageContainer>
       <CardSection hasBorder>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" component="h4" gutterBottom>
           Tags
         </Typography>
         <Box
@@ -51,14 +57,20 @@ const CardBack: React.FC<ProjectCardProps> = ({ data }): React.ReactElement => {
             flexWrap: 'wrap'
           }}
         >
-          {data.tags?.map((tag, index) => (
-            <Chip
-              key={`${tag.title}_${index}`}
-              label={tag.title}
-              variant="outlined"
-              size="small"
-            />
-          ))}
+          {data.tags?.length ? (
+            data.tags.map((tag, index) => (
+              <Chip
+                key={`${tag.title}_${index}`}
+                label={tag.title}
+                variant="outlined"
+                size="small"
+              />
+            ))
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              No tags
+            </Typography>
+          )}
         </Box>
       </CardSection>
     </Card>

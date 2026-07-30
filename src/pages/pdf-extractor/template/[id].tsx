@@ -1,8 +1,20 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Box, IconButton, Typography, CircularProgress } from '@mui/material';
+import {
+  Alert,
+  Box,
+  IconButton,
+  Typography,
+  CircularProgress
+} from '@mui/material';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useMemo, useState, Suspense } from 'react';
+import React, {
+  ReactElement,
+  useEffect,
+  useMemo,
+  useState,
+  Suspense
+} from 'react';
 
 import { useTemplateManagement } from 'features/pdf-extractor';
 import { ErrorBoundary } from 'features/pdf-extractor/components/ErrorBoundary/error-boundary';
@@ -18,37 +30,46 @@ const TemplatePageContent = (): ReactElement => {
   const { templates, addTemplate, updateTemplate, isLoading } =
     useTemplateManagement();
 
+  const isNewTemplate = id === 'new';
+
   const selectedTemplate = useMemo(() => {
-    if (!id || id === 'new' || isLoading) return null;
-    const template = templates.find((t) => t.name === id);
-    if (!template && !isLoading) {
-      // Template not found after loading completed
-      router.push('/pdf-extractor');
-      return null;
-    }
-    return template ?? null;
-  }, [id, templates, isLoading, router]);
+    if (!id || isNewTemplate || isLoading) return null;
+    return templates.find((t) => t.name === id) ?? null;
+  }, [id, isNewTemplate, templates, isLoading]);
+
+  // Navigating is a side effect and must not happen while rendering, so this
+  // cannot live in the useMemo above.
+  useEffect(() => {
+    if (!id || isNewTemplate || isLoading || selectedTemplate) return;
+    void router.replace('/pdf-extractor');
+  }, [id, isNewTemplate, isLoading, selectedTemplate, router]);
 
   const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const handleSubmit = async (template: PDFExtractTemplate): Promise<void> => {
+    setSaveError(null);
+    setIsSaving(true);
     try {
-      setIsSaving(true);
-      if (id === 'new') {
+      if (isNewTemplate) {
         await addTemplate(template);
       } else {
         await updateTemplate(template);
       }
-      router.push('/pdf-extractor');
+      await router.push('/pdf-extractor');
     } catch (error) {
-      console.error('Error saving template:', error);
+      setSaveError(
+        error instanceof Error
+          ? error.message
+          : 'The template could not be saved.'
+      );
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleCancel = (): void => {
-    router.push('/pdf-extractor');
+    void router.push('/pdf-extractor');
   };
 
   const direction = useNavigationDirection();
@@ -76,10 +97,16 @@ const TemplatePageContent = (): ReactElement => {
           <IconButton onClick={handleCancel} sx={{ mr: 2 }} aria-label="back">
             <ArrowBackIcon />
           </IconButton>
-          <Typography variant="h4">
-            {id === 'new' ? 'Create Template' : 'Edit Template'}
+          <Typography variant="h4" component="h1">
+            {isNewTemplate ? 'Create Template' : 'Edit Template'}
           </Typography>
         </Box>
+
+        {saveError && (
+          <Alert severity="error" sx={{ mb: 3 }} onClose={() => setSaveError(null)}>
+            {saveError}
+          </Alert>
+        )}
 
         {isLoading ? (
           <Box

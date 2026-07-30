@@ -1,11 +1,10 @@
 import CalculateIcon from '@mui/icons-material/Calculate';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import DirtyLensOutlinedIcon from '@mui/icons-material/DirtyLensOutlined';
-import HomeIcon from '@mui/icons-material/Home';
 import MapIcon from '@mui/icons-material/Map';
-import MenuIcon from '@mui/icons-material/Menu';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
+import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -14,67 +13,48 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
 import Footer from '@shared/components/footer/footer';
 import { SidebarLink, ToggleDrawer } from '@shared/interfaces/ui';
-import { layoutDimension } from 'config/ui-config';
+import { SIDEBAR_ID, layoutDimension } from 'config/ui-config';
 
 import DrawerLogo from '../header/drawer-logo';
 
-const iconMap = {
-  HomeIcon: <HomeIcon />,
-  DashboardIcon: <DashboardIcon />,
-  MenuIcon: <MenuIcon />,
-  DirtyLensOutlinedIcon: <DirtyLensOutlinedIcon />,
-  CalculateIcon: <CalculateIcon />,
-  ReceiptIcon: <ReceiptIcon />,
-  MapIcon: <MapIcon />,
-  WMDScraperIcon: <SaveAsIcon />
-};
-
 const sidebarLinks: SidebarLink[] = [
-  { name: 'Dashboard', route: '/dashboard', icon: iconMap.DashboardIcon },
-  {
-    name: 'Site Plan',
-    route: '/siteplan',
-    icon: iconMap.MapIcon
-  },
+  { name: 'Dashboard', route: '/dashboard', icon: <DashboardIcon /> },
+  { name: 'Site Plan', route: '/siteplan', icon: <MapIcon /> },
   {
     name: 'Sticker Maker',
     route: '/sticker-maker',
-    icon: iconMap.DirtyLensOutlinedIcon
+    icon: <DirtyLensOutlinedIcon />
   },
   {
     name: 'Contract Calculator',
     route: '/contract-calculator',
-    icon: iconMap.CalculateIcon
+    icon: <CalculateIcon />
   },
-  {
-    name: 'PDF Extractor',
-    route: '/pdf-extractor',
-    icon: iconMap.ReceiptIcon
-  },
-  {
-    name: 'WMD - Scraper',
-    route: '/wmd-scraper',
-    icon: iconMap.WMDScraperIcon
-  }
+  { name: 'PDF Extractor', route: '/pdf-extractor', icon: <ReceiptIcon /> },
+  { name: 'WMD - Scraper', route: '/wmd-scraper', icon: <SaveAsIcon /> }
 ];
 
 interface SidebarProps {
   drawerOpen: boolean;
   toggleDrawer: ToggleDrawer;
+  closeDrawer: () => void;
 }
 
 const Sidebar = ({
   drawerOpen,
-  toggleDrawer
+  toggleDrawer,
+  closeDrawer
 }: SidebarProps): React.ReactElement => {
   const router = useRouter();
 
   return (
     <Drawer
+      id={SIDEBAR_ID}
       sx={{
         width: layoutDimension.drawerWidth,
         flexShrink: 0,
@@ -90,8 +70,7 @@ const Sidebar = ({
       variant="persistent"
       anchor="left"
       open={drawerOpen}
-      onClose={toggleDrawer(true)}
-      onKeyDown={toggleDrawer(false)}
+      onClose={closeDrawer}
     >
       <Divider />
       <Toolbar
@@ -100,28 +79,47 @@ const Sidebar = ({
           height: layoutDimension.headerHeight
         }}
       >
-        <DrawerLogo toggleDrawer={toggleDrawer} />
+        <DrawerLogo toggleDrawer={toggleDrawer} drawerOpen={drawerOpen} />
       </Toolbar>
-      {sidebarLinks.map((sidebarlink) => (
-        <List key={sidebarlink.name}>
-          <ListItem disablePadding key={sidebarlink.name}>
-            <ListItemButton
-              onClick={() => router.push(sidebarlink.route)}
-              sx={{
-                color: 'primary.contrastText'
-              }}
-            >
-              <ListItemIcon sx={{ color: 'primary.contrastText' }}>
-                {sidebarlink.icon}
-              </ListItemIcon>
-              <ListItemText primary={sidebarlink.name} />
-            </ListItemButton>
-          </ListItem>
+      {/* One <nav> around one <ul>: previously every link was its own <List>,
+          which told screen readers there were six one-item lists. */}
+      <Box
+        component="nav"
+        aria-label="Main navigation"
+        sx={{ flexGrow: 1, overflowY: 'auto' }}
+      >
+        <List>
+          {sidebarLinks.map((sidebarLink) => {
+            const isActive = router.pathname === sidebarLink.route;
+
+            return (
+              <ListItem disablePadding key={sidebarLink.route}>
+                <ListItemButton
+                  component={NextLink}
+                  href={sidebarLink.route}
+                  selected={isActive}
+                  aria-current={isActive ? 'page' : undefined}
+                  sx={{
+                    color: 'primary.contrastText',
+                    '&:focus-visible': {
+                      outline: '2px solid',
+                      outlineColor: 'primary.contrastText',
+                      outlineOffset: -2
+                    }
+                  }}
+                >
+                  <ListItemIcon sx={{ color: 'primary.contrastText' }}>
+                    {sidebarLink.icon}
+                  </ListItemIcon>
+                  <ListItemText primary={sidebarLink.name} />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
         </List>
-      ))}
+      </Box>
 
       <Divider />
-      <List></List>
       <Footer />
     </Drawer>
   );
