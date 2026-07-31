@@ -1,8 +1,7 @@
 import { Typography, List, ListItem, ListItemText, Box } from '@mui/material';
-import { FileWithPath } from 'react-dropzone';
 
 type AcceptedFilesProps = {
-  acceptedFiles: FileWithPath[];
+  acceptedFiles: File[];
 };
 
 const AcceptedFiles: React.FC<AcceptedFilesProps> = ({
@@ -17,9 +16,9 @@ const AcceptedFiles: React.FC<AcceptedFilesProps> = ({
       <Typography variant="h6">Accepted files</Typography>
       <List>
         {acceptedFiles.map((file) => (
-          <ListItem key={file.path} divider>
+          <ListItem key={file.name} divider>
             <ListItemText
-              primary={file.path}
+              primary={file.name}
               secondary={`${file.size} bytes`}
             />
           </ListItem>

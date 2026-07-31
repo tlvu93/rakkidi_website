@@ -16,13 +16,15 @@ import {
   FormHelperText
 } from '@mui/material';
 import { FC, ReactElement, SyntheticEvent, useCallback, useState } from 'react';
-import { FileWithPath, useDropzone } from 'react-dropzone';
+import { useDropzone } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
 
 import {
   Order,
+  OrderFormValues,
   OrderSchema,
-  OrderType
+  OrderType,
+  ParsedOrder
 } from '@shared/interfaces/contract-calculator';
 import { useAppDispatch } from 'hooks';
 
@@ -42,14 +44,17 @@ const CustomOrder: FC<CustomOrderProps> = ({ onItemAdded }): ReactElement => {
     handleSubmit,
     watch,
     formState: { errors }
-  } = useForm<Order>({
+    // The form holds raw strings; the resolver hands the parsed (numeric)
+    // order to the submit handler. react-hook-form models that as separate
+    // input and output types.
+  } = useForm<OrderFormValues, unknown, ParsedOrder>({
     resolver: zodResolver(OrderSchema),
     defaultValues: {
       type: OrderType.Folienplott
     }
   });
 
-  const submitOrder = (order: Order): void => {
+  const submitOrder = (order: ParsedOrder): void => {
     dispatch(addOrder(order as Order));
     onItemAdded?.();
   };
@@ -59,7 +64,7 @@ const CustomOrder: FC<CustomOrderProps> = ({ onItemAdded }): ReactElement => {
   };
 
   const onDrop = useCallback(
-    (acceptedFiles: FileWithPath[]): void => {
+    <T extends File>(acceptedFiles: T[]): void => {
       const promises = acceptedFiles.map(async (file) => {
         return getDimension(file);
       });

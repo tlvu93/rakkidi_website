@@ -6,18 +6,18 @@ import {
   useTheme
 } from '@mui/material';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useDropzone, FileWithPath, Accept, FileError } from 'react-dropzone';
+import { useDropzone, Accept, FileError } from 'react-dropzone';
 
 import { getStyles } from 'features/pdf-extractor/utils/styles';
 
 interface FileDropzoneProps {
-  onDrop: (acceptedFiles: FileWithPath[]) => void;
+  onDrop: (acceptedFiles: File[]) => void;
   accept?: Accept;
   maxFiles?: number;
   maxSize?: number;
   minSize?: number;
   onDropRejected?: (
-    fileRejections: Array<{ file: FileWithPath; errors: FileError[] }>
+    fileRejections: Array<{ file: File; errors: FileError[] }>
   ) => void;
 }
 
@@ -33,7 +33,8 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleDrop = useCallback(
-    (acceptedFiles: FileWithPath[]) => {
+    // react-dropzone 19 types the callback generically over the File subtype.
+    <T extends File>(acceptedFiles: T[]) => {
       setLoading(false); // Ensure loading is stopped immediately after drop
       onDrop(acceptedFiles);
     },

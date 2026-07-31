@@ -35,13 +35,21 @@ export const OrderSchema = z.object({
   name: z.string().min(1),
   height: z.string().transform((str) => parseFloat(str)),
   width: z.string().transform((str) => parseFloat(str)),
-  type: z.nativeEnum(OrderType),
+  type: z.enum(OrderType),
+  // The default has to sit on the string side of the transform: in zod 4
+  // `.default()` applies to a schema's *output*, so chaining it after the
+  // transform would require a number and never feed the parser.
   amount: z
     .string()
-    .transform((str) => parseFloat(str))
-    .default('1'),
+    .default('1')
+    .transform((str) => parseFloat(str)),
   customPrice: z
     .string()
     .transform((str) => parseFloat(str))
     .optional()
 });
+
+/** What the order form binds to: the fields are still raw input strings. */
+export type OrderFormValues = z.input<typeof OrderSchema>;
+/** What the schema produces once parsed: numbers, ready for the store. */
+export type ParsedOrder = z.output<typeof OrderSchema>;

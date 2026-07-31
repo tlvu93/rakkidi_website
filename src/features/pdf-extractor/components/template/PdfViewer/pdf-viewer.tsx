@@ -2,7 +2,6 @@ import { Box } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { TextContent } from 'pdfjs-dist/types/src/display/api';
 import React, { useState, useRef, useCallback, useMemo } from 'react';
-import { FileWithPath } from 'react-dropzone';
 import type { pdfjs } from 'react-pdf';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
@@ -59,7 +58,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ onTextContentChange }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const handleDrop = useCallback(
-    async (acceptedFiles: FileWithPath[]) => {
+    async (acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
         setError(undefined);
         setPdfFile(acceptedFiles[0]);

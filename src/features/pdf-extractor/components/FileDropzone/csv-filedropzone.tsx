@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import React, { useState, useCallback, useMemo } from 'react';
 import { CSVLink } from 'react-csv';
-import { FileWithPath } from 'react-dropzone';
 
 import {
   type TemplateCsvData,
@@ -27,14 +26,14 @@ import FileDropzone from './file-dropzone';
 const CSVFiledropzone: React.FC = () => {
   const { selectedTemplate } = useTemplateManagement();
   const [csvData, setCsvData] = useState<TemplateCsvData[]>([]);
-  const [acceptedFiles, setAcceptedFiles] = useState<FileWithPath[]>([]);
+  const [acceptedFiles, setAcceptedFiles] = useState<File[]>([]);
   type FileRejectionError = {
     code: string;
     message: string;
   };
 
   const [fileRejections, setFileRejections] = useState<
-    Array<{ file: FileWithPath; errors: FileRejectionError[] }>
+    Array<{ file: File; errors: FileRejectionError[] }>
   >([]);
 
   const headers = useMemo(() => {
@@ -46,7 +45,7 @@ const CSVFiledropzone: React.FC = () => {
   }, [selectedTemplate]);
 
   const handleDrop = useCallback(
-    async (acceptedFiles: FileWithPath[]) => {
+    async (acceptedFiles: File[]) => {
       if (!selectedTemplate) {
         console.error('No template selected');
         return;
@@ -76,7 +75,7 @@ const CSVFiledropzone: React.FC = () => {
   const handleRejected = useCallback(
     (
       fileRejections: Array<{
-        file: FileWithPath;
+        file: File;
         errors: FileRejectionError[];
       }>
     ) => {

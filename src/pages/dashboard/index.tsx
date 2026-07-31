@@ -26,11 +26,13 @@ const Dashboard: NextPage<DashboardProps> = ({ pageProps }) => {
 export async function getStaticProps(): Promise<{
   props: { groupedProjects: IProjectGroup };
 }> {
-  const { data }: { data: AllProjectResponse } = await client.query({
+  const { data } = await client.query<AllProjectResponse>({
     query: GET_PROJECTS
   });
 
-  const { allProject } = data;
+  // Apollo Client 4 types `data` as possibly undefined, so a failed or empty
+  // response no longer blows up the build with a destructuring TypeError.
+  const allProject = data?.allProject ?? [];
 
   const groupedProjects = allProject.reduce((acc, project) => {
     const { projectCategory } = project;

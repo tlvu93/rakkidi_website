@@ -1,4 +1,3 @@
-import { FileWithPath } from 'react-dropzone';
 import { toast } from 'react-toastify';
 import { decode, decodeImage } from 'utif';
 import { v4 as uuidv4 } from 'uuid';
@@ -8,8 +7,8 @@ import { Order, OrderType } from '@shared/interfaces/contract-calculator';
 const MM_PER_PIXEL = 0.0846526655896607;
 const MM_PER_POINT = 0.3527777777778; // 1pt = 25,4/72mm
 
-async function getDimensionFromImage(file: FileWithPath): Promise<Order> {
-  const getDimensionFromTif = async (file: FileWithPath): Promise<Order> => {
+async function getDimensionFromImage(file: File): Promise<Order> {
+  const getDimensionFromTif = async (file: File): Promise<Order> => {
     return new Promise<Order>((resolve) => {
       const reader = new FileReader();
       reader.onload = (event): void => {
@@ -37,9 +36,7 @@ async function getDimensionFromImage(file: FileWithPath): Promise<Order> {
     });
   };
 
-  const getDimensionFromOtherImages = async (
-    file: FileWithPath
-  ): Promise<Order> => {
+  const getDimensionFromOtherImages = async (file: File): Promise<Order> => {
     return new Promise<Order>((resolve) => {
       const img = new Image();
       img.onload = (): void => {
@@ -64,7 +61,7 @@ async function getDimensionFromImage(file: FileWithPath): Promise<Order> {
 }
 
 const getDimensionFromEPS = (
-  file: FileWithPath,
+  file: File,
   match: RegExpMatchArray
 ): Order | undefined => {
   const numbers = match[0].match(/[-?\d.]+/g);
@@ -106,7 +103,7 @@ const getDimensionFromEPS = (
   } as Order;
 };
 
-async function getDimensionFromOtherFiles(file: FileWithPath): Promise<Order> {
+async function getDimensionFromOtherFiles(file: File): Promise<Order> {
   return new Promise<Order>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e): void => {
@@ -131,7 +128,7 @@ async function getDimensionFromOtherFiles(file: FileWithPath): Promise<Order> {
   });
 }
 
-async function getDimensionFromPDF(file: FileWithPath): Promise<Order> {
+async function getDimensionFromPDF(file: File): Promise<Order> {
   try {
     // pdfjs-dist is a browser build: importing it at module scope crashes the
     // Next build when this page's data is collected in Node (no DOMMatrix).
@@ -159,7 +156,7 @@ async function getDimensionFromPDF(file: FileWithPath): Promise<Order> {
   }
 }
 
-export async function getDimension(file: FileWithPath): Promise<Order> {
+export async function getDimension(file: File): Promise<Order> {
   //1.1 Handle Image File [TIF, JPG, PNG...]
   if (file.type.includes('image')) {
     return await getDimensionFromImage(file);
