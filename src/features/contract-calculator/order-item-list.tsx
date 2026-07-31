@@ -22,13 +22,7 @@ import {
   MenuItem,
   FormControl
 } from '@mui/material';
-import React, {
-  ReactElement,
-  useState,
-  useEffect,
-  useCallback,
-  useMemo
-} from 'react';
+import { ReactElement, useState, useEffect, useCallback, useMemo } from 'react';
 
 import {
   Order,
@@ -56,7 +50,11 @@ const OrderList = (): ReactElement => {
   const [address2, setAddress2] = useState('Business City, 12345');
   const [invoiceNumber, setInvoiceNumber] = useState('INV-2025-001');
 
+  // Today's date is deliberately resolved after mount: this page is statically
+  // prerendered, so baking the build-time date into the markup would both go
+  // stale and mismatch on hydration.
   useEffect((): void => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration-safe read of the client clock
     setDate(new Date().toISOString().split('T')[0]);
   }, []);
 

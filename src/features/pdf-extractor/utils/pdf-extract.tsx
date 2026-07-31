@@ -1,6 +1,8 @@
-import { TextContent, TextItem } from 'pdfjs-dist/types/src/display/api';
-import { pdfjs } from 'react-pdf';
-import { DocumentInitParameters } from 'react-pdf/node_modules/pdfjs-dist/types/src/display/api';
+import {
+  DocumentInitParameters,
+  TextContent,
+  TextItem
+} from 'pdfjs-dist/types/src/display/api';
 
 import {
   PdfTransformationMatrix,
@@ -9,7 +11,7 @@ import {
   ExtractionFieldType
 } from 'features/pdf-extractor/interfaces';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+import { loadPdfjs } from './pdfjs-loader';
 
 /** Returned when a keyword field cannot be resolved against a document. */
 export const NO_MATCH = 'No match found';
@@ -35,6 +37,7 @@ export const getTextContentFromPDF = async (
   file: string | URL | ArrayBuffer | DocumentInitParameters | null
 ): Promise<ExtendedTextContent> => {
   try {
+    const pdfjs = await loadPdfjs();
     const loadingTask = pdfjs.getDocument(file as DocumentInitParameters);
     const loadedPDF = await loadingTask.promise;
     const firstPage = await loadedPDF.getPage(1);

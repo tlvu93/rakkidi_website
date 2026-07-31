@@ -1,16 +1,21 @@
+import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
 
 import { TemplateProvider } from 'features/pdf-extractor/contexts';
 
 import PropertiesTable from './properties-table';
 
-export default {
+const meta: Meta<typeof PropertiesTable> = {
   component: PropertiesTable,
   title: 'TemplateCreator/PropertiesTable',
   tags: ['autodocs']
 };
 
-export const Default = {
+export default meta;
+
+type Story = StoryObj<typeof PropertiesTable>;
+
+export const Default: Story = {
   args: {},
   decorators: [
     (Story: React.ComponentType): React.ReactElement => (

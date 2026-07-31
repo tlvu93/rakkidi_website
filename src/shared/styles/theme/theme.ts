@@ -34,7 +34,7 @@ const colors = {
   darkModeText: '#E0E0E0'
 };
 
-const getTheme = (mode: ThemeModes): ReturnType<typeof createTheme> => {
+export const getTheme = (mode: ThemeModes): ReturnType<typeof createTheme> => {
   const isLight = mode === 'light';
 
   const themeOptions: ThemeOptions = {
@@ -123,11 +123,15 @@ const useCustomTheme = (): UseCustomThemeReturn => {
   // Initialize the mode state without accessing localStorage directly
   const [mode, setMode] = useState<ThemeModes>('dark');
 
-  // Effect to set the initial theme mode from localStorage when in the browser
+  // The stored preference cannot be read during render: the server has no
+  // localStorage, so seeding useState from it would produce markup that does
+  // not match the client and break hydration. Reading it once after mount is
+  // the supported trade-off, hence the rule suppression.
   useEffect(() => {
     const storedThemeMode =
       typeof window !== 'undefined' ? localStorage.getItem('themeMode') : null;
     if (storedThemeMode) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration-safe read of a browser-only value
       setMode(storedThemeMode as ThemeModes);
     }
   }, []);

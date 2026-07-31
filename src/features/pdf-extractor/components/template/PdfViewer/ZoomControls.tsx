@@ -1,4 +1,5 @@
-import { ZoomIn, ZoomOut } from '@mui/icons-material';
+import ZoomIn from '@mui/icons-material/ZoomIn';
+import ZoomOut from '@mui/icons-material/ZoomOut';
 import { ButtonGroup, Button, Box } from '@mui/material';
 import { memo } from 'react';
 import type { FC, ReactElement } from 'react';

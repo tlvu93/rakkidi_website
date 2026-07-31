@@ -1,5 +1,5 @@
 import { Box, useTheme, useMediaQuery } from '@mui/material';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 
 import Header from '@shared/components/header/header';
@@ -16,16 +16,17 @@ const AppLayout = ({ children }: AppLayoutProps): React.ReactElement => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('xl'));
   const colorMode = useContext(ColorModeContext);
 
-  const getInitialDrawerState = useCallback(
-    () => !isSmallScreen,
-    [isSmallScreen]
-  );
+  const [drawerOpen, setDrawerOpen] = useState(!isSmallScreen);
+  const [lastIsSmallScreen, setLastIsSmallScreen] = useState(isSmallScreen);
 
-  const [drawerOpen, setDrawerOpen] = useState(getInitialDrawerState);
-
-  useEffect(() => {
-    setDrawerOpen(getInitialDrawerState);
-  }, [getInitialDrawerState]);
+  // The drawer follows the breakpoint, but stays user-toggleable in between.
+  // Adjusting during render (rather than in an effect) avoids rendering one
+  // frame with the stale value - see "Adjusting state when a prop changes" in
+  // the React docs.
+  if (lastIsSmallScreen !== isSmallScreen) {
+    setLastIsSmallScreen(isSmallScreen);
+    setDrawerOpen(!isSmallScreen);
+  }
 
   const toggleDrawer = useCallback((): void => {
     setDrawerOpen((prev) => !prev);

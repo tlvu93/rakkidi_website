@@ -1,28 +1,26 @@
+import type { Meta, StoryObj } from '@storybook/react';
+
 import FileDropzone from './file-dropzone';
 
-export default {
+const meta: Meta<typeof FileDropzone> = {
   component: FileDropzone,
   title: 'FileDropzone',
   tags: ['autodocs'],
   argTypes: {
     maxFiles: {
       control: 'number',
-      defaultValue: 5,
       description: 'The maximum number of files that can be dropped'
     },
     maxSize: {
       control: 'number',
-      defaultValue: 5000000,
       description: 'The maximum size of a single file (in bytes)'
     },
     minSize: {
       control: 'number',
-      defaultValue: 0,
       description: 'The minimum size of a single file (in bytes)'
     },
     accept: {
       control: 'object',
-      defaultValue: { 'application/pdf': ['.pdf'] },
       description: 'The file types that are accepted'
     },
     onDrop: {
@@ -33,23 +31,29 @@ export default {
       action: 'files rejected',
       description: 'Callback for handling rejected files'
     }
+  },
+  args: {
+    maxFiles: 5,
+    maxSize: 5_000_000,
+    minSize: 0,
+    accept: { 'application/pdf': ['.pdf'] }
   }
 };
 
-export const Default = {
-  args: {}
-};
+export default meta;
 
-export const SingleFileDropzone = {
+type Story = StoryObj<typeof FileDropzone>;
+
+export const Default: Story = {};
+
+export const SingleFile: Story = {
   args: {
-    maxFiles: 1,
-    description: 'A dropzone that only accepts a single file'
+    maxFiles: 1
   }
 };
 
-export const LargeFileDropzone = {
+export const LargeFiles: Story = {
   args: {
-    maxSize: 10000000,
-    description: 'A dropzone that accepts larger files up to 10MB'
+    maxSize: 10_000_000
   }
 };

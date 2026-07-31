@@ -1,6 +1,6 @@
-﻿import ErrorOutlineIcon from '@mui/icons-material/ErrorOutlined';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutlined';
 import { Box, Typography, Button } from '@mui/material';
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;

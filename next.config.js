@@ -1,13 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ['@svgr/webpack']
-    });
-    config.resolve.alias.canvas = false;
-
-    return config;
+  // Next 16 builds with Turbopack by default. The two things the old webpack()
+  // hook did are expressed natively below; keeping a webpack() hook would force
+  // every build back onto the slower bundler.
+  turbopack: {
+    rules: {
+      // Import .svg files as React components (see src/assets/*.svg).
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js'
+      }
+    }
   },
   reactStrictMode: true,
   images: {

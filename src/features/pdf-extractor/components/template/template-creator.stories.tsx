@@ -1,11 +1,17 @@
+import type { Meta, StoryObj } from '@storybook/react';
+
 import TemplateCreator from './template-creator';
 
-export default {
+const meta: Meta<typeof TemplateCreator> = {
   component: TemplateCreator,
   title: 'TemplateCreator',
   tags: ['autodocs']
 };
 
-export const Default = {
+export default meta;
+
+type Story = StoryObj<typeof TemplateCreator>;
+
+export const Default: Story = {
   args: {}
 };

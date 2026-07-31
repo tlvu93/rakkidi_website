@@ -8,13 +8,7 @@ import {
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
-import React, {
-  ReactElement,
-  useEffect,
-  useMemo,
-  useState,
-  Suspense
-} from 'react';
+import { ReactElement, useEffect, useMemo, useState, Suspense } from 'react';
 
 import { useTemplateManagement } from 'features/pdf-extractor';
 import { ErrorBoundary } from 'features/pdf-extractor/components/ErrorBoundary/error-boundary';

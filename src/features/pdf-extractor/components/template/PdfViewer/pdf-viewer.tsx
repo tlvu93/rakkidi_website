@@ -1,25 +1,17 @@
 import { Box } from '@mui/material';
+import dynamic from 'next/dynamic';
 import { TextContent } from 'pdfjs-dist/types/src/display/api';
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo
-} from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import { FileWithPath } from 'react-dropzone';
-import { Document, Page, pdfjs } from 'react-pdf';
+import type { pdfjs } from 'react-pdf';
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import { useTemplate } from 'features/pdf-extractor';
 import FileDropzone from 'features/pdf-extractor/components/FileDropzone/file-dropzone';
 import { getTextTokenFromPdfFile } from 'features/pdf-extractor/utils/pdf-extract';
 
-import PdfCanvasLayer from '../PdfCanvasLayer/pdf-canvas-layer';
-
 import { ErrorState } from './ErrorState';
 import { LoadingOverlay } from './LoadingOverlay';
-import useWindowResize from './useWindowResize';
 import ZoomControls from './ZoomControls';
 
 declare global {
@@ -28,7 +20,23 @@ declare global {
   }
 }
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+// react-pdf pulls in the browser build of pdf.js, which touches `DOMMatrix` at
+// module scope and therefore cannot be evaluated during Next's server render.
+const Document = dynamic(
+  () => import('react-pdf').then((mod) => mod.Document),
+  { ssr: false }
+);
+const Page = dynamic(() => import('react-pdf').then((mod) => mod.Page), {
+  ssr: false
+});
+
+// konva/react-konva resolve to their Node build on the server, which requires
+// the optional native `canvas` package. The overlay is interactive-only, so
+// keep it off the server entirely.
+const PdfCanvasLayer = dynamic(
+  () => import('../PdfCanvasLayer/pdf-canvas-layer'),
+  { ssr: false }
+);
 
 interface PdfViewerProps {
   onTextContentChange?: (textContent: TextContent) => void;
@@ -40,16 +48,12 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ onTextContentChange }) => {
   const [textContent, setTextContent] = useState<TextContent | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
+  // Unscaled page size, in PDF units. The current zoom is applied at render
+  // time rather than being mirrored into this state.
   const [pageDimensions, setPageDimensions] = useState({
     width: 0,
-    height: 0,
-    scale: 1
+    height: 0
   });
-
-  const [originalViewport, setOriginalViewport] = useState<{
-    width: number;
-    height: number;
-  }>({ width: 0, height: 0 });
 
   const [zoom, setZoom] = useState(1.0);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -87,33 +91,18 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ onTextContentChange }) => {
     console.error('PDF load error:', error);
   }, []);
 
-  const onPageRenderSuccess = useCallback(
-    async (page: pdfjs.PDFPageProxy) => {
-      const unscaledViewport = page.getViewport({ scale: 1 });
-      setOriginalViewport({
-        width: unscaledViewport.width,
-        height: unscaledViewport.height
-      });
+  const onPageRenderSuccess = useCallback((page: pdfjs.PDFPageProxy) => {
+    const unscaledViewport = page.getViewport({ scale: 1 });
+    setPageDimensions({
+      width: unscaledViewport.width,
+      height: unscaledViewport.height
+    });
+  }, []);
 
-      setPageDimensions({
-        width: unscaledViewport.width,
-        height: unscaledViewport.height,
-        scale: zoom
-      });
-    },
-    [zoom]
+  const canvasPageDimensions = useMemo(
+    () => ({ ...pageDimensions, scale: zoom }),
+    [pageDimensions, zoom]
   );
-
-  useWindowResize(() => {});
-
-  useEffect(() => {
-    if (pdfFile && originalViewport.width > 0) {
-      setPageDimensions((prevDimensions) => ({
-        ...prevDimensions,
-        scale: zoom
-      }));
-    }
-  }, [zoom, pdfFile, originalViewport.width]);
 
   const handleZoomIn = useCallback(() => {
     setZoom((prevZoom) => Math.min(prevZoom + 0.25, 2.0));
@@ -192,7 +181,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({ onTextContentChange }) => {
                 />
               </Document>
               <PdfCanvasLayer
-                pageDimensions={pageDimensions}
+                pageDimensions={canvasPageDimensions}
                 zoom={zoom}
                 textContent={textContent}
                 showTokens={showTextTokens}

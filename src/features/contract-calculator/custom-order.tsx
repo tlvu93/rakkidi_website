@@ -15,13 +15,7 @@ import {
   InputLabel,
   FormHelperText
 } from '@mui/material';
-import React, {
-  FC,
-  ReactElement,
-  SyntheticEvent,
-  useCallback,
-  useState
-} from 'react';
+import { FC, ReactElement, SyntheticEvent, useCallback, useState } from 'react';
 import { FileWithPath, useDropzone } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
 

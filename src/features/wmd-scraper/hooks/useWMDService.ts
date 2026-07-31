@@ -43,7 +43,10 @@ const useWMDService = (): WMDService => {
     }
   }, [axiosInstance]);
 
+  // Probe the session once on mount. This is a genuine external-system sync
+  // (the scraper backend), not derivable state.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- state is set from the network response, not synchronously
     checkAuthentication();
   }, [checkAuthentication]);
 

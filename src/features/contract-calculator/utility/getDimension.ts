@@ -1,4 +1,3 @@
-import * as pdfjsLib from 'pdfjs-dist';
 import { FileWithPath } from 'react-dropzone';
 import { toast } from 'react-toastify';
 import { decode, decodeImage } from 'utif';
@@ -133,30 +132,31 @@ async function getDimensionFromOtherFiles(file: FileWithPath): Promise<Order> {
 }
 
 async function getDimensionFromPDF(file: FileWithPath): Promise<Order> {
-  return new Promise<Order>(async (resolve, reject) => {
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      const page = await pdf.getPage(1);
-      const viewport = page.getViewport({ scale: 1.0 });
+  try {
+    // pdfjs-dist is a browser build: importing it at module scope crashes the
+    // Next build when this page's data is collected in Node (no DOMMatrix).
+    const pdfjsLib = await import('pdfjs-dist');
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const page = await pdf.getPage(1);
+    const viewport = page.getViewport({ scale: 1.0 });
 
-      // Convert points to millimeters (1 point = 0.3527777777778 mm)
-      const width = viewport.width * MM_PER_POINT;
-      const height = viewport.height * MM_PER_POINT;
+    // Convert points to millimeters (1 point = 0.3527777777778 mm)
+    const width = viewport.width * MM_PER_POINT;
+    const height = viewport.height * MM_PER_POINT;
 
-      resolve({
-        id: uuidv4(),
-        name: file.name,
-        width: Math.round(width * 100) / 100,
-        height: Math.round(height * 100) / 100,
-        type: OrderType.Folienplott,
-        amount: 1
-      });
-    } catch (error) {
-      toast.error('Error while reading PDF file');
-      reject(error);
-    }
-  });
+    return {
+      id: uuidv4(),
+      name: file.name,
+      width: Math.round(width * 100) / 100,
+      height: Math.round(height * 100) / 100,
+      type: OrderType.Folienplott,
+      amount: 1
+    };
+  } catch (error) {
+    toast.error('Error while reading PDF file');
+    throw error;
+  }
 }
 
 export async function getDimension(file: FileWithPath): Promise<Order> {

@@ -1,4 +1,5 @@
-import { ArrowForward, ArrowBack } from '@mui/icons-material';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import ArrowForward from '@mui/icons-material/ArrowForward';
 
 import { ArrowProps } from '../interfaces';
 
