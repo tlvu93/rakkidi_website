@@ -6,6 +6,7 @@ import {
   Typography,
   List,
   ListItem,
+  ListItemButton,
   ListItemText,
   IconButton,
   CircularProgress
@@ -60,19 +61,11 @@ const TemplateManagement = (): React.ReactElement => {
           <ListItem
             key={template.name}
             disablePadding
-            sx={{
-              cursor: 'pointer',
-              bgcolor:
-                selectedTemplate?.name === template.name
-                  ? 'action.selected'
-                  : 'inherit'
-            }}
-            onClick={() => handleTemplateClick(template)}
             secondaryAction={
               <>
                 <IconButton
                   edge="end"
-                  aria-label="edit"
+                  aria-label={`Edit template ${template.name}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleEditClick(template);
@@ -83,7 +76,7 @@ const TemplateManagement = (): React.ReactElement => {
                 </IconButton>
                 <IconButton
                   edge="end"
-                  aria-label="delete"
+                  aria-label={`Delete template ${template.name}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     deleteTemplate(template);
@@ -94,10 +87,18 @@ const TemplateManagement = (): React.ReactElement => {
               </>
             }
           >
-            <ListItemText
-              primary={template.name}
-              secondary={template.description}
-            />
+            {/* The row used to be a bare clickable <li>, so a template could
+                only be selected with a mouse. ListItemButton renders a real
+                button and carries the selected state for AT. */}
+            <ListItemButton
+              selected={selectedTemplate?.name === template.name}
+              onClick={() => handleTemplateClick(template)}
+            >
+              <ListItemText
+                primary={template.name}
+                secondary={template.description}
+              />
+            </ListItemButton>
           </ListItem>
         ))}
       </List>

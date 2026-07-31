@@ -14,7 +14,9 @@ const RejectedFiles: React.FC<RejectedFilesProps> = ({
         mt: 2
       }}
     >
-      <Typography variant="h6">Rejected files</Typography>
+      <Typography variant="h6" component="h2">
+        Rejected files
+      </Typography>
       {fileRejections.length === 0 ? (
         <List>
           <ListItem>
@@ -25,10 +27,14 @@ const RejectedFiles: React.FC<RejectedFilesProps> = ({
         <List>
           {fileRejections.map(({ file, errors }) => (
             <ListItem key={file.name} divider>
+              {/* `secondary` renders as a <p> by default, so the nested list
+                  produced invalid <ul>-inside-<p> markup that browsers
+                  silently unwrap. */}
               <ListItemText
                 primary={`${file.name} - ${file.size} bytes`}
+                slotProps={{ secondary: { component: 'div' } }}
                 secondary={
-                  <List>
+                  <List disablePadding>
                     {errors.map((e) => (
                       <ListItem key={e.code} disableGutters>
                         <ListItemText primary={e.message} />

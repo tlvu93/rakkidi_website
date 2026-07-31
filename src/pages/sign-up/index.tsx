@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography';
 import * as React from 'react';
 
 import Copyright from '@shared/components/copyright/copyright';
+import PageMeta from '@shared/components/page-meta/page-meta';
 
 const theme = createTheme();
 
@@ -24,6 +25,7 @@ const SignUp = (): React.ReactElement => {
 
   return (
     <ThemeProvider theme={theme}>
+      <PageMeta title="Sign up" />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div
@@ -100,10 +102,17 @@ const SignUp = (): React.ReactElement => {
                 />
               </Grid>
               <Grid size={12}>
+                {/* `name`/`id` were on FormControlLabel, so they landed on the
+                    <label> and never on the input - the checkbox was missing
+                    from the submitted FormData as well as unidentifiable. */}
                 <FormControlLabel
-                  name="allowExtraEmails"
-                  id="allowExtraEmails"
-                  control={<Checkbox color="primary" />}
+                  control={
+                    <Checkbox
+                      color="primary"
+                      name="allowExtraEmails"
+                      id="allowExtraEmails"
+                    />
+                  }
                   label="I want to receive inspiration, marketing promotions and updates via email."
                 />
               </Grid>

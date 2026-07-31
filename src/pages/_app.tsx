@@ -37,11 +37,10 @@ const MyApp: React.FC<MyAppProps> = (pageProps): React.ReactElement => {
   return (
     <>
       <Head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
-        />
-        <title>Rakkidi Website</title>
+        {/* `maximum-scale=1, user-scalable=0` used to be pinned here, which
+            blocks pinch-zoom entirely (WCAG 1.4.4). */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Rakkidi</title>
       </Head>
       <ColorModeContext.Provider value={colorMode}>
         <CacheProvider value={emotionCache}>

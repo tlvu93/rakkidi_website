@@ -1,7 +1,8 @@
-﻿import { Typography, Paper, Container, Divider } from '@mui/material';
+import { Typography, Paper, Container, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 
+import PageMeta from '@shared/components/page-meta/page-meta';
 import {
   useTemplateManagement,
   TemplateManagement
@@ -26,7 +27,13 @@ const PDFExtractorContent = (): React.ReactElement => {
 
   return (
     <Container maxWidth="lg">
-      <Typography variant="h4" gutterBottom sx={{ mb: 3, mt: 4 }}>
+      <PageMeta title="PDF extractor" />
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        sx={{ mb: 3, mt: 4 }}
+      >
         PDF Extractor
       </Typography>
       <Typography variant="body1" sx={{ mb: 2 }}>

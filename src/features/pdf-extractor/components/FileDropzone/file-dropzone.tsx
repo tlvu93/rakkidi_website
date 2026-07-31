@@ -11,7 +11,7 @@ import { useDropzone, Accept, FileError } from 'react-dropzone';
 import { getStyles } from 'features/pdf-extractor/utils/styles';
 
 interface FileDropzoneProps {
-  onDrop: (acceptedFiles: File[]) => void;
+  onDrop: (acceptedFiles: File[]) => void | Promise<void>;
   accept?: Accept;
   maxFiles?: number;
   maxSize?: number;
@@ -34,9 +34,15 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
 
   const handleDrop = useCallback(
     // react-dropzone 19 types the callback generically over the File subtype.
-    <T extends File>(acceptedFiles: T[]) => {
-      setLoading(false); // Ensure loading is stopped immediately after drop
-      onDrop(acceptedFiles);
+    async <T extends File>(acceptedFiles: T[]) => {
+      // This used to clear `loading` *before* calling onDrop, so the spinner
+      // was hidden for the whole extraction pass and the UI looked frozen.
+      setLoading(true);
+      try {
+        await onDrop(acceptedFiles);
+      } finally {
+        setLoading(false);
+      }
     },
     [onDrop]
   );
@@ -46,7 +52,8 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
     getInputProps,
     isDragActive,
     isDragAccept,
-    isDragReject
+    isDragReject,
+    isFocused
   } = useDropzone({
     onDrop: handleDrop,
     accept,
@@ -76,16 +83,20 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
   const style = useMemo(() => {
     return {
       ...styles.baseStyle,
+      ...(isFocused ? styles.focusStyle : {}),
       ...(isDragActive ? styles.activeStyle : {}),
       ...(isDragAccept ? styles.acceptStyle : {}),
       ...(isDragReject ? styles.rejectStyle : {})
     };
-  }, [isDragAccept, isDragActive, isDragReject, styles]);
+  }, [isDragAccept, isDragActive, isDragReject, isFocused, styles]);
 
   return (
     <Container maxWidth="sm">
-      <div {...getRootProps({ style })}>
-        <input {...getInputProps()} />
+      <div
+        {...getRootProps({ style })}
+        aria-describedby="file-dropzone-instructions"
+      >
+        <input {...getInputProps({ 'aria-label': 'Choose files to upload' })} />
         <div
           style={{
             display: 'flex',
@@ -97,7 +108,9 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
           }}
         >
           <Typography
+            id="file-dropzone-instructions"
             variant="h6"
+            component="p"
             align="center"
             sx={{
               color: 'text.secondary'

@@ -1,4 +1,6 @@
 import {
+  Alert,
+  Box,
   Container,
   Typography,
   Table,
@@ -44,20 +46,24 @@ const CSVFiledropzone: React.FC = () => {
     }));
   }, [selectedTemplate]);
 
+  // Both of these paths used to only console.error, so a user whose files
+  // failed to parse saw nothing at all happen.
+  const [extractionError, setExtractionError] = useState<string | null>(null);
+
   const handleDrop = useCallback(
     async (acceptedFiles: File[]) => {
       if (!selectedTemplate) {
-        console.error('No template selected');
+        setExtractionError('Select a template before uploading PDFs.');
         return;
       }
 
+      setExtractionError(null);
       setAcceptedFiles(acceptedFiles);
       try {
         // Process files sequentially to maintain order
         const extractedData = [];
         for (const file of acceptedFiles) {
           const tokenizedText = await getTextTokenFromPdfFile(file);
-          console.log('tokenizedText:', tokenizedText);
           const extractedFields = await extractFieldsFromTemplate(
             tokenizedText,
             selectedTemplate
@@ -67,6 +73,9 @@ const CSVFiledropzone: React.FC = () => {
         setCsvData(extractedData);
       } catch (error) {
         console.error('Error processing files:', error);
+        setExtractionError(
+          'Could not extract data from one or more of those PDFs. Check that they match the selected template and try again.'
+        );
       }
     },
     [selectedTemplate]
@@ -91,10 +100,21 @@ const CSVFiledropzone: React.FC = () => {
         onDropRejected={handleRejected}
         accept={{ 'application/pdf': ['.pdf'] }}
       />
-      <aside>
-        <AcceptedFiles acceptedFiles={acceptedFiles} />
-        <RejectedFiles fileRejections={fileRejections} />
-      </aside>
+      {extractionError && (
+        <Alert severity="error" role="alert" sx={{ mt: 2 }}>
+          {extractionError}
+        </Alert>
+      )}
+      {(acceptedFiles.length > 0 || fileRejections.length > 0) && (
+        <Box component="aside" aria-live="polite">
+          {acceptedFiles.length > 0 && (
+            <AcceptedFiles acceptedFiles={acceptedFiles} />
+          )}
+          {fileRejections.length > 0 && (
+            <RejectedFiles fileRejections={fileRejections} />
+          )}
+        </Box>
+      )}
       {!selectedTemplate && (
         <Typography color="error" sx={{ mt: 2 }}>
           Please select a template first

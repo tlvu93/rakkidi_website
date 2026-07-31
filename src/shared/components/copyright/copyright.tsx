@@ -1,5 +1,4 @@
-import { Typography, TypographyProps } from '@mui/material';
-import Link from 'next/link';
+import { Link, Typography, TypographyProps } from '@mui/material';
 
 const Copyright: React.FC<TypographyProps> = (props) => {
   return (
@@ -15,7 +14,15 @@ const Copyright: React.FC<TypographyProps> = (props) => {
       ]}
     >
       {'Copyright © '}
-      <Link color="inherit" href="rakkidi.de">
+      {/* This was `href="rakkidi.de"`, which a browser resolves relative to the
+          current path - it never reached the site. */}
+      <Link
+        color="inherit"
+        href="https://rakkidi.de"
+        target="_blank"
+        rel="noopener noreferrer"
+        underline="always"
+      >
         Rakkidi.de
       </Link>{' '}
       {new Date().getFullYear()}

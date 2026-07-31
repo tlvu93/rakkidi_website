@@ -13,8 +13,12 @@ interface Styles {
     borderStyle: string;
     backgroundColor: string;
     color: string;
-    outline: string;
     transition: string;
+  };
+  focusStyle: {
+    borderColor: string;
+    outline: string;
+    outlineOffset: number;
   };
   activeStyle: {
     borderColor: string;
@@ -43,8 +47,16 @@ export const getStyles = (theme: Theme): Styles => ({
     borderStyle: 'dashed',
     backgroundColor: theme.palette.background.paper,
     color: theme.palette.text.secondary,
-    outline: 'none',
+    // react-dropzone makes this root tabbable, so it must keep a focus ring.
+    // These are inline styles, hence the explicit `focusStyle` below rather
+    // than a :focus-visible selector.
     transition: 'border .24s ease-in-out, background-color .24s ease-in-out'
+  },
+
+  focusStyle: {
+    borderColor: theme.palette.primary.main,
+    outline: `2px solid ${theme.palette.primary.main}`,
+    outlineOffset: 2
   },
 
   activeStyle: {

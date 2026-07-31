@@ -38,6 +38,27 @@ const AppLayout = ({ children }: AppLayoutProps): React.ReactElement => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      {/* Without this, reaching page content means tabbing past the header
+          controls and all six sidebar links on every navigation. */}
+      <Box
+        component="a"
+        href="#main-content"
+        sx={{
+          position: 'absolute',
+          left: 8,
+          top: -100,
+          zIndex: (t) => t.zIndex.tooltip + 1,
+          px: 2,
+          py: 1,
+          borderRadius: 1,
+          bgcolor: 'background.paper',
+          color: 'text.primary',
+          textDecoration: 'underline',
+          '&:focus': { top: 8 }
+        }}
+      >
+        Skip to main content
+      </Box>
       <ToastContainer
         position="top-right"
         autoClose={1500}
@@ -66,8 +87,11 @@ const AppLayout = ({ children }: AppLayoutProps): React.ReactElement => {
           state) whenever the layout re-rendered. */}
       <Box
         component="main"
+        id="main-content"
+        tabIndex={-1}
         sx={{
           flexGrow: 1,
+          outline: 'none',
           px: { xs: 2, sm: 3, md: 4 },
           py: { xs: 4, md: 8 },
           transition: theme.transitions.create('margin', {

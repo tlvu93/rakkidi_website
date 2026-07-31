@@ -15,6 +15,7 @@ import * as React from 'react';
 import { toast } from 'react-toastify';
 
 import Copyright from '@shared/components/copyright/copyright';
+import PageMeta from '@shared/components/page-meta/page-meta';
 
 const theme = createTheme();
 
@@ -27,6 +28,7 @@ export default function SignIn(): React.ReactElement {
 
   return (
     <ThemeProvider theme={theme}>
+      <PageMeta title="Sign in" />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div

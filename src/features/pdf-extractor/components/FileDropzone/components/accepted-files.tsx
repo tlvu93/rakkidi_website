@@ -13,7 +13,9 @@ const AcceptedFiles: React.FC<AcceptedFilesProps> = ({
         mt: 2
       }}
     >
-      <Typography variant="h6">Accepted files</Typography>
+      <Typography variant="h6" component="h2">
+        Accepted files
+      </Typography>
       <List>
         {acceptedFiles.map((file) => (
           <ListItem key={file.name} divider>

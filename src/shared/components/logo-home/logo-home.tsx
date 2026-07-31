@@ -9,7 +9,9 @@ const LogoHome = (): React.ReactElement => {
   return (
     <IconButton
       color="inherit"
-      aria-label="open drawer"
+      // Was "open drawer", copied from the menu button next to it - screen
+      // readers announced the wrong action for what is a home link.
+      aria-label="Rakkidi home"
       onClick={() => router.push('/')}
       edge="start"
       sx={{
@@ -18,7 +20,7 @@ const LogoHome = (): React.ReactElement => {
           'invert(83%) sepia(100%) saturate(0%) hue-rotate(100deg) brightness(106%) contrast(100%)'
       }}
     >
-      <Logo width={120} />
+      <Logo width={120} aria-hidden="true" focusable="false" />
     </IconButton>
   );
 };

@@ -1,5 +1,7 @@
+import { Box, Typography } from '@mui/material';
 import type { NextPage } from 'next';
 
+import PageMeta from '@shared/components/page-meta/page-meta';
 import AppLayout from '@shared/layouts/app-layout';
 import {
   AllProjectResponse,
@@ -16,9 +18,25 @@ interface DashboardProps {
 
 const Dashboard: NextPage<DashboardProps> = ({ pageProps }) => {
   const { groupedProjects } = pageProps;
+  const hasProjects = Object.keys(groupedProjects ?? {}).length > 0;
+
   return (
     <AppLayout>
-      {groupedProjects && <ProjectGroup projects={groupedProjects} />}
+      <PageMeta title="Dashboard" />
+      {/* A failed or empty Sanity query used to render a completely blank
+          <main> with no explanation. */}
+      {hasProjects ? (
+        <ProjectGroup projects={groupedProjects} />
+      ) : (
+        <Box role="status" sx={{ py: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Projects
+          </Typography>
+          <Typography sx={{ color: 'text.secondary' }}>
+            No projects could be loaded right now. Please try again later.
+          </Typography>
+        </Box>
+      )}
     </AppLayout>
   );
 };

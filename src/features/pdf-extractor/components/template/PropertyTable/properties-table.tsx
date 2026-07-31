@@ -286,8 +286,16 @@ export default function PropertiesTable(): React.ReactElement {
         '& .MuiDataGrid-cell': {
           padding: '0 16px'
         },
+        // Suppress the ring for mouse clicks only. Blanket `outline: none`
+        // here hides the roving-tabindex cursor, leaving arrow-key navigation
+        // with no visible position.
         '& .MuiDataGrid-cell:focus': {
           outline: 'none'
+        },
+        '& .MuiDataGrid-cell:focus-visible': {
+          outline: '2px solid',
+          outlineColor: 'primary.main',
+          outlineOffset: -2
         },
         '& .MuiDataGrid-cell.Mui-selected': {
           padding: '0 16px'

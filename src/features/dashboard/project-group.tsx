@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import React, { useMemo } from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -11,6 +11,14 @@ import { CardGroupProps } from './project-card/interfaces';
 import { CustomArrow } from './slider/custom-arrows';
 
 const MAX_VISIBLE_PROJECTS = 4; // Environment variable or constant
+
+/** Category names are free text from Sanity, so they need cleaning up before
+ *  they can be used in an id for aria-labelledby. */
+const slugify = (value: string): string =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
 
 const ProjectCardRow: React.FC<CardGroupProps> = ({ projects }) => {
   const sliderSettings = useMemo(
@@ -54,7 +62,11 @@ const ProjectCardRow: React.FC<CardGroupProps> = ({ projects }) => {
   );
 
   if (!projects || projects.length === 0) {
-    return <Box>No projects available.</Box>;
+    return (
+      <Box role="status" sx={{ py: 2, color: 'text.secondary' }}>
+        No projects available.
+      </Box>
+    );
   }
 
   return (
@@ -81,11 +93,28 @@ const ProjectGroup: React.FC<ProjectGroupProps> = ({ projects }) => {
         pl: 10
       }}
     >
+      <Typography variant="h4" component="h1" sx={{ mb: 3 }}>
+        Projects
+      </Typography>
+      {/* One <h1> per category used to be emitted here, which flattened the
+          whole page into N top-level headings. Each category is now a titled
+          section under the single page heading. */}
       {Object.entries(projects).map(([category, categoryProjects]) => (
-        <div key={category}>
-          <h1>{category}</h1>
+        <Box
+          key={category}
+          component="section"
+          aria-labelledby={`project-category-${slugify(category)}`}
+        >
+          <Typography
+            variant="h5"
+            component="h2"
+            id={`project-category-${slugify(category)}`}
+            sx={{ mb: 1 }}
+          >
+            {category}
+          </Typography>
           <ProjectCardRow projects={categoryProjects} />
-        </div>
+        </Box>
       ))}
     </Box>
   );

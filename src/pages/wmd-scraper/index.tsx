@@ -10,6 +10,7 @@ import moment, { Moment } from 'moment';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
+import PageMeta from '@shared/components/page-meta/page-meta';
 import { useDisclosure } from '@shared/hooks';
 import AppLayout from '@shared/layouts/app-layout';
 import DateRangePicker from 'features/wmd-scraper/components/DateRangePicker';
@@ -81,7 +82,8 @@ const WMDScraper = (): React.ReactElement => {
               alignItems: 'center'
             }}
           >
-            <Typography variant="h4" gutterBottom>
+            <PageMeta title="WMD scraper" />
+            <Typography variant="h4" component="h1" gutterBottom>
               Einfaches Tool um WMD Rechnungen runterzuladen
             </Typography>
             <Box component="form" noValidate sx={{ mt: 1, width: '100%' }}>
