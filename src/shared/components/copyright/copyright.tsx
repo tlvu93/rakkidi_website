@@ -5,9 +5,14 @@ const Copyright: React.FC<TypographyProps> = (props) => {
   return (
     <Typography
       variant="body2"
-      color="text.secondary"
       align="center"
       {...props}
+      sx={[
+        {
+          color: 'text.secondary'
+        },
+        ...(Array.isArray(props.sx) ? props.sx : [props.sx])
+      ]}
     >
       {'Copyright © '}
       <Link color="inherit" href="rakkidi.de">

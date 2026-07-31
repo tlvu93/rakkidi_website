@@ -55,8 +55,19 @@ const TemplateCreator = ({
       <FormProvider {...formMethods}>
         <Box sx={{ flex: 1, overflow: 'auto', pt: 1.5 }}>
           <Container maxWidth={false} sx={styles.containerStyle}>
-            <Grid container spacing={2} pb={4}>
-              <Grid item xs={12} md={6}>
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                pb: 4
+              }}
+            >
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 6
+                }}
+              >
                 <TextField
                   {...formMethods.register('name', {
                     required: 'Template name is required'
@@ -67,7 +78,12 @@ const TemplateCreator = ({
                   helperText={formMethods.formState.errors.name?.message}
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  md: 6
+                }}
+              >
                 <TextField
                   {...formMethods.register('description', {
                     required: 'Template description is required'
@@ -80,12 +96,22 @@ const TemplateCreator = ({
               </Grid>
             </Grid>
             <Grid container spacing={4} sx={styles.gridContainerStyle}>
-              <Grid item xs={12} lg={8}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 8
+                }}
+              >
                 <Box sx={styles.pdfPreviewStyle}>
                   <PdfViewer />
                 </Box>
               </Grid>
-              <Grid item xs={12} lg={4}>
+              <Grid
+                size={{
+                  xs: 12,
+                  lg: 4
+                }}
+              >
                 <Box sx={styles.propertiesTableStyle}>
                   <PropertiesTable />
                 </Box>

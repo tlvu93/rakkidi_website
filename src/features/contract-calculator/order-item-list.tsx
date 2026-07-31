@@ -358,7 +358,13 @@ const OrderList = (): ReactElement => {
                   }}
                 >
                   <TableCell colSpan={4}>
-                    <Typography fontWeight="bold">Total Price</Typography>
+                    <Typography
+                      sx={{
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      Total Price
+                    </Typography>
                   </TableCell>
                   <TableCell
                     align="right"

@@ -1,4 +1,4 @@
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+﻿import ErrorOutlineIcon from '@mui/icons-material/ErrorOutlined';
 import { Box, Typography, Button } from '@mui/material';
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
@@ -58,7 +58,12 @@ export class ErrorBoundary extends Component<Props, State> {
           <Typography variant="h5" color="error" gutterBottom>
             Something went wrong
           </Typography>
-          <Typography color="text.secondary" sx={{ mb: 2 }}>
+          <Typography
+            sx={{
+              color: 'text.secondary',
+              mb: 2
+            }}
+          >
             {this.state.error?.message || 'An unexpected error occurred'}
           </Typography>
           <Button

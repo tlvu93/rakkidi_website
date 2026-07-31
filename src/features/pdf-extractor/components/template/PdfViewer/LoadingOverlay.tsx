@@ -25,7 +25,12 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
       }}
     >
       <CircularProgress size={48} sx={{ mb: 2 }} />
-      <Typography variant="body1" color="text.secondary">
+      <Typography
+        variant="body1"
+        sx={{
+          color: 'text.secondary'
+        }}
+      >
         {message}
       </Typography>
     </Box>

@@ -29,8 +29,10 @@ export const CardFooter: React.FC<CardFooterProps> = ({
         // after every tag, including the last one.
         <Typography
           variant="caption"
-          color="text.secondary"
-          sx={{ display: 'block' }}
+          sx={{
+            color: 'text.secondary',
+            display: 'block'
+          }}
         >
           {tags.map((tag) => tag.title).join(', ')}
         </Typography>

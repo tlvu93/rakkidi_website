@@ -43,17 +43,18 @@ const TemplateManagement = (): React.ReactElement => {
   return (
     <Box>
       <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2
+        }}
       >
         <Typography variant="h5">Templates</Typography>
         <Button variant="contained" color="primary" onClick={handleCreateClick}>
           Create Template
         </Button>
       </Box>
-
       <List>
         {templates.map((template) => (
           <ListItem
@@ -100,13 +101,24 @@ const TemplateManagement = (): React.ReactElement => {
           </ListItem>
         ))}
       </List>
-
       {isLoading ? (
-        <Box display="flex" justifyContent="center" mt={4}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            mt: 4
+          }}
+        >
           <CircularProgress />
         </Box>
       ) : templates.length === 0 ? (
-        <Typography variant="body2" color="text.secondary" align="center">
+        <Typography
+          variant="body2"
+          align="center"
+          sx={{
+            color: 'text.secondary'
+          }}
+        >
           No templates yet. Create one to get started.
         </Typography>
       ) : null}

@@ -114,10 +114,12 @@ const TemplatePageContent = (): ReactElement => {
 
         {isLoading ? (
           <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="80%"
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '80%'
+            }}
           >
             <CircularProgress />
           </Box>
@@ -126,10 +128,12 @@ const TemplatePageContent = (): ReactElement => {
             <Suspense
               fallback={
                 <Box
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  height="80%"
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '80%'
+                  }}
                 >
                   <CircularProgress />
                 </Box>

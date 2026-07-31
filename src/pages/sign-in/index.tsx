@@ -82,12 +82,12 @@ export default function SignIn(): React.ReactElement {
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs>
+              <Grid size="grow">
                 <Link href="#" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>
-              <Grid item>
+              <Grid>
                 <Link href="sign-up" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>

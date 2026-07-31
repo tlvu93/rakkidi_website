@@ -24,25 +24,40 @@ const DateRangePicker = ({
 
   return (
     <Grid container spacing={2}>
-      <Grid item sm={6}>
+      <Grid
+        size={{
+          sm: 6
+        }}
+      >
         <Typography variant="h6" gutterBottom>
           Date from
         </Typography>
       </Grid>
-      <Grid item sm={6}>
+      <Grid
+        size={{
+          sm: 6
+        }}
+      >
         <Typography variant="h6" gutterBottom>
           Date to
         </Typography>
       </Grid>
-      <Grid item sm={6}>
+      <Grid
+        size={{
+          sm: 6
+        }}
+      >
         <DatePicker
           sx={{ width: '100%' }}
           value={dateRange.dateFrom}
           onChange={setDateFrom}
         />
       </Grid>
-
-      <Grid item sm={6}>
+      <Grid
+        size={{
+          sm: 6
+        }}
+      >
         <DatePicker
           sx={{ width: '100%' }}
           value={dateRange.dateTo}

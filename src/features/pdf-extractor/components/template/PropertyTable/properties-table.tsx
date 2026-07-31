@@ -248,7 +248,13 @@ export default function PropertiesTable(): React.ReactElement {
         renderCell: (
           params: GridRenderCellParams<FieldRow>
         ): React.ReactElement => (
-          <Box display="flex" justifyContent="flex-end" width="100%">
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              width: '100%'
+            }}
+          >
             <GridActionsCellItem
               key={`delete-${params.id}`}
               icon={<DeleteIcon sx={{ fontSize: '1.2rem' }} />}
@@ -310,6 +316,7 @@ export default function PropertiesTable(): React.ReactElement {
         disableDensitySelector
         disableColumnSorting
         disableColumnMenu
+        showToolbar
       />
     </Box>
   );

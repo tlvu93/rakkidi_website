@@ -58,7 +58,11 @@ const ProjectCardRow: React.FC<CardGroupProps> = ({ projects }) => {
   }
 
   return (
-    <Box pb={4}>
+    <Box
+      sx={{
+        pb: 4
+      }}
+    >
       <Slider {...sliderSettings}>
         {projects.map((project) => (
           <Box key={project._id} sx={{ display: 'flex' }}>
@@ -72,7 +76,11 @@ const ProjectCardRow: React.FC<CardGroupProps> = ({ projects }) => {
 
 const ProjectGroup: React.FC<ProjectGroupProps> = ({ projects }) => {
   return (
-    <Box pl={10}>
+    <Box
+      sx={{
+        pl: 10
+      }}
+    >
       {Object.entries(projects).map(([category, categoryProjects]) => (
         <div key={category}>
           <h1>{category}</h1>

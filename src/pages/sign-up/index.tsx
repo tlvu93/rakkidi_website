@@ -47,7 +47,12 @@ const SignUp = (): React.ReactElement => {
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: 6
+                }}
+              >
                 <TextField
                   autoComplete="given-name"
                   name="firstName"
@@ -58,7 +63,12 @@ const SignUp = (): React.ReactElement => {
                   autoFocus
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid
+                size={{
+                  xs: 12,
+                  sm: 6
+                }}
+              >
                 <TextField
                   required
                   fullWidth
@@ -68,7 +78,7 @@ const SignUp = (): React.ReactElement => {
                   autoComplete="family-name"
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <TextField
                   required
                   fullWidth
@@ -78,7 +88,7 @@ const SignUp = (): React.ReactElement => {
                   autoComplete="email"
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <TextField
                   required
                   fullWidth
@@ -89,7 +99,7 @@ const SignUp = (): React.ReactElement => {
                   autoComplete="new-password"
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <FormControlLabel
                   name="allowExtraEmails"
                   id="allowExtraEmails"
@@ -106,8 +116,13 @@ const SignUp = (): React.ReactElement => {
             >
               Sign Up
             </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
+            <Grid
+              container
+              sx={{
+                justifyContent: 'flex-end'
+              }}
+            >
+              <Grid>
                 <Link href="sign-in" variant="body2">
                   Already have an account? Sign in
                 </Link>

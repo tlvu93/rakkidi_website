@@ -9,7 +9,11 @@ const AcceptedFiles: React.FC<AcceptedFilesProps> = ({
   acceptedFiles
 }): React.ReactElement => {
   return (
-    <Box mt={2}>
+    <Box
+      sx={{
+        mt: 2
+      }}
+    >
       <Typography variant="h6">Accepted files</Typography>
       <List>
         {acceptedFiles.map((file) => (

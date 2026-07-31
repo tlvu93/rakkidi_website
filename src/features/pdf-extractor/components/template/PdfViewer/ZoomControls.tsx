@@ -15,7 +15,14 @@ const ZoomControls: FC<ZoomControlsProps> = ({
   currentZoom
 }): ReactElement => {
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        mb: 2
+      }}
+    >
       <ButtonGroup size="small" aria-label="zoom controls">
         <Button onClick={onZoomOut} aria-label="zoom out">
           <ZoomOut />

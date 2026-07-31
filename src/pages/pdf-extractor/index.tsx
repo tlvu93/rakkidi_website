@@ -29,10 +29,7 @@ const PDFExtractorContent = (): React.ReactElement => {
       <Typography variant="h4" gutterBottom sx={{ mb: 3, mt: 4 }}>
         PDF Extractor
       </Typography>
-      <Typography
-        variant="body1"
-        sx={{ mb: 2 }}
-      >
+      <Typography variant="body1" sx={{ mb: 2 }}>
         Extract data from your PDFs easily. First, select or create a template,
         then upload your PDF files for processing.
       </Typography>
@@ -44,10 +41,7 @@ const PDFExtractorContent = (): React.ReactElement => {
           <Typography variant="h5" gutterBottom>
             Upload PDFs
           </Typography>
-          <Typography
-            variant="body2"
-            sx={{ mb: 2 }}
-          >
+          <Typography variant="body2" sx={{ mb: 2 }}>
             Selected template: <strong>{selectedTemplate.name}</strong>
           </Typography>
           <Divider sx={{ mb: 2 }} />

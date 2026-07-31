@@ -1,4 +1,4 @@
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+﻿import ErrorOutlineIcon from '@mui/icons-material/ErrorOutlined';
 import { Box, Typography, Button } from '@mui/material';
 import React from 'react';
 
@@ -33,9 +33,12 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
       </Typography>
       <Typography
         variant="body1"
-        color="text.secondary"
         align="center"
-        sx={{ mb: 3, maxWidth: 400 }}
+        sx={{
+          color: 'text.secondary',
+          mb: 3,
+          maxWidth: 400
+        }}
       >
         {message}
       </Typography>

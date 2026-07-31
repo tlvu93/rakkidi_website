@@ -67,7 +67,12 @@ const CardBack: React.FC<CardBackProps> = ({
               />
             ))
           ) : (
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary'
+              }}
+            >
               No tags
             </Typography>
           )}
